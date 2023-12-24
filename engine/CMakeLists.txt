@@ -4,6 +4,7 @@ set(DESTINATION_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../game/bin/)
 
 add_library(engine SHARED
     engine.cpp
+    engine.hpp
 )
 
 add_custom_command(TARGET engine POST_BUILD

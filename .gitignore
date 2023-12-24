@@ -124,3 +124,4 @@ bld/
 .idea/
 # CMake
 cmake-build-*/
+.cache
