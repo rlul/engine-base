@@ -1,12 +1,14 @@
 project(launcher)
 
 set(DESTINATION_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../game)
-
-add_executable(launcher WIN32
+set(LAUNCHER_SOURCES 
     main.cpp
 )
 
-add_custom_command(TARGET launcher POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E make_directory ${DESTINATION_DIR}
-    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:launcher> ${DESTINATION_DIR}
-)
+if(WIN32)
+    add_executable(launcher WIN32 ${LAUNCHER_SOURCES})
+else()
+    add_executable(launcher ${LAUNCHER_SOURCES})
+endif()
+
+target_link_libraries(launcher engine)

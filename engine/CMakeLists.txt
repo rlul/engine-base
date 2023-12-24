@@ -1,12 +1,11 @@
 project(engine)
 
 set(DESTINATION_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../game/bin/)
-
-add_library(engine SHARED
+set(ENGINE_SOURCES 
     engine.cpp
+    engine.h
 )
 
-add_custom_command(TARGET engine POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E make_directory ${DESTINATION_DIR}
-    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:engine> ${DESTINATION_DIR}
-)
+add_compile_definitions(ENGINE_EXPORTS)
+
+add_library(engine SHARED ${ENGINE_SOURCES})

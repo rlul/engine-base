@@ -39,6 +39,7 @@
 ##--------------------------------
 CMakeLists.txt.user
 CMakeCache.txt
+CMakePresets.json
 CMakeFiles
 CMakeScripts
 Testing
@@ -112,6 +113,7 @@ bld/
 
 # VS Code files for those working on multiple tools
 .vscode/*
+.[Cc]ache/
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
