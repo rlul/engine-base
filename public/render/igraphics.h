@@ -1,15 +1,13 @@
-#pragm
-
-
 #pragma once
-
-
+#include "render.h"
 
 abstract_class IGraphics
 {
 public:
-	virtual ~IGraphics() = 0;
+	virtual bool Setup() = 0;
+	virtual void Shutdown() = 0;
 
-	virtual bool Initialize() = 0;
-	virtual bool Shutdown() = 0;
-}
+	virtual bool Frame() = 0;
+};
+
+RENDER_API IGraphics* Graphics();
