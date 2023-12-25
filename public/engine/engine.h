@@ -4,7 +4,7 @@
 #include <Windows.h>
 #endif
 
-#ifdef ENGINE_EXPORTS
+#if defined(ENGINE_EXPORTS) && defined(_WIN32) 
 #define ENGINE_API extern "C" __declspec(dllexport)
 #else
 #define ENGINE_API extern "C" __declspec(dllimport)

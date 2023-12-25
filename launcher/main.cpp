@@ -1,4 +1,5 @@
-#include "../engine/engine.h"
+#include "engine/engine.h"
+
 #ifdef _WIN32
 #include <Windows.h>
 #endif

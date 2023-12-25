@@ -1,12 +1,6 @@
-#include "engine.h"
+#include "engine/engine.h"
 
 #include <iostream>
-
-#ifdef _WIN32
-
-#else
-
-#endif
 
 #ifdef _WIN32
 int EngineMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
@@ -17,8 +11,6 @@ int EngineMain(int argc, char **argv)
 	int result = 0;
 
 	printf("123\n");
-
-	MessageBoxA(0, 0, 0, 0);
 
 	return result;
 }

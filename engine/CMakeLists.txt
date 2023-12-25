@@ -2,7 +2,7 @@ project(engine)
 
 set(ENGINE_SOURCES 
     engine.cpp
-    engine.h
+    ${PUBLIC_DIR}/engine/engine.h
 )
 
 add_compile_definitions(ENGINE_EXPORTS abstract_class=class)
