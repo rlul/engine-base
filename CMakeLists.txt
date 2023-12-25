@@ -27,7 +27,7 @@ add_subdirectory(thirdparty/SDL)
 
 add_custom_target(CopyFiles ALL
     COMMENT "Copying files to ${BIN_DIR}"
-    DEPENDS engine
+    DEPENDS launcher engine SDL3-shared
 )
 
 foreach(subproject IN ITEMS launcher engine SDL3-shared)

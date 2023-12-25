@@ -5,6 +5,6 @@ set(ENGINE_SOURCES
     engine.h
 )
 
-add_compile_definitions(ENGINE_EXPORTS)
+add_compile_definitions(ENGINE_EXPORTS abstract_class=class)
 
 add_library(engine SHARED ${ENGINE_SOURCES})
