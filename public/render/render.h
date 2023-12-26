@@ -1,11 +1,9 @@
 #pragma once
 
-#if defined(_WIN32) 
-#if defined(RENDER_EXPORTS)
+#if defined(_WIN32) && defined(RENDER_EXPORTS)
 #define RENDER_API extern "C" __declspec(dllexport)
-#else
+#elif defined(_WIN32) 
 #define RENDER_API extern "C" __declspec(dllimport)
-#endif
 #else
 #define RENDER_API
 #endif

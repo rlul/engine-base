@@ -22,11 +22,12 @@ endif()
 set(BIN_DIR ${CMAKE_SOURCE_DIR}/../game/bin/${OS}${BITS})
 set(PUBLIC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/public)
 set(TARGETS 
-    launcher engine render SDL3-shared
+    launcher engine base render SDL3-shared
 )
 
 add_subdirectory(launcher)
 add_subdirectory(engine)
+add_subdirectory(base)
 add_subdirectory(render)
 add_subdirectory(thirdparty/SDL)
 

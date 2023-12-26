@@ -25,7 +25,8 @@ IGraphics* Graphics()
 }
 
 CGraphics::CGraphics()
-	: m_pAPI(new CGraphicsAPI) {
+	: m_pAPI(new CGraphicsAPI)
+{
 	
 }
 

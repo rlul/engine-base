@@ -4,15 +4,14 @@
 #include <Windows.h>
 #endif
 
-#if defined(_WIN32)
-#if defined(ENGINE_EXPORTS)
+#if defined(_WIN32) && defined(ENGINE_EXPORTS)
 #define ENGINE_API extern "C" __declspec(dllexport)
-#else
+#elif defined(_WIN32) 
 #define ENGINE_API extern "C" __declspec(dllimport)
-#endif
 #else
 #define ENGINE_API
 #endif
+
 
 #ifdef _WIN32
 ENGINE_API int EngineMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow);

@@ -9,4 +9,4 @@ add_compile_definitions(ENGINE_EXPORTS abstract_class=class)
 
 add_library(engine SHARED ${ENGINE_SOURCES})
 
-target_link_libraries(engine PUBLIC render)
+target_link_libraries(engine PUBLIC render base)
