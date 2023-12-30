@@ -1,46 +1,85 @@
-#include "engine/engine.h"
-#include "render/igraphics.h"
-#include "base/icommandline.h"
-
-#include <iostream>
+#include "engine.h"
+#include "common.h"
+#include <cstdio>
 #include <SDL3/SDL.h>
 
-#ifdef _WIN32
-int EngineMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
-#else
-int EngineMain(int argc, char **argv)
-#endif
+CEngine g_Engine;
+CEngine* Engine()
 {
-#if defined(_WIN32) && defined(_DEBUG)
-	AllocConsole();
-	freopen("CONOUT$", "w", stdout);
-#endif
+	return &g_Engine;
+}
 
-#ifdef _WIN32
-	CommandLine()->Create(lpCmdLine);
-#else
-	CommandLine()->Create(argc, argv);
-#endif
+CEngine::CEngine()
+{
+	
+}
 
-	printf("raw params: %s\n", CommandLine()->Get());
-	printf("game path: %s\n", CommandLine()->GetParam("game"));
+CEngine::~CEngine()
+{
+	
+}
 
-	if (!Graphics()->Setup())
+bool CEngine::Setup()
+{
+	printf("Game Path: %s\n", COM_GetGameDir().c_str());
+
+	return true;
+}
+
+void CEngine::Shutdown()
+{
+	
+}
+
+int CEngine::Main()
+{
+	int result = 0;	// stop
+
+	if (!MainLoop())
 	{
-		printf("Failed to setup graphics system!\n");
-		return 0;
+		result = 1;	// restart
 	}
 
-	SDL_Event event;
-	bool running = true;
-	while (SDL_PollEvent(&event) || running)
+	return result;
+}
+
+bool CEngine::MainLoop()
+{
+	while (true)
 	{
-		if (event.type == SDL_EVENT_QUIT)
+		if (GetQuitting())
 		{
-			running = false;
+			return true;
+		}
+		PollEvent();
+		Frame();
+	}
+
+	return false;
+}
+
+void CEngine::PollEvent()
+{
+	SDL_Event event;
+	while (SDL_PollEvent(&event) || !GetQuitting())
+	{
+		switch (event.type)
+		{
+		case SDL_EVENT_QUIT:
+		{
+			SetQuitting(true);
+			break;
+		}
+		default:
+		{
+			break;
+		}
 		}
 	}
+}
 
-	return 0;
+void CEngine::Frame()
+{
+	
 }
 

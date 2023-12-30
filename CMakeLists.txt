@@ -19,11 +19,14 @@ else()
     message(FATAL_ERROR "Unsupported operating system")
 endif()
 
+set(GAME_NAME "demo")
 set(BIN_DIR ${CMAKE_SOURCE_DIR}/../game/bin/${OS}${BITS})
 set(PUBLIC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/public)
 set(TARGETS 
     launcher engine base render SDL3-shared
 )
+
+add_compile_definitions(GAME_NAME="${GAME_NAME}" abstract_class=class)
 
 add_subdirectory(launcher)
 add_subdirectory(engine)

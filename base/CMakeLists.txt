@@ -6,6 +6,6 @@ set(BASE_SOURCES
     ${PUBLIC_DIR}/base/icommandline.h
 )
 
-add_compile_definitions(BASE_EXPORTS abstract_class=class)
+add_compile_definitions(BASE_EXPORTS)
 
 add_library(base SHARED ${BASE_SOURCES})

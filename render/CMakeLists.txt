@@ -8,7 +8,7 @@ set(RENDER_SOURCES
     ${PUBLIC_DIR}/render/igraphics.h
 )
 
-add_compile_definitions(RENDER_EXPORTS abstract_class=class)
+add_compile_definitions(RENDER_EXPORTS)
 
 add_library(render SHARED ${RENDER_SOURCES})
 
