@@ -17,7 +17,7 @@ std::string COM_GetGameDir()
 	{
 		if (CommandLine()->HasParam("game"))
 		{
-			game_dir = CommandLine()->GetParam("game");
+			game_dir = CommandLine()->GetParam<std::string>("game");
 			if (!game_dir.is_absolute())
 			{
 				game_dir = absolute(game_dir);

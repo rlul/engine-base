@@ -17,9 +17,9 @@ public:
 	const char* Get() const override;
 
 	bool HasParam(const char* param) const override;
-	const char* GetParam(const char* param) const override;
 
 private:
+	std::string GetParamRaw(const char* param) const override;
 	static void Tokenize(const char* cmdline, std::vector<std::string>& tokens);
 	void ParseTokens(const std::vector<std::string>& tokens);
 
@@ -44,10 +44,6 @@ CCommandLine::~CCommandLine()
 
 }
 
-/**
- * \brief Parses the command line from a string.
- * \param cmdline The input command line string.
- */
 void CCommandLine::Create(const char* cmdline)
 {
 	std::vector<std::string> tokens;
@@ -56,11 +52,6 @@ void CCommandLine::Create(const char* cmdline)
 	ParseTokens(tokens);
 }
 
-/**
- * \brief Initializes the parser from command line arguments.
- * \param argc 
- * \param argv 
- */
 void CCommandLine::Create(int argc, char** argv)
 {
 	std::string cmdline;
@@ -71,34 +62,20 @@ void CCommandLine::Create(int argc, char** argv)
 	Create(cmdline.c_str());
 }
 
-/**
- * \brief Gets the original command line string.
- * \return Original command line string, or NULL if not initialized.
- */
 const char* CCommandLine::Get() const
 {
 	return m_sCommandLine.c_str();
 }
 
-/**
- * \brief Checks if a parameter exists.
- * \param param String name of the parameter.
- * \return true if the parameter is present, or false if not.
- */
 bool CCommandLine::HasParam(const char* param) const
 {
 	return m_mapParams.find(param) != m_mapParams.end();
 }
 
-/**
- * \brief Gets parameter value.
- * \param param String name of the parameter.
- * \return String value specified after the parameter, or NULL if no value is present.
- */
-const char* CCommandLine::GetParam(const char* param) const
+std::string CCommandLine::GetParamRaw(const char* param) const
 {
 	auto it = m_mapParams.find(param);
-	return (it != m_mapParams.end()) ? it->second.c_str() : NULL;
+	return (it != m_mapParams.end()) ? it->second : std::string();
 }
 
 void CCommandLine::Tokenize(const char* cmdline, std::vector<std::string>& tokens)
