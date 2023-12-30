@@ -58,5 +58,9 @@ void CGraphics::Shutdown()
 
 bool CGraphics::Frame()
 {
+	m_pAPI->BeginScene();
+
+	m_pAPI->EndScene();
+
 	return true;
 }

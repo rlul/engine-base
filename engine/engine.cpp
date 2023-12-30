@@ -3,6 +3,8 @@
 #include <cstdio>
 #include <SDL3/SDL.h>
 
+#include "render/igraphics.h"
+
 CEngine g_Engine;
 CEngine* Engine()
 {
@@ -10,6 +12,7 @@ CEngine* Engine()
 }
 
 CEngine::CEngine()
+	: m_bIsQuitting(false)
 {
 	
 }
@@ -61,7 +64,7 @@ bool CEngine::MainLoop()
 void CEngine::PollEvent()
 {
 	SDL_Event event;
-	while (SDL_PollEvent(&event) || !GetQuitting())
+	while (SDL_PollEvent(&event))
 	{
 		switch (event.type)
 		{
@@ -80,6 +83,6 @@ void CEngine::PollEvent()
 
 void CEngine::Frame()
 {
-	
+	Graphics()->Frame();
 }
 

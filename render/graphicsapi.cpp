@@ -4,7 +4,7 @@
 #include <cstdio>
 
 CGraphicsAPI::CGraphicsAPI()
-	: m_pWindow(), m_pRenderer()
+	: m_pWindow(), m_pOpenGLContext()
 {
 	
 }
@@ -30,17 +30,22 @@ bool CGraphicsAPI::Setup()
 	if (CommandLine()->HasParam("height"))
 		window_height = CommandLine()->GetParam<int>("height");
 
-	m_pWindow = SDL_CreateWindow("engine-demo", window_width, window_height, 0);
+	m_pWindow = SDL_CreateWindow("engine-demo", window_width, window_height, SDL_WINDOW_OPENGL);
 	if (m_pWindow == NULL)
 	{
 		printf("SDL_CreateWindow failed! (%s)\n", SDL_GetError());
 		return false;
 	}
 
-	m_pRenderer = SDL_CreateRenderer(m_pWindow, NULL, 0);
-	if (m_pRenderer == NULL)
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+	m_pOpenGLContext = SDL_GL_CreateContext(m_pWindow);
+	if (m_pOpenGLContext == NULL)
 	{
-		printf("SDL_CreateRenderer failed! (%s)\n", SDL_GetError());
+		printf("SDL_GL_CreateContext failed! (%s)\n", SDL_GetError());
 		return false;
 	}
 
@@ -49,7 +54,7 @@ bool CGraphicsAPI::Setup()
 
 void CGraphicsAPI::Shutdown()
 {
-	SDL_DestroyRenderer(m_pRenderer);
+	SDL_GL_DeleteContext(m_pOpenGLContext);
 	SDL_DestroyWindow(m_pWindow);
 }
 
@@ -59,5 +64,6 @@ void CGraphicsAPI::BeginScene()
 
 void CGraphicsAPI::EndScene()
 {
+	SDL_GL_SwapWindow(m_pWindow);
 }
 

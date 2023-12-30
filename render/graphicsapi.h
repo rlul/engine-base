@@ -16,5 +16,5 @@ public:
 
 private:
 	SDL_Window* m_pWindow;
-	SDL_Renderer* m_pRenderer;
+	SDL_GLContext m_pOpenGLContext;
 };
