@@ -13,4 +13,4 @@ add_compile_definitions(ENGINE_EXPORTS)
 
 add_library(engine SHARED ${ENGINE_SOURCES})
 
-target_link_libraries(engine PUBLIC render base)
+target_link_libraries(engine PUBLIC render core)

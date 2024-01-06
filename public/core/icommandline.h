@@ -1,5 +1,5 @@
 #pragma once
-#include "base.h"
+#include "core.h"
 #include <string>
 
 abstract_class ICommandLine
@@ -52,4 +52,4 @@ protected:
 
 };
 
-BASE_API ICommandLine* CommandLine();
+CORE_API ICommandLine* CommandLine();

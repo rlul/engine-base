@@ -1,7 +1,7 @@
 #include "engine.h"
 #include "engine/engine.h"
 #include "render/igraphics.h"
-#include "base/icommandline.h"
+#include "core/icommandline.h"
 #include <iostream>
 
 #ifdef _WIN32

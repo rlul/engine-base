@@ -23,14 +23,14 @@ set(GAME_NAME "demo")
 set(BIN_DIR ${CMAKE_SOURCE_DIR}/../game/bin/${OS}${BITS})
 set(PUBLIC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/public)
 set(TARGETS 
-    launcher engine base render SDL3-shared
+    launcher engine core render SDL3-shared
 )
 
 add_compile_definitions(GAME_NAME="${GAME_NAME}" abstract_class=class)
 
 add_subdirectory(launcher)
 add_subdirectory(engine)
-add_subdirectory(base)
+add_subdirectory(core)
 add_subdirectory(render)
 add_subdirectory(thirdparty/SDL)
 add_subdirectory(thirdparty/glad)
