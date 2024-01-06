@@ -1,6 +1,6 @@
 #include "graphicsapi.h"
 #include "base/icommandline.h"
-
+#include <glad/glad.h>
 #include <cstdio>
 
 CGraphicsAPI::CGraphicsAPI()
@@ -48,6 +48,14 @@ bool CGraphicsAPI::Setup()
 		printf("SDL_GL_CreateContext failed! (%s)\n", SDL_GetError());
 		return false;
 	}
+
+	if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress))
+	{
+		printf("Failed while trying to load OpenGL context!\n");
+		return false;
+	}
+
+	printf("Initialized OpenGL %s\n", glGetString(GL_VERSION));
 
 	return true;
 }

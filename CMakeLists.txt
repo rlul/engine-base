@@ -33,6 +33,7 @@ add_subdirectory(engine)
 add_subdirectory(base)
 add_subdirectory(render)
 add_subdirectory(thirdparty/SDL)
+add_subdirectory(thirdparty/glad)
 
 add_custom_target(CopyFiles ALL
     COMMENT "Copying files to ${BIN_DIR}"
