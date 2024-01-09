@@ -31,25 +31,11 @@ public:
 
 	/**
 	 * \brief Gets parameter value.
-	 * \param param Name of the parameter.
-	 * \return Value of specified type, or NULL if no value is present.
+	 * \param param String name of the parameter.
+	 * \return String value specified after the parameter, or NULL if no value is present.
 	 */
-	template<typename T>
-	T GetParam(const char* param) const;
-	template<>
-	std::string GetParam<std::string>(const char* param) const
-	{
-		return GetParamRaw(param);
-	}
-	template<>
-	int GetParam<int>(const char* param) const
-	{
-		return std::stoi( GetParamRaw(param) );
-	}
-
-protected:
-	virtual std::string GetParamRaw(const char* param) const = 0;
-
+	virtual const char* GetParam(const char* param) const = 0;
+	int GetParamInt(const char* param) const { return std::stoi(std::string(GetParam(param))); }
 };
 
 CORE_API ICommandLine* CommandLine();

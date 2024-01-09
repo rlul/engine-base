@@ -17,9 +17,9 @@ public:
 	const char* Get() const override;
 
 	bool HasParam(const char* param) const override;
+	const char* GetParam(const char* param) const override;
 
 private:
-	std::string GetParamRaw(const char* param) const override;
 	static void Tokenize(const char* cmdline, std::vector<std::string>& tokens);
 	void ParseTokens(const std::vector<std::string>& tokens);
 
@@ -72,10 +72,10 @@ bool CCommandLine::HasParam(const char* param) const
 	return m_mapParams.find(param) != m_mapParams.end();
 }
 
-std::string CCommandLine::GetParamRaw(const char* param) const
+const char* CCommandLine::GetParam(const char* param) const
 {
 	auto it = m_mapParams.find(param);
-	return (it != m_mapParams.end()) ? it->second : std::string();
+	return (it != m_mapParams.end()) ? it->second.c_str() : NULL;
 }
 
 void CCommandLine::Tokenize(const char* cmdline, std::vector<std::string>& tokens)

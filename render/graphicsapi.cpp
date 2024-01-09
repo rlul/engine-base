@@ -26,9 +26,15 @@ bool CGraphicsAPI::Setup()
 
 
 	if (CommandLine()->HasParam("width"))
-		window_width = CommandLine()->GetParam<int>("width");
+		window_width = CommandLine()->GetParamInt("width");
 	if (CommandLine()->HasParam("height"))
-		window_height = CommandLine()->GetParam<int>("height");
+		window_height = CommandLine()->GetParamInt("height");
+
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 
 	m_pWindow = SDL_CreateWindow("engine-demo", window_width, window_height, SDL_WINDOW_OPENGL);
 	if (m_pWindow == NULL)
@@ -37,11 +43,6 @@ bool CGraphicsAPI::Setup()
 		return false;
 	}
 
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 	m_pOpenGLContext = SDL_GL_CreateContext(m_pWindow);
 	if (m_pOpenGLContext == NULL)
 	{
@@ -56,7 +57,7 @@ bool CGraphicsAPI::Setup()
 	}
 
 	printf("Initialized OpenGL %s\n", glGetString(GL_VERSION));
-
+	printf("Video Adapter: %s\n", glGetString(GL_RENDERER));
 	return true;
 }
 
@@ -68,10 +69,11 @@ void CGraphicsAPI::Shutdown()
 
 void CGraphicsAPI::BeginScene()
 {
+	glClearColor(.1f, .1f, .2f, 1.f);
+	glClear(GL_COLOR_BUFFER_BIT);
 }
 
 void CGraphicsAPI::EndScene()
 {
 	SDL_GL_SwapWindow(m_pWindow);
 }
-
