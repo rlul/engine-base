@@ -26,6 +26,21 @@ set(TARGETS
     launcher engine core render SDL3-shared
 )
 
+set(SDL_AUDIODRIVER)
+set(SDL_JOYSTICK)
+set(SDL_HAPTIC)
+set(SDL_FILE)
+set(SDL_FILESYSTEM)
+set(SDL_POWER)
+set(SDL_THREAD)
+set(SDL_TIMERS)
+set(SDL_LOADSO)
+set(SDL_CPUINFO)
+set(SDL_VIDEO_DRIVER_WAYLAND 0)
+set(SDL_VIDEO_DRIVER_COCOA 0)
+set(SDL_VIDEO_RENDER_OGL 1)
+set(SDL_VIDEO_OPENGL_GLX 1)
+
 add_compile_definitions(GAME_NAME="${GAME_NAME}" abstract_class=class)
 
 add_subdirectory(launcher)
