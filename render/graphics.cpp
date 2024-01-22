@@ -1,7 +1,7 @@
 #include <cstdio>
-
 #include "render/igraphics.h"
 #include "graphicsapi.h"
+#include "engine/iscenesystem.h"
 
 class CGraphics : public IGraphics
 {
@@ -53,7 +53,7 @@ bool CGraphics::Setup()
 
 void CGraphics::Shutdown()
 {
-
+	
 }
 
 bool CGraphics::Frame()

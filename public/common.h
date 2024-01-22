@@ -2,7 +2,11 @@
 #include <string>
 
 /**
- * \brief Returns game directory.
- * \return String value with an absolute game directory path.
+ * \brief Returns absolute path to game directory.
  */
 std::string COM_GetGameDir();
+
+/**
+ * \brief TODO 
+ */
+double COM_GetTime();

@@ -36,6 +36,7 @@ int EngineMain(int argc, char **argv)
 	}
 
 	result = Engine()->Main();
+
 	Graphics()->Shutdown();
 	Engine()->Shutdown();
 

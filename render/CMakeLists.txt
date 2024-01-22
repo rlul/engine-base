@@ -6,6 +6,7 @@ set(RENDER_SOURCES
     graphicsapi.h
     ${PUBLIC_DIR}/render/render.h
     ${PUBLIC_DIR}/render/igraphics.h
+    ${PUBLIC_DIR}/engine/iscenesystem.h
 )
 
 add_compile_definitions(RENDER_EXPORTS)
