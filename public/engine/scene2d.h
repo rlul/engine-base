@@ -4,7 +4,7 @@ class CScene2D
 {
 public:
 	CScene2D();
-	~CScene2D();
+	virtual ~CScene2D();
 
 	virtual void Initialize();
 	virtual void Destroy();

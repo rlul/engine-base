@@ -1,12 +1,12 @@
 #pragma once
 #include "render.h"
+#include "subsystem/iappsystem.h"
 
-abstract_class IGraphics
+#define GRAPHICS_VERSION "Graphics001"
+
+abstract_class IGraphics : public IAppSystem
 {
 public:
-	virtual bool Setup() = 0;
-	virtual void Shutdown() = 0;
-
 	virtual bool Frame() = 0;
 };
 

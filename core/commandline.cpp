@@ -9,8 +9,8 @@
 class CCommandLine : public ICommandLine
 {
 public:
-	CCommandLine();
-	~CCommandLine();
+	CCommandLine() = default;
+	~CCommandLine() = default;
 
 	void Create(const char* cmdline) override;
 	void Create(int argc, char** argv) override;
@@ -32,16 +32,6 @@ CCommandLine g_CommandLine;
 ICommandLine* CommandLine()
 {
 	return &g_CommandLine;
-}
-
-CCommandLine::CCommandLine()
-{
-
-}
-
-CCommandLine::~CCommandLine()
-{
-
 }
 
 void CCommandLine::Create(const char* cmdline)

@@ -1,8 +1,11 @@
 #pragma once
 #include "engine.h"
+#include "subsystem/iappsystem.h"
 #include "scene2d.h"
 
-abstract_class ISceneSystem
+#define SCENE_SYSTEM_VERSION "SceneSystem001"
+
+abstract_class ISceneSystem : public IAppSystem
 {
 public:
 	virtual bool LoadScene(CScene2D* scene) = 0;

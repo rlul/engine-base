@@ -1,5 +1,6 @@
-#include "engine.h"
 #include "engine/engine.h"
+#include "subsystem/iappsystemgroup.h"
+#include "engine/iengine.h"
 #include "render/igraphics.h"
 #include "core/icommandline.h"
 #include <iostream>
@@ -23,22 +24,14 @@ int EngineMain(int argc, char **argv)
 	CommandLine()->Create(argc, argv);
 #endif
 
-	if(!Engine()->Setup())
-	{
-		printf("Failed to setup engine!\n");
-		return 0;
-	}
+	AppSystemGroup()->RegisterSystem(Engine());
+	AppSystemGroup()->RegisterSystem(Graphics());
 
-	if (!Graphics()->Setup())
-	{
-		printf("Failed to setup graphics system!\n");
-		return 0;
-	}
+	AppSystemGroup()->SetupSystems();
 
 	result = Engine()->Main();
 
-	Graphics()->Shutdown();
-	Engine()->Shutdown();
+	AppSystemGroup()->ShutdownSystems();
 
 	return result;
 }

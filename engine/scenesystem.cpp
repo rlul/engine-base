@@ -2,6 +2,8 @@
 
 class CSceneSystem : public ISceneSystem
 {
+	APPSYSTEM_OBJECT(SCENE_SYSTEM_VERSION)
+
 public:
 	CSceneSystem();
 	~CSceneSystem();
@@ -23,8 +25,19 @@ ISceneSystem* SceneSystem()
 	return &g_SceneSystem;
 }
 
+bool CSceneSystem::Setup()
+{
+	m_bIsSetup = true;
+	return true;
+}
+
+void CSceneSystem::Shutdown()
+{
+	m_bIsSetup = false;
+}
+
 CSceneSystem::CSceneSystem()
-	: m_pCurrentScene(nullptr)
+	: m_bIsSetup(false), m_pCurrentScene(nullptr)
 {
 }
 
