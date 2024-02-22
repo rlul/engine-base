@@ -11,7 +11,7 @@
 
 #include "testeventlistener.h"
 
-IGameEventManager* game_event_manager = nullptr;
+IGameEventManager* event_manager = nullptr;
 
 class CEngine : public IEngine
 {
@@ -54,8 +54,8 @@ bool CEngine::Setup()
 	m_flPreviousTime = COM_GetTime();
 	printf("Game Path: %s\n", COM_GetGameDir().c_str());
 
-	game_event_manager = (IGameEventManager*)GetAppSystem(GAMEEVENTMANAGER_VERSION);
-	game_event_manager->AddListener(new CTestEventListener, "mousedown");
+	event_manager = (IGameEventManager*)GetAppSystem(GAMEEVENTMANAGER_VERSION);
+	event_manager->AddListener(new CTestEventListener, "mousedown");
 
 	m_bIsSetup = true;
 
@@ -108,8 +108,15 @@ void CEngine::PollEvent()
 		}
 		case SDL_EVENT_MOUSE_BUTTON_DOWN:
 		{
-			auto event = game_event_manager->CreateGameEvent("mousedown");
-			game_event_manager->FireGameEvent(event);
+			float mouse_x, mouse_y;
+			IGameEvent* mouse_event = event_manager->CreateGameEvent("mousedown");
+
+			SDL_GetMouseState(&mouse_x, &mouse_y);
+			mouse_event->SetValue("mouse_x", mouse_x);
+			mouse_event->SetValue("mouse_y", mouse_y);
+			event_manager->FireGameEvent(mouse_event);
+
+			break;
 		}
 		default:
 		{

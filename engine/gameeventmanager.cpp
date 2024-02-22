@@ -9,7 +9,7 @@ class CGameEvent : public IGameEvent
 {
 public:
 	CGameEvent(const char* name);
-	~CGameEvent() override;
+	~CGameEvent() override = default;
 
 	const char* GetName() const override;
 
@@ -25,11 +25,6 @@ CGameEvent::CGameEvent(const char* name)
 	: m_pszName(name)
 {
 	
-}
-
-CGameEvent::~CGameEvent()
-{
-	delete m_pszName;
 }
 
 const char* CGameEvent::GetName() const
@@ -121,6 +116,8 @@ void CGameEventManager::FireGameEvent(IGameEvent* event)
 			listener->FireGameEvent(event);
 		}
 	}
+
+	delete event;
 }
 
 CGameEventManager g_GameEventManager;

@@ -12,12 +12,24 @@ public:
 	CTestEventListener() = default;
 	~CTestEventListener() override = default;
 
-	void FireGameEvent(IGameEvent* event) override 
+	void FireGameEvent(IGameEvent* event) override
 	{
 		if (strcmp(event->GetName(), "mousedown") == 0)
 		{
-			printf("govno\n");
-			//((IGameEventManager*)GetAppSystem(GAMEEVENTMANAGER_VERSION))->RemoveListener(this, "mousedown");
+			int mouse_x, mouse_y;
+			mouse_x = event->GetValue("mouse_x");
+			mouse_y = event->GetValue("mouse_y");
+			if (mouse_x < 100 && mouse_y < 100)
+			{
+				printf("yes!");
+				((IGameEventManager*)GetAppSystem(GAMEEVENTMANAGER_VERSION))->RemoveListener(this, "mousedown");
+			}
+			else
+			{
+				printf("no!");
+
+			}
+			printf(" (%d, %d)\n", mouse_x, mouse_y);
 		}
 	}
 };
