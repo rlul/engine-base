@@ -6,17 +6,6 @@
 #include "engine/iengine.h"
 #include <cstring>
 
-class CMouseDownEvent : public IGameEvent
-{
-public:
-	CMouseDownEvent() = default;
-	~CMouseDownEvent() override = default;
-
-	const char* GetName() const override { return "mousedown"; }
-	int GetValue() const override { return 0; }
-
-};
-
 class CTestEventListener : public IGameEventListener 
 {
 public:
@@ -28,7 +17,7 @@ public:
 		if (strcmp(event->GetName(), "mousedown") == 0)
 		{
 			printf("govno\n");
-			((IGameEventManager*)GetAppSystem(GAMEEVENTMANAGER_VERSION))->RemoveListener(this, "mousedown");
+			//((IGameEventManager*)GetAppSystem(GAMEEVENTMANAGER_VERSION))->RemoveListener(this, "mousedown");
 		}
 	}
 };

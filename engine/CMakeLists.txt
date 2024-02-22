@@ -5,6 +5,7 @@ set(ENGINE_SOURCES
     engine.cpp
     scenesystem.cpp
     gameeventmanager.cpp
+    
     testeventlistener.h
     ${PUBLIC_DIR}/engine/iengine.h
     ${PUBLIC_DIR}/engine/igameevent.h

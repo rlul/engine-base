@@ -108,8 +108,8 @@ void CEngine::PollEvent()
 		}
 		case SDL_EVENT_MOUSE_BUTTON_DOWN:
 		{
-			CMouseDownEvent mouse_down_event;
-			game_event_manager->FireGameEvent(&mouse_down_event);
+			auto event = game_event_manager->CreateGameEvent("mousedown");
+			game_event_manager->FireGameEvent(event);
 		}
 		default:
 		{
