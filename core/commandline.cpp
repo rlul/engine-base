@@ -59,7 +59,7 @@ const char* CCommandLine::Get() const
 
 bool CCommandLine::HasParam(const char* param) const
 {
-	return m_mapParams.find(param) != m_mapParams.end();
+	return m_mapParams.contains(param);
 }
 
 const char* CCommandLine::GetParam(const char* param) const
