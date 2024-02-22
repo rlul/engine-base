@@ -4,7 +4,7 @@ set(RENDER_SOURCES
     graphics.cpp
     ${PUBLIC_DIR}/render/igraphics.h
     ${PUBLIC_DIR}/engine/iscenesystem.h
-    ${PUBLIC_DIR}/render/render.h
+    ${PUBLIC_DIR}/render/module.h
 )
 
 add_compile_definitions(RENDER_EXPORTS)

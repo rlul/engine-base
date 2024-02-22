@@ -1,6 +1,7 @@
-#include "engine/engine.h"
+#include "engine/module.h"
 #include "subsystem/iappsystemgroup.h"
 #include "engine/iengine.h"
+#include "engine/igameeventmanager.h"
 #include "render/igraphics.h"
 #include "core/icommandline.h"
 #include <iostream>
@@ -25,9 +26,13 @@ int EngineMain(int argc, char **argv)
 #endif
 
 	AppSystemGroup()->RegisterSystem(Engine());
+	AppSystemGroup()->RegisterSystem(GameEventManager());
 	AppSystemGroup()->RegisterSystem(Graphics());
 
-	AppSystemGroup()->SetupSystems();
+	if (!AppSystemGroup()->SetupSystems())
+	{
+		return 1;
+	}
 
 	result = Engine()->Main();
 

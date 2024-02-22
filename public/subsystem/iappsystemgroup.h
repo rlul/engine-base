@@ -1,5 +1,7 @@
 #pragma once
-#include "subsystem.h"
+#include "subsystem/module.h"
+
+#define GetAppSystem(x) AppSystemGroup()->GetSystem(x)
 
 class IAppSystem;
 

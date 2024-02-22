@@ -11,8 +11,4 @@ public:
 
 	virtual void Update(float deltatime);
 	virtual void Render();
-
-	// temp
-private:
-	int m_uColor;
 };

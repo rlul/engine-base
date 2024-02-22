@@ -1,11 +1,17 @@
 #include "common.h"
 #include "engine/iengine.h"
+#include "engine/igameeventmanager.h"
 #include "render/igraphics.h"
+#include "subsystem/iappsystemgroup.h"
 #include <SDL3/SDL.h>
 #include <thread>
 #include <chrono>
 #include <cstdio>
 #include <cmath>
+
+#include "testeventlistener.h"
+
+IGameEventManager* game_event_manager = nullptr;
 
 class CEngine : public IEngine
 {
@@ -13,7 +19,7 @@ class CEngine : public IEngine
 
 public:
 	CEngine();
-	~CEngine();
+	~CEngine()= default;
 
 	int Main() override;
 	bool GetQuitting() const override { return m_bIsQuitting; }
@@ -43,22 +49,22 @@ CEngine::CEngine()
 {
 }
 
-CEngine::~CEngine()
-{
-	
-}
-
 bool CEngine::Setup()
 {
 	m_flPreviousTime = COM_GetTime();
 	printf("Game Path: %s\n", COM_GetGameDir().c_str());
+
+	game_event_manager = (IGameEventManager*)GetAppSystem(GAMEEVENTMANAGER_VERSION);
+	game_event_manager->AddListener(new CTestEventListener, "mousedown");
+
+	m_bIsSetup = true;
 
 	return true;
 }
 
 void CEngine::Shutdown()
 {
-	
+	m_bIsSetup = false;
 }
 
 int CEngine::Main()
@@ -100,6 +106,11 @@ void CEngine::PollEvent()
 			SetQuitting(true);
 			break;
 		}
+		case SDL_EVENT_MOUSE_BUTTON_DOWN:
+		{
+			CMouseDownEvent mouse_down_event;
+			game_event_manager->FireGameEvent(&mouse_down_event);
+		}
 		default:
 		{
 			break;
@@ -122,11 +133,20 @@ void CEngine::Frame()
 		return;
 	}
 
-	char buf[32];
-	sprintf(buf, "FPS: %d", int(1 / m_flFrameTime));
+	{
+		char buf[32];
+		static float frames_per_second = 0.f, total_time = 0.f;
 
-	SDL_SetWindowTitle(SDL_GL_GetCurrentWindow(), buf);
-	
+		++frames_per_second;
+		total_time += m_flFrameTime;
+
+		sprintf(buf, "FPS: %f", frames_per_second / total_time);
+		SDL_SetWindowTitle(SDL_GL_GetCurrentWindow(), buf);
+
+		if (total_time > 1.f)
+			frames_per_second = total_time = 0.f;
+	}
+
 	Graphics()->Frame();
 
 	m_flFrameTime = 0.f;
@@ -134,7 +154,7 @@ void CEngine::Frame()
 
 bool CEngine::FilterTime(float deltatime)
 {
-	float max_fps = 30;
+	float max_fps = 60.f;
 	m_flMinFrameTime = 1.f / max_fps;
 
 	if (deltatime < m_flMinFrameTime)

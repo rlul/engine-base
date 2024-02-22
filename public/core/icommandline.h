@@ -1,5 +1,5 @@
 #pragma once
-#include "core.h"
+#include "module.h"
 #include <string>
 
 abstract_class ICommandLine

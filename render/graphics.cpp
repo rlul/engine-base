@@ -1,5 +1,4 @@
 #include "render/igraphics.h"
-#include "engine/iscenesystem.h"
 #include "core/icommandline.h"
 #include <SDL3/SDL.h>
 #include <glad/glad.h>
@@ -11,7 +10,7 @@ class CGraphics : public IGraphics
 
 public:
 	CGraphics();
-	~CGraphics();
+	~CGraphics() = default;
 
 	bool Frame() override;
 
@@ -92,11 +91,6 @@ void CGraphics::Shutdown()
 CGraphics::CGraphics()
 	: m_bIsSetup(false), m_pWindow(nullptr), m_pOpenGLContext(nullptr)
 {
-}
-
-CGraphics::~CGraphics()
-{
-	
 }
 
 bool CGraphics::Frame()
