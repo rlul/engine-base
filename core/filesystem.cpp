@@ -3,8 +3,8 @@
 class CFileSystem : public IFileSystem
 {
 public:
-	CFileSystem();
-	~CFileSystem();
+	CFileSystem() = default;
+	~CFileSystem() override = default;
 
 	bool AddSearchPath(const char* path) override;
 
@@ -15,14 +15,6 @@ CFileSystem g_FileSystem;
 IFileSystem* FileSystem()
 {
 	return &g_FileSystem;
-}
-
-CFileSystem::CFileSystem()
-{
-}
-
-CFileSystem::~CFileSystem()
-{
 }
 
 bool CFileSystem::AddSearchPath(const char* path)

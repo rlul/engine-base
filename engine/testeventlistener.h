@@ -10,7 +10,7 @@ class CMouseDownEvent : public IGameEvent
 {
 public:
 	CMouseDownEvent() = default;
-	~CMouseDownEvent() = default;
+	~CMouseDownEvent() override = default;
 
 	const char* GetName() const override { return "mousedown"; }
 	int GetValue() const override { return 0; }
@@ -21,7 +21,7 @@ class CTestEventListener : public IGameEventListener
 {
 public:
 	CTestEventListener() = default;
-	~CTestEventListener() = default;
+	~CTestEventListener() override = default;
 
 	void FireGameEvent(IGameEvent* event) override 
 	{

@@ -10,7 +10,7 @@ class CGameEventManager : public IGameEventManager
 	APPSYSTEM_OBJECT(GAMEEVENTMANAGER_VERSION)
 public:
 	CGameEventManager();
-	~CGameEventManager() = default;
+	~CGameEventManager() override = default;
 
 	void AddListener(IGameEventListener* listener, const char* event_name) override;
 	void RemoveListener(IGameEventListener* listener, const char* event_name) override;

@@ -7,6 +7,8 @@
 abstract_class IGraphics : public IAppSystem
 {
 public:
+	virtual ~IGraphics() = default;
+
 	virtual bool Frame() = 0;
 };
 

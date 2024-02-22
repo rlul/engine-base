@@ -10,6 +10,8 @@ class IGameEventListener;
 abstract_class IGameEventManager : public IAppSystem
 {
 public:
+	virtual ~IGameEventManager() = default;
+
 	virtual void AddListener(IGameEventListener* listener, const char* event_name) = 0;
 	virtual void RemoveListener(IGameEventListener* listener, const char* event_name) = 0;
 

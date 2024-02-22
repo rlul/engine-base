@@ -5,6 +5,8 @@
 abstract_class ICommandLine
 {
 public:
+	virtual ~ICommandLine() = default;
+
 	/**
 	 * \brief Parses the command line from a string.
 	 * \param cmdline The input command line string.

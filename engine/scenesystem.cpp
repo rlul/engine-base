@@ -6,7 +6,7 @@ class CSceneSystem : public ISceneSystem
 
 public:
 	CSceneSystem();
-	~CSceneSystem();
+	~CSceneSystem() override;
 
 	bool LoadScene(CScene2D* scene) override;
 	bool LoadScene(const char* index) override;

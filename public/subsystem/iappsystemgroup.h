@@ -8,6 +8,8 @@ class IAppSystem;
 class IAppSystemGroup
 {
 public:
+	virtual ~IAppSystemGroup() = default;
+
 	virtual bool SetupSystems() = 0;
 	virtual void ShutdownSystems() = 0;
 	virtual bool RegisterSystem(IAppSystem* subsystem) = 0;

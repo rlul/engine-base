@@ -19,7 +19,7 @@ class CEngine : public IEngine
 
 public:
 	CEngine();
-	~CEngine()= default;
+	~CEngine() override = default;
 
 	int Main() override;
 	bool GetQuitting() const override { return m_bIsQuitting; }

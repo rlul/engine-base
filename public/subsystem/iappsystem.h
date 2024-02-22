@@ -13,6 +13,8 @@
 abstract_class IAppSystem
 {
 public:
+	virtual ~IAppSystem() = default;
+
 	virtual bool Setup() = 0;
 	virtual void Shutdown() = 0;
 	virtual const char* GetSystemName() const = 0;

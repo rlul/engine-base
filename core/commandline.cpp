@@ -10,7 +10,7 @@ class CCommandLine : public ICommandLine
 {
 public:
 	CCommandLine() = default;
-	~CCommandLine() = default;
+	~CCommandLine() override = default;
 
 	void Create(const char* cmdline) override;
 	void Create(int argc, char** argv) override;

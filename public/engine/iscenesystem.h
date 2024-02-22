@@ -8,6 +8,8 @@
 abstract_class ISceneSystem : public IAppSystem
 {
 public:
+	virtual ~ISceneSystem() = default;
+
 	virtual bool LoadScene(CScene2D* scene) = 0;
 	virtual bool LoadScene(const char* path) = 0;
 	virtual CScene2D* GetCurrentScene() const = 0;

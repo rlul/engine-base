@@ -7,6 +7,8 @@
 abstract_class IEngine : public IAppSystem
 {
 public:
+	virtual ~IEngine() = default;
+
 	virtual int Main() = 0;
 	virtual bool GetQuitting() const = 0;
 	virtual void SetQuitting(bool quit) = 0;

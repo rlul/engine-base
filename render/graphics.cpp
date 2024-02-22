@@ -10,7 +10,7 @@ class CGraphics : public IGraphics
 
 public:
 	CGraphics();
-	~CGraphics() = default;
+	~CGraphics() override = default;
 
 	bool Frame() override;
 

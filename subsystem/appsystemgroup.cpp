@@ -7,6 +7,9 @@
 class CAppSystemGroup : public IAppSystemGroup
 {
 public:
+	CAppSystemGroup() = default;
+	~CAppSystemGroup() override = default;
+
 	bool SetupSystems() override;
 	void ShutdownSystems() override;
 	bool RegisterSystem(IAppSystem* subsystem) override;
