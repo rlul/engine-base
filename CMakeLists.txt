@@ -16,6 +16,12 @@ else()
     message(FATAL_ERROR "Unsupported operating system")
 endif()
 
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    set(DEBUG_SUFFIX "d")
+else()
+    set(DEBUG_SUFFIX "")
+endif()
+
 set(CMAKE_CXX_STANDARD 20)
 set(CXX_STANDARD 20)
 set(SDL_AUDIODRIVER)
@@ -36,7 +42,7 @@ set(SDL_VIDEO_OPENGL_GLX 1)
 add_compile_definitions(GAME_NAME="${GAME_NAME}" abstract_class=class)
 
 set(GAME_NAME "demo")
-set(BIN_DIR ${CMAKE_SOURCE_DIR}/../game/bin/${OS}${BITS})
+set(BIN_DIR ${CMAKE_SOURCE_DIR}/../game/bin/${OS}${BITS}${DEBUG_SUFFIX})
 set(PUBLIC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/public)
 
 add_subdirectory(launcher)
