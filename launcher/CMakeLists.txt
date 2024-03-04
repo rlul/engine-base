@@ -2,6 +2,9 @@ project(launcher)
 
 set(LAUNCHER_SOURCES 
     main.cpp
+	${PUBLIC_DIR}/subsystem.cpp
+	${PUBLIC_DIR}/subsystems.cpp
+    ${PUBLIC_DIR}/common.cpp
 )
 
 if(WIN32)

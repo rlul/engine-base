@@ -1,12 +1,15 @@
 #pragma once
-#include <string>
 
-/**
- * \brief Returns absolute path to game directory.
- */
-std::string COM_GetGameDir();
+#ifdef _WIN32
+#define DLL_EXPORT extern "C" __declspec(dllexport)
+#else
+#define DLL_EXPORT extern "C"
+#endif
 
-/**
- * \brief TODO 
- */
+typedef void* module_t;
+typedef void* symbol_t;
+
 double COM_GetTime();
+
+module_t COM_LoadModule(const char* module_name);
+symbol_t COM_LoadSymbol(void* module, const char* name);

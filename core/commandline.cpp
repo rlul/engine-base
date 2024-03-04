@@ -1,4 +1,5 @@
 #include "core/icommandline.h"
+#include "subsystem.h"
 #include <string>
 #include <sstream>
 #include <vector>
@@ -11,6 +12,9 @@ class CCommandLine : public ICommandLine
 public:
 	CCommandLine() = default;
 	~CCommandLine() override = default;
+
+	void Shutdown() override;
+	const char* GetSystemName() const override { return COMMANDLINE_SYSTEM_VERSION; };
 
 	void Create(const char* cmdline) override;
 	void Create(int argc, char** argv) override;
@@ -29,9 +33,12 @@ private:
 };
 
 CCommandLine g_CommandLine;
-ICommandLine* CommandLine()
+CREATE_SINGLE_SYSTEM( CCommandLine, ICommandLine, COMMANDLINE_SYSTEM_VERSION, g_CommandLine );
+
+void CCommandLine::Shutdown()
 {
-	return &g_CommandLine;
+	m_sCommandLine.clear();
+	m_mapParams.clear();
 }
 
 void CCommandLine::Create(const char* cmdline)
@@ -74,7 +81,7 @@ void CCommandLine::Tokenize(const char* cmdline, std::vector<std::string>& token
 	std::istringstream iss(input_string);
 	std::string token;
 
-	while (iss >> std::quoted(token, '\"')) 
+	while (iss >> std::quoted(token, '\"'))
 	{
 		tokens.push_back(token);
 	}
@@ -97,20 +104,20 @@ void CCommandLine::ParseTokens(const std::vector<std::string>& tokens)
 		std::string value;
 
 		// If the token starts with '-', exclude the first character
-		if (!current_token.empty() && current_token[0] == '-') 
+		if (!current_token.empty() && current_token[0] == '-')
 		{
-			if (current_token.size() > 1) 
+			if (current_token.size() > 1)
 			{
 				key = current_token.substr(1);
 			}
-			else 
+			else
 			{
 				// If the token consists only of '-', skip it
 				continue;
 			}
 
 			// Check that we have the next token and it doesn't start with '-'
-			if (i + 1 < tokens_count && tokens[i + 1][0] != '-') 
+			if (i + 1 < tokens_count && tokens[i + 1][0] != '-')
 			{
 				// Use the next token as the value for the current key
 				value = tokens[i + 1];

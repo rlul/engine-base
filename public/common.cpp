@@ -1,44 +1,11 @@
 #include "common.h"
-#include "core/icommandline.h"
-#include <filesystem>
-#include <cassert>
+
+#include <string>
 #ifdef _WIN32
 #include <Windows.h>
 #else
-
+#include <dlfcn.h>
 #endif
-
-
-std::string COM_GetGameDir()
-{
-	static std::filesystem::path game_dir;
-	
-	if (game_dir.empty())
-	{
-		if (CommandLine()->HasParam("game"))
-		{
-			game_dir = CommandLine()->GetParam("game");
-			if (!game_dir.is_absolute())
-			{
-				game_dir = absolute(game_dir);
-			}
-		}
-		else
-		{
-#ifdef _WIN32
-			char module_path[MAX_PATH];
-			GetModuleFileName(NULL, module_path, MAX_PATH);
-			game_dir = module_path;
-#else
-			game_dir = std::filesystem::canonical("/proc/self/exe");
-#endif
-			game_dir = canonical(game_dir.parent_path().append("../../" GAME_NAME));
-		}
-		assert(exists(game_dir));
-	}
-
-	return game_dir.string();
-}
 
 double GetStartTime()
 {
@@ -64,7 +31,7 @@ double GetStartTime()
 #endif
 }
 
-double COM_GetTime()
+double COM_GetTime() 
 {
 #ifdef _WIN32
 	constexpr int TICKS_PER_SECOND = 10000000;
@@ -82,5 +49,26 @@ double COM_GetTime()
 	clock_gettime(CLOCK_MONOTONIC, &tp);
 	microseconds = (double)tp.tv_sec * 1e6 + (double)tp.tv_nsec / 1e3;
 	return (microseconds - GetStartTime()) / TICKS_PER_SECOND;
+#endif
+}
+
+module_t COM_LoadModule(const char* module_name)
+{
+	std::string path = module_name;
+#ifdef _WIN32
+	path = path + ".dll";
+	return LoadLibraryA(path.c_str());
+#else
+	path = "lib" + path + ".so";
+	return dlopen(path.c_str(), RTLD_NOW);
+#endif
+}
+
+symbol_t COM_LoadSymbol(void* module, const char* name)
+{
+#ifdef _WIN32
+	return GetProcAddress((HMODULE)module, name);
+#else
+	return dlsym(module, name);
 #endif
 }

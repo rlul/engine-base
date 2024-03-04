@@ -1,22 +1,25 @@
 #include "render/igraphics.h"
-#include "core/icommandline.h"
+#include "subsystem.h"
+#include "subsystems.h"
 #include <SDL3/SDL.h>
 #include <glad/glad.h>
 #include <cstdio>
 
 class CGraphics : public IGraphics
 {
-	APPSYSTEM_OBJECT(GRAPHICS_VERSION)
-
 public:
-	CGraphics();
+	CGraphics() = default;
 	~CGraphics() override = default;
+
+	bool Setup() override;
+	void Shutdown() override;
+	const char* GetSystemName() const override { return GRAPHICS_SYSTEM_VERSION; }
 
 	bool Frame() override;
 
 private:
-	void BeginScene();
-	void EndScene();
+	virtual void BeginScene();
+	virtual void EndScene();
 
 private:
 	SDL_Window* m_pWindow;
@@ -24,10 +27,7 @@ private:
 };
 
 CGraphics g_Graphics;
-IGraphics* Graphics()
-{
-	return &g_Graphics;
-}
+CREATE_SINGLE_SYSTEM( CGraphics, IGraphics, GRAPHICS_SYSTEM_VERSION, g_Graphics );
 
 bool CGraphics::Setup()
 {
@@ -39,15 +39,7 @@ bool CGraphics::Setup()
 		return false;
 	}
 
-
-	if (CommandLine()->HasParam("width"))
-		window_width = CommandLine()->GetParamInt("width");
-	if (CommandLine()->HasParam("height"))
-		window_height = CommandLine()->GetParamInt("height");
-
-
-
-	m_pWindow = SDL_CreateWindow("engine-demo", window_width, window_height, SDL_WINDOW_OPENGL);
+	m_pWindow = SDL_CreateWindow("demo", window_width, window_height, SDL_WINDOW_OPENGL);
 	if (m_pWindow == NULL)
 	{
 		printf("SDL_CreateWindow failed! (%s)\n", SDL_GetError());
@@ -76,7 +68,6 @@ bool CGraphics::Setup()
 	printf("Initialized OpenGL %s\n", glGetString(GL_VERSION));
 	printf("Video Adapter: %s\n", glGetString(GL_RENDERER));
 
-	m_bIsSetup = true;
 	return true;
 }
 
@@ -84,13 +75,6 @@ void CGraphics::Shutdown()
 {
 	SDL_GL_DeleteContext(m_pOpenGLContext);
 	SDL_DestroyWindow(m_pWindow);
-
-	m_bIsSetup = false;
-}
-
-CGraphics::CGraphics()
-	: m_bIsSetup(false), m_pWindow(nullptr), m_pOpenGLContext(nullptr)
-{
 }
 
 bool CGraphics::Frame()

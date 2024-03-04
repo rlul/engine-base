@@ -1,9 +1,9 @@
 #pragma once
 
-abstract_class IGameEvent
+abstract_class IEvent
 {
 public:
-	virtual ~IGameEvent() = default;
+	virtual ~IEvent() = default;
 
 	virtual const char* GetName() const = 0;
 
