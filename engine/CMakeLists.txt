@@ -1,25 +1,16 @@
 project(engine)
 
 set(ENGINE_SOURCES 
-    enginemain.cpp
-    engine.cpp
-    scenesystem.cpp
-    gameeventmanager.cpp
-    
-    testeventlistener.h
-    ${PUBLIC_DIR}/engine/iengine.h
-    ${PUBLIC_DIR}/engine/igameevent.h
-    ${PUBLIC_DIR}/engine/igameeventlistener.h
-    ${PUBLIC_DIR}/engine/igameeventmanager.h
-    ${PUBLIC_DIR}/engine/iscenesystem.h
-    ${PUBLIC_DIR}/engine/scene2d.h
-    ${PUBLIC_DIR}/common.cpp
-    ${PUBLIC_DIR}/common.h
-    ${PUBLIC_DIR}/engine/module.h
+	enginemain.cpp
+	engine.cpp
+	eventsystem.cpp
+	${PUBLIC_DIR}/subsystems.cpp
+	${PUBLIC_DIR}/subsystem.cpp
+	${PUBLIC_DIR}/common.cpp
 )
 
 add_compile_definitions(ENGINE_EXPORTS)
 
 add_library(engine SHARED ${ENGINE_SOURCES})
 
-target_link_libraries(engine PUBLIC subsystem core render SDL3::SDL3)
+target_link_libraries(engine PUBLIC SDL3::SDL3)

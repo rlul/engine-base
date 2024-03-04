@@ -1,70 +1,60 @@
-#include "common.h"
 #include "engine/iengine.h"
-#include "engine/igameeventmanager.h"
 #include "render/igraphics.h"
-#include "subsystem/iappsystemgroup.h"
+#include "subsystem.h"
+#include "common.h"
 #include <SDL3/SDL.h>
 #include <thread>
 #include <chrono>
-#include <cstdio>
 #include <cmath>
 
 #include "testeventlistener.h"
 
-IGameEventManager* event_manager = nullptr;
-
 class CEngine : public IEngine
 {
-	APPSYSTEM_OBJECT(ENGINE_VERSION)
-
 public:
-	CEngine();
+	CEngine() = default;
 	~CEngine() override = default;
 
+	bool Setup() override;
+	void Shutdown() override;
+	const char* GetSystemName() const override { return ENGINE_SYSTEM_VERSION; }
+
 	int Main() override;
-	bool GetQuitting() const override { return m_bIsQuitting; }
-	void SetQuitting(bool quit) override { m_bIsQuitting = quit; }
+	bool GetQuitting() const override;
+	void SetQuitting(bool quit) override;
 
 private:
-	bool MainLoop();
-	void PollEvent();
-	void Frame();
-	bool FilterTime(float deltatime);
+	virtual bool MainLoop();
+	virtual void PollEvent();
+	virtual void Frame();
+	virtual bool FilterTime(float deltatime);
 
 private:
-	bool m_bIsQuitting;
+	bool m_bQuitting;
 	float m_flPreviousTime, m_flCurrentTime;
 	float m_flFrameTime, m_flMinFrameTime;
 };
 
 CEngine g_Engine;
-IEngine* Engine()
-{
-	return &g_Engine;
-}
-
-CEngine::CEngine()
-	: m_bIsSetup(false), m_bIsQuitting(false), m_flPreviousTime(0), m_flCurrentTime(0), m_flFrameTime(0),
-	  m_flMinFrameTime(0)
-{
-}
+CREATE_SINGLE_SYSTEM( CEngine, IEngine, ENGINE_SYSTEM_VERSION, g_Engine );
 
 bool CEngine::Setup()
 {
+	if (SDL_Init(SDL_INIT_VIDEO) != 0)
+	{
+		return false;
+	}
+
 	m_flPreviousTime = COM_GetTime();
-	printf("Game Path: %s\n", COM_GetGameDir().c_str());
 
-	event_manager = (IGameEventManager*)GetAppSystem(GAMEEVENTMANAGER_VERSION);
-	event_manager->AddListener(new CTestEventListener, "mousedown");
-
-	m_bIsSetup = true;
+	g_pEventSystem->AddListener(new CTestEventListener, "mousedown");
 
 	return true;
 }
 
 void CEngine::Shutdown()
 {
-	m_bIsSetup = false;
+	SDL_Quit();
 }
 
 int CEngine::Main()
@@ -77,6 +67,16 @@ int CEngine::Main()
 	}
 
 	return result;
+}
+
+bool CEngine::GetQuitting() const
+{
+	return m_bQuitting;
+}
+
+void CEngine::SetQuitting(bool quit)
+{
+	m_bQuitting = quit;
 }
 
 bool CEngine::MainLoop()
@@ -109,12 +109,12 @@ void CEngine::PollEvent()
 		case SDL_EVENT_MOUSE_BUTTON_DOWN:
 		{
 			float mouse_x, mouse_y;
-			IGameEvent* mouse_event = event_manager->CreateGameEvent("mousedown");
+			IEvent* mouse_event = g_pEventSystem->CreateGameEvent("mousedown");
 
 			SDL_GetMouseState(&mouse_x, &mouse_y);
 			mouse_event->SetValue("mouse_x", mouse_x);
 			mouse_event->SetValue("mouse_y", mouse_y);
-			event_manager->FireGameEvent(mouse_event);
+			g_pEventSystem->FireGameEvent(mouse_event);
 
 			break;
 		}
@@ -154,7 +154,7 @@ void CEngine::Frame()
 			frames_per_second = total_time = 0.f;
 	}
 
-	Graphics()->Frame();
+	g_pGraphics->Frame();
 
 	m_flFrameTime = 0.f;
 }

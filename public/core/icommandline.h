@@ -1,8 +1,10 @@
 #pragma once
-#include "module.h"
+#include "subsystems.h"
 #include <string>
 
-abstract_class ICommandLine
+#define COMMANDLINE_SYSTEM_VERSION "CommandLine001"
+
+abstract_class ICommandLine : public IAppSystem
 {
 public:
 	virtual ~ICommandLine() = default;
@@ -39,5 +41,3 @@ public:
 	virtual const char* GetParam(const char* param) const = 0;
 	int GetParamInt(const char* param) const { return std::stoi(std::string(GetParam(param))); }
 };
-
-CORE_API ICommandLine* CommandLine();

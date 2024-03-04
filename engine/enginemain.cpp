@@ -1,42 +1,34 @@
+#include "subsystems.h"
+#include "subsystem.h"
 #include "engine/module.h"
-#include "subsystem/iappsystemgroup.h"
 #include "engine/iengine.h"
-#include "engine/igameeventmanager.h"
 #include "render/igraphics.h"
 #include "core/icommandline.h"
-#include <iostream>
 
 #ifdef _WIN32
 int EngineMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 #else
-int EngineMain(int argc, char **argv)
+int EngineMain(int argc, char** argv)
 #endif
 {
-	int result = 0;
-
-#if defined(_WIN32) && defined(_DEBUG)
-	AllocConsole();
-	freopen("CONOUT$", "w", stdout);
-#endif
+	auto factory = GetGameFactory();
+	ConnectSystems(&factory, 1);
 
 #ifdef _WIN32
-	CommandLine()->Create(lpCmdLine);
+	g_pCommandLine->Create(lpCmdLine);
 #else
-	CommandLine()->Create(argc, argv);
+	g_pCommandLine->Create(argc, argv);
 #endif
 
-	AppSystemGroup()->RegisterSystem(Engine());
-	AppSystemGroup()->RegisterSystem(GameEventManager());
-	AppSystemGroup()->RegisterSystem(Graphics());
+	printf("Command Line: %s\n", g_pCommandLine->Get());
 
-	if (!AppSystemGroup()->SetupSystems())
-	{
-		return 1;
-	}
+	g_pEngine->Setup();
+	g_pGraphics->Setup();
 
-	result = Engine()->Main();
+	g_pEngine->Main();
 
-	AppSystemGroup()->ShutdownSystems();
+	g_pGraphics->Shutdown();
+	g_pEngine->Shutdown();
 
-	return result;
+	return 0;
 }

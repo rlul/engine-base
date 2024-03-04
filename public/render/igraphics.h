@@ -1,15 +1,14 @@
 #pragma once
-#include "render/module.h"
-#include "subsystem/iappsystem.h"
+#include "subsystems.h"
 
-#define GRAPHICS_VERSION "Graphics001"
+#define GRAPHICS_SYSTEM_VERSION "Graphics001"
 
 abstract_class IGraphics : public IAppSystem
 {
 public:
 	virtual ~IGraphics() = default;
 
+	virtual bool Setup() = 0;
+
 	virtual bool Frame() = 0;
 };
-
-RENDER_API IGraphics* Graphics();

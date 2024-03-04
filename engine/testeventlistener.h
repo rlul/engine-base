@@ -1,18 +1,18 @@
 #pragma once
-#include "engine/igameeventlistener.h"
-#include "engine/igameevent.h"
-#include "engine/igameeventmanager.h"
-#include "subsystem/iappsystemgroup.h"
 #include "engine/iengine.h"
+#include "engine/ievent.h"
+#include "engine/ieventlistener.h"
+#include "engine/ieventsystem.h"
+#include "subsystems.h"
 #include <cstring>
 
-class CTestEventListener : public IGameEventListener 
+class CTestEventListener : public IEventListener
 {
 public:
 	CTestEventListener() = default;
 	~CTestEventListener() override = default;
 
-	void FireGameEvent(IGameEvent* event) override
+	void FireGameEvent(IEvent* event) override
 	{
 		if (strcmp(event->GetName(), "mousedown") == 0)
 		{
@@ -22,7 +22,7 @@ public:
 			if (mouse_x < 100 && mouse_y < 100)
 			{
 				printf("yes!");
-				((IGameEventManager*)GetAppSystem(GAMEEVENTMANAGER_VERSION))->RemoveListener(this, "mousedown");
+				g_pEventSystem->RemoveListener(this, "mousedown");
 			}
 			else
 			{

@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 
-project(engine-demo)
+project(engine-base)
 
 if(CMAKE_SIZEOF_VOID_P EQUAL 8)
     set(BITS "64")
@@ -39,22 +39,21 @@ set(SDL_VIDEO_DRIVER_COCOA 0)
 set(SDL_VIDEO_RENDER_OGL 1)
 set(SDL_VIDEO_OPENGL_GLX 1)
 
-add_compile_definitions(GAME_NAME="${GAME_NAME}" abstract_class=class)
-
 set(GAME_NAME "demo")
 set(BIN_DIR ${CMAKE_SOURCE_DIR}/../game/bin/${OS}${BITS}${DEBUG_SUFFIX})
 set(PUBLIC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/public)
 
+add_compile_definitions(GAME_NAME="${GAME_NAME}" abstract_class=class)
+
 add_subdirectory(launcher)
 add_subdirectory(engine)
-add_subdirectory(subsystem)
 add_subdirectory(core)
 add_subdirectory(render)
 add_subdirectory(thirdparty/SDL)
 add_subdirectory(thirdparty/glad)
 
 set(TARGETS 
-    launcher engine subsystem core render SDL3-shared
+    launcher engine core render SDL3-shared
 )
 
 add_custom_target(CopyFiles ALL
