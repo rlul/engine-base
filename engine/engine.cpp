@@ -8,6 +8,7 @@
 #include <cmath>
 
 #include "testeventlistener.h"
+#include "core/icommandline.h"
 
 class CEngine : public IEngine
 {
@@ -161,7 +162,13 @@ void CEngine::Frame()
 
 bool CEngine::FilterTime(float deltatime)
 {
-	float max_fps = 60.f;
+	static float max_fps = [&]() -> float {
+			if (!g_pCommandLine->HasParam("fps"))
+				return 60.f;
+			const float fps = g_pCommandLine->GetParamInt("fps");
+			return (fps >= 10.f && fps <= 300.f) ? fps : 60.f;
+		}();
+
 	m_flMinFrameTime = 1.f / max_fps;
 
 	if (deltatime < m_flMinFrameTime)

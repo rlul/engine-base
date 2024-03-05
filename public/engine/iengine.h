@@ -9,7 +9,6 @@ public:
 	virtual ~IEngine() = default;
 
 	virtual bool Setup() = 0;
-	const char* GetSystemName() const override = 0;
 
 	virtual int Main() = 0;
 	virtual bool GetQuitting() const = 0;

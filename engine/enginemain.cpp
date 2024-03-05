@@ -4,6 +4,7 @@
 #include "engine/iengine.h"
 #include "render/igraphics.h"
 #include "core/icommandline.h"
+#include "core/ifilesystem.h"
 
 #ifdef _WIN32
 int EngineMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
@@ -13,12 +14,6 @@ int EngineMain(int argc, char** argv)
 {
 	auto factory = GetGameFactory();
 	ConnectSystems(&factory, 1);
-
-#ifdef _WIN32
-	g_pCommandLine->Create(lpCmdLine);
-#else
-	g_pCommandLine->Create(argc, argv);
-#endif
 
 	printf("Command Line: %s\n", g_pCommandLine->Get());
 

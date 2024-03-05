@@ -23,7 +23,7 @@ private:
 
 private:
 	SDL_Window* m_pWindow;
-	SDL_GLContext m_pOpenGLContext;
+	SDL_GLContext m_OpenGLContext;
 };
 
 CGraphics g_Graphics;
@@ -52,8 +52,8 @@ bool CGraphics::Setup()
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 
-	m_pOpenGLContext = SDL_GL_CreateContext(m_pWindow);
-	if (m_pOpenGLContext == NULL)
+	m_OpenGLContext = SDL_GL_CreateContext(m_pWindow);
+	if (m_OpenGLContext == NULL)
 	{
 		printf("SDL_GL_CreateContext failed! (%s)\n", SDL_GetError());
 		return false;
@@ -73,7 +73,7 @@ bool CGraphics::Setup()
 
 void CGraphics::Shutdown()
 {
-	SDL_GL_DeleteContext(m_pOpenGLContext);
+	SDL_GL_DeleteContext(m_OpenGLContext);
 	SDL_DestroyWindow(m_pWindow);
 }
 
