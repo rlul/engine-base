@@ -6,6 +6,8 @@
 #include <SDL3/SDL.h>
 #include <cstdio>
 
+#include "core/ifilesystem.h"
+
 #ifdef _WIN32
 #include <Windows.h>
 #endif
@@ -32,13 +34,21 @@ int main(int argc, char** argv)
 	g_pCommandLine->Create(argc, argv);
 #endif
 
-#if defined(_WIN32)
+#ifdef _WIN32
 	if (g_pCommandLine->HasParam("dev"))
 	{
 		AllocConsole();
 		freopen("CONOUT$", "w", stdout);
 	}
 #endif
+
+	char game_dir[MAX_PATH];
+	if (!COM_GetGameDir(game_dir))
+	{
+		return 1;
+	}
+	g_pFileSystem->Setup(game_dir);
+	printf("Game Directory: %s\n", game_dir);
 
 #ifdef _WIN32
 	return EngineMain(hInstance, hPrevInstance, lpCmdLine, nCmdShow);

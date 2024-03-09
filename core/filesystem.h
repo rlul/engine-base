@@ -2,24 +2,33 @@
 #include "core/ifilesystem.h"
 #include <string>
 #include <vector>
+#include <fstream>
 
 class CFileHandle
 {
 public:
-	CFileHandle() = default;
-	~CFileHandle() = default;
+	CFileHandle(std::fstream* p_file_stream)
+		: m_FileStream(p_file_stream)
+	{
+		
+	}
+	~CFileHandle()
+	{
+		Close();
+	}
 
-	unsigned int Read(void* buffer, unsigned int size);
-	unsigned int Write(const void* buffer, unsigned int size);
-	void Flush();
-	void Seek(unsigned int size);
-	unsigned int Tell();
-	unsigned int Size();
-	bool EndOfFile();
-	bool IsOk();
+	void Close();
+	const char* GetFileName() const;
+	unsigned int Read(void* buffer, unsigned int size) const;
+	unsigned int Write(const void* buffer, unsigned int size) const;
+	void Flush() const;
+	void Seek(unsigned int size) const;
+	unsigned int Tell() const;
+	unsigned int Size() const;
+	bool EndOfFile() const;
 
 private:
-
+	std::fstream* m_FileStream;
 };
 
 class CSearchPath
@@ -46,6 +55,7 @@ public:
 	CFileSystem() = default;
 	~CFileSystem() override = default;
 
+	bool Setup(const char* absolute_game_path) override;
 	void Shutdown() override;
 	const char* GetSystemName() const override { return FILE_SYSTEM_VERSION; }
 
@@ -53,7 +63,8 @@ public:
 	const char* GetSearchPath(const char* path_id) const override;
 	void RemoveSearchPath(const char* path_id) override;
 
-	FileHandle_t Open(const char* file_name, const char* path_id, const char* options) override;
+	FileHandle_t Open(const char* file_name, const char* path_id, OpenFileOptions_t options) override;
+	FileHandle_t Open(const char* file_name, OpenFileOptions_t options) override;
 	bool FileExists(const char* file_name, const char* path_id) override;
 	void Close(FileHandle_t file) override;
 
@@ -64,7 +75,6 @@ public:
 	unsigned int Tell(FileHandle_t file) override;
 	unsigned int Size(FileHandle_t file) override;
 	bool EndOfFile(FileHandle_t file) override;
-	bool IsOk(FileHandle_t file) override;
 
 private:
 	std::vector<CSearchPath*> m_SearchPaths;

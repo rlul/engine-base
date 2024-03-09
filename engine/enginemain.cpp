@@ -15,6 +15,13 @@ int EngineMain(int argc, char** argv)
 	auto factory = GetGameFactory();
 	ConnectSystems(&factory, 1);
 
+	auto file = g_pFileSystem->Open("test.txt", "game", IFileSystem::OPEN_READ_WRITE);
+	unsigned int size = g_pFileSystem->Size(file);
+	char* buffer = new char[size + 1] {0, };
+	g_pFileSystem->Read(file, buffer, size);
+	printf("File: %s\n", buffer);
+	g_pFileSystem->Close(file);
+
 	printf("Command Line: %s\n", g_pCommandLine->Get());
 
 	g_pEngine->Setup();
