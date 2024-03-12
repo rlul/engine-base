@@ -2,9 +2,11 @@
 #include "subsystem.h"
 #include "subsystems.h"
 #include "debugoverlay.h"
-#include <SDL3/SDL.h>
-#include <glad/glad.h>
+#include <SDL2/SDL.h>
 #include <cstdio>
+#ifdef _WIN32
+#include <Windows.h>
+#endif
 
 class CGraphics : public IGraphics
 {
@@ -25,7 +27,7 @@ private:
 
 private:
 	SDL_Window* m_pWindow;
-	SDL_GLContext m_OpenGLContext;
+	SDL_Renderer* m_pRenderer;
 };
 
 CGraphics g_Graphics;
@@ -35,49 +37,39 @@ bool CGraphics::Setup()
 {
 	int window_width = 1280, window_height = 720;
 
+#ifdef _WIN32
+	SetProcessDPIAware();
+#endif
+
 	if (SDL_Init(SDL_INIT_VIDEO))
 	{
 		printf("SDL_Init failed! (%s)\n", SDL_GetError());
 		return false;
 	}
 
-	m_pWindow = SDL_CreateWindow("demo", window_width, window_height, SDL_WINDOW_OPENGL);
+	m_pWindow = SDL_CreateWindow("demo", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 
+		window_width, window_height, NULL);
 	if (m_pWindow == NULL)
 	{
 		printf("SDL_CreateWindow failed! (%s)\n", SDL_GetError());
 		return false;
 	}
 
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
-
-	m_OpenGLContext = SDL_GL_CreateContext(m_pWindow);
-	if (m_OpenGLContext == NULL)
+	m_pRenderer = SDL_CreateRenderer(m_pWindow, NULL, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+	if (m_pRenderer == NULL)
 	{
-		printf("SDL_GL_CreateContext failed! (%s)\n", SDL_GetError());
+		printf("SDL_CreateRenderer failed! (%s)\n", SDL_GetError());
 		return false;
 	}
 
-	if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress))
-	{
-		printf("Failed while trying to load OpenGL context!\n");
-		return false;
-	}
-
-	printf("Initialized OpenGL %s\n", glGetString(GL_VERSION));
-	printf("Video Adapter: %s\n", glGetString(GL_RENDERER));
-
-	g_pDebugOverlay->Setup(m_pWindow, m_OpenGLContext);
+	g_pDebugOverlay->Setup(m_pWindow, m_pRenderer);
 
 	return true;
 }
 
 void CGraphics::Shutdown()
 {
-	SDL_GL_DeleteContext(m_OpenGLContext);
+	SDL_DestroyRenderer(m_pRenderer);
 	SDL_DestroyWindow(m_pWindow);
 }
 
@@ -98,11 +90,11 @@ void CGraphics::ProcessEvent(void* sdl_event)
 
 void CGraphics::BeginScene()
 {
-	glClearColor(.1f, .1f, .2f, 1.f);
-	glClear(GL_COLOR_BUFFER_BIT);
+	SDL_SetRenderDrawColor(m_pRenderer, 25, 25, 50, 255);
+	SDL_RenderClear(m_pRenderer);
 }
 
 void CGraphics::EndScene()
 {
-	SDL_GL_SwapWindow(m_pWindow);
+	SDL_RenderPresent(m_pRenderer);
 }

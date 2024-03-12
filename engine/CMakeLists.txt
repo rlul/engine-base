@@ -13,4 +13,4 @@ add_compile_definitions(ENGINE_EXPORTS)
 
 add_library(engine SHARED ${ENGINE_SOURCES})
 
-target_link_libraries(engine PUBLIC SDL3::SDL3)
+target_link_libraries(engine PUBLIC SDL2::SDL2)

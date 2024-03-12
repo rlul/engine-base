@@ -38,6 +38,8 @@ set(SDL_VIDEO_DRIVER_WAYLAND 0)
 set(SDL_VIDEO_DRIVER_COCOA 0)
 set(SDL_VIDEO_RENDER_OGL 1)
 set(SDL_VIDEO_OPENGL_GLX 1)
+set(SDL2_DISABLE_SDL2MAIN 1)
+set(SDL_TEST)
 
 set(GAME_NAME "demo")
 set(BIN_DIR ${CMAKE_SOURCE_DIR}/../game/bin/${OS}${BITS}${DEBUG_SUFFIX})
@@ -50,11 +52,10 @@ add_subdirectory(engine)
 add_subdirectory(core)
 add_subdirectory(render)
 add_subdirectory(thirdparty/SDL)
-add_subdirectory(thirdparty/glad)
 add_subdirectory(thirdparty/imgui_cmake)
 
 set(TARGETS 
-    launcher engine core render SDL3-shared
+    launcher engine core render SDL2
 )
 
 add_custom_target(CopyFiles ALL
