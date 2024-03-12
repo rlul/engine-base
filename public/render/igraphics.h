@@ -11,4 +11,6 @@ public:
 	virtual bool Setup() = 0;
 
 	virtual bool Frame() = 0;
+	virtual void ProcessEvent(void* sdl_event) = 0;
+
 };

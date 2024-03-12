@@ -51,6 +51,7 @@ add_subdirectory(core)
 add_subdirectory(render)
 add_subdirectory(thirdparty/SDL)
 add_subdirectory(thirdparty/glad)
+add_subdirectory(thirdparty/imgui_cmake)
 
 set(TARGETS 
     launcher engine core render SDL3-shared

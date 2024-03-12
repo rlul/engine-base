@@ -100,6 +100,7 @@ void CEngine::PollEvent()
 	SDL_Event event;
 	while (SDL_PollEvent(&event))
 	{
+		g_pGraphics->ProcessEvent(&event);
 		switch (event.type)
 		{
 		case SDL_EVENT_QUIT:

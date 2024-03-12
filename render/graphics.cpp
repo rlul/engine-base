@@ -1,6 +1,7 @@
 #include "render/igraphics.h"
 #include "subsystem.h"
 #include "subsystems.h"
+#include "debugoverlay.h"
 #include <SDL3/SDL.h>
 #include <glad/glad.h>
 #include <cstdio>
@@ -16,6 +17,7 @@ public:
 	const char* GetSystemName() const override { return GRAPHICS_SYSTEM_VERSION; }
 
 	bool Frame() override;
+	void ProcessEvent(void* sdl_event) override;
 
 private:
 	virtual void BeginScene();
@@ -27,7 +29,7 @@ private:
 };
 
 CGraphics g_Graphics;
-CREATE_SINGLE_SYSTEM( CGraphics, IGraphics, GRAPHICS_SYSTEM_VERSION, g_Graphics );
+CREATE_SINGLE_SYSTEM(CGraphics, IGraphics, GRAPHICS_SYSTEM_VERSION, g_Graphics);
 
 bool CGraphics::Setup()
 {
@@ -68,6 +70,8 @@ bool CGraphics::Setup()
 	printf("Initialized OpenGL %s\n", glGetString(GL_VERSION));
 	printf("Video Adapter: %s\n", glGetString(GL_RENDERER));
 
+	g_pDebugOverlay->Setup(m_pWindow, m_OpenGLContext);
+
 	return true;
 }
 
@@ -81,9 +85,15 @@ bool CGraphics::Frame()
 {
 	BeginScene();
 
+	g_pDebugOverlay->Frame();
 	EndScene();
 
 	return true;
+}
+
+void CGraphics::ProcessEvent(void* sdl_event)
+{
+	g_pDebugOverlay->ProcessEvent(sdl_event);
 }
 
 void CGraphics::BeginScene()
