@@ -1,6 +1,7 @@
 #include "filesystem.h"
 #include "subsystem.h"
 #include <filesystem>
+#include <cstring>
 
 CFileSystem g_FileSystem;
 CREATE_SINGLE_SYSTEM( CFileSystem, IFileSystem, FILE_SYSTEM_VERSION, g_FileSystem );

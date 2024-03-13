@@ -20,5 +20,9 @@ add_library(imgui STATIC
     ../imgui/backends/imgui_impl_sdlrenderer2.cpp
 )
 
+if (NOT MSVC)
+	set_property(TARGET imgui PROPERTY POSITION_INDEPENDENT_CODE ON)
+endif()
+
 target_include_directories(imgui PUBLIC ../imgui)
 target_link_libraries(imgui PUBLIC SDL2::SDL2)

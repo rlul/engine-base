@@ -1,10 +1,10 @@
 #include "common.h"
 #include "subsystems.h"
 #include "core/icommandline.h"
+#include "core/ifilesystem.h"
 #include <string>
 #include <filesystem>
-
-#include "core/ifilesystem.h"
+#include <cstring>
 #ifdef _WIN32
 #include <Windows.h>
 #else

@@ -4,7 +4,6 @@
 #include "subsystems.h"
 #include "subsystem.h"
 #include "common.h"
-#include <SDL2/SDL.h>
 #include <cstdio>
 
 #ifdef _WIN32
@@ -41,7 +40,7 @@ int main(int argc, char** argv)
 	}
 #endif
 
-	char game_dir[MAX_PATH];
+	char game_dir[260];
 	if (!COM_GetGameDir(game_dir))
 	{
 		return 1;
