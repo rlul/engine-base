@@ -2,7 +2,7 @@
 #include "render/igraphics.h"
 #include "subsystem.h"
 #include "common.h"
-#include <SDL3/SDL.h>
+#include <SDL2/SDL.h>
 #include <thread>
 #include <chrono>
 #include <cmath>
@@ -100,16 +100,17 @@ void CEngine::PollEvent()
 	SDL_Event event;
 	while (SDL_PollEvent(&event))
 	{
+		g_pGraphics->ProcessEvent(&event);
 		switch (event.type)
 		{
-		case SDL_EVENT_QUIT:
+		case SDL_QUIT:
 		{
 			SetQuitting(true);
 			break;
 		}
-		case SDL_EVENT_MOUSE_BUTTON_DOWN:
+		case SDL_MOUSEBUTTONDOWN:
 		{
-			float mouse_x, mouse_y;
+			int mouse_x, mouse_y;
 			IEvent* mouse_event = g_pEventSystem->CreateGameEvent("mousedown");
 
 			SDL_GetMouseState(&mouse_x, &mouse_y);
