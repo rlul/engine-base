@@ -1,12 +1,11 @@
 #include "engine/module.h"
 #include "core/icommandline.h"
+#include "core/ifilesystem.h"
 #include "subsystems.h"
 #include "subsystem.h"
 #include "common.h"
 #include <SDL2/SDL.h>
 #include <cstdio>
-
-#include "core/ifilesystem.h"
 
 #ifdef _WIN32
 #include <Windows.h>
