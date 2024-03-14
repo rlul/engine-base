@@ -4,7 +4,8 @@
 [submodule "thirdparty/SDL_image"]
 	path = thirdparty/SDL_image
 	url = https://github.com/libsdl-org/SDL_image.git
+	branch = SDL2
 [submodule "thirdparty/SDL"]
 	path = thirdparty/SDL
 	url = https://github.com/libsdl-org/SDL.git
-	branch = release-2.28.x
+	branch = SDL2

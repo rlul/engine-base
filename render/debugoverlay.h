@@ -14,6 +14,9 @@ public:
 	void ProcessEvent(void* sdl_event);
 
 private:
+	void ShowFPS() const;
+
+private:
 	SDL_Window* m_pWindow;
 	SDL_Renderer* m_pRenderer;
 };

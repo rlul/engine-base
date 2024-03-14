@@ -12,5 +12,5 @@ add_compile_definitions(RENDER_EXPORTS)
 
 add_library(render SHARED ${RENDER_SOURCES})
 
-target_include_directories(render PUBLIC SDL2::SDL2 imgui ${SDL2_INCLUDE_DIRS})
-target_link_libraries(render PUBLIC SDL2::SDL2 imgui)
+target_include_directories(render PUBLIC SDL2::SDL2 SDL2_image::SDL2_image imgui)
+target_link_libraries(render PUBLIC SDL2::SDL2 SDL2_image::SDL2_image imgui)

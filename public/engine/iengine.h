@@ -13,4 +13,6 @@ public:
 	virtual int Main() = 0;
 	virtual bool GetQuitting() const = 0;
 	virtual void SetQuitting(bool quit) = 0;
+
+	virtual float GetFrameTime() const = 0;
 };

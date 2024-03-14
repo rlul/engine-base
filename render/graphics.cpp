@@ -3,6 +3,7 @@
 #include "subsystems.h"
 #include "debugoverlay.h"
 #include <SDL2/SDL.h>
+#include <SDL_image.h>
 #include <cstdio>
 #ifdef _WIN32
 #include <Windows.h>
@@ -41,9 +42,18 @@ bool CGraphics::Setup()
 	SetProcessDPIAware();
 #endif
 
+	auto factory = GetGameFactory();
+	ConnectSystems(&factory, 1);
+
 	if (SDL_Init(SDL_INIT_VIDEO))
 	{
 		printf("SDL_Init failed! (%s)\n", SDL_GetError());
+		return false;
+	}
+
+	if (!IMG_Init(IMG_INIT_PNG))
+	{
+		printf("IMG_Init failed! (%s)\n", SDL_GetError());
 		return false;
 	}
 

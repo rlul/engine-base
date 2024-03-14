@@ -24,6 +24,8 @@ public:
 	bool GetQuitting() const override;
 	void SetQuitting(bool quit) override;
 
+	float GetFrameTime() const override;
+
 private:
 	virtual bool MainLoop();
 	virtual void PollEvent();
@@ -78,6 +80,11 @@ bool CEngine::GetQuitting() const
 void CEngine::SetQuitting(bool quit)
 {
 	m_bQuitting = quit;
+}
+
+float CEngine::GetFrameTime() const
+{
+	return m_flFrameTime;
 }
 
 bool CEngine::MainLoop()
@@ -140,20 +147,6 @@ void CEngine::Frame()
 		unsigned sleeptime = std::floor((m_flMinFrameTime - m_flFrameTime) * 1000000);
 		std::this_thread::sleep_for(std::chrono::microseconds(sleeptime));
 		return;
-	}
-
-	{
-		char buf[32];
-		static float frames_per_second = 0.f, total_time = 0.f;
-
-		++frames_per_second;
-		total_time += m_flFrameTime;
-
-		sprintf(buf, "FPS: %f", frames_per_second / total_time);
-		SDL_SetWindowTitle(SDL_GL_GetCurrentWindow(), buf);
-
-		if (total_time > 1.f)
-			frames_per_second = total_time = 0.f;
 	}
 
 	g_pGraphics->Frame();
