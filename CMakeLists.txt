@@ -68,12 +68,14 @@ add_subdirectory(launcher)
 add_subdirectory(engine)
 add_subdirectory(core)
 add_subdirectory(render)
+add_subdirectory(game)
 add_subdirectory(thirdparty/SDL)
 add_subdirectory(thirdparty/SDL_image)
 add_subdirectory(thirdparty/imgui_cmake)
+add_subdirectory(thirdparty/json)
 
 set(TARGETS 
-    launcher engine core render SDL2 SDL2_image
+    launcher engine core render game SDL2 SDL2_image
 )
 
 add_custom_target(CopyFiles ALL

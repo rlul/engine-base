@@ -1,4 +1,5 @@
 #include "debugoverlay.h"
+#include "engine/iengine.h"
 #include "core/ifilesystem.h"
 #include "subsystems.h"
 #include <SDL2/SDL.h>
@@ -7,8 +8,6 @@
 #include <backends/imgui_impl_sdlrenderer2.h>
 #include <backends/imgui_impl_sdl2.h>
 #include <cstdio>
-
-#include "engine/iengine.h"
 
 SDL_Texture* texture = nullptr;
 
@@ -23,15 +22,31 @@ bool CDebugOverlay::Setup(SDL_Window* window, SDL_Renderer* renderer)
 	ImGui_ImplSDL2_InitForSDLRenderer(m_pWindow, m_pRenderer);
 	ImGui_ImplSDLRenderer2_Init(m_pRenderer);
 
-	auto file = g_pFileSystem->Open("textures/monke.png", "core", IFileSystem::OPEN_READ_WRITE);
+	auto file = g_pFileSystem->Open("textures/coconut.png", "core", IFileSystem::OPEN_READ_WRITE);
 	auto size = g_pFileSystem->Size(file);
-	char* buf = new char[size] {0, };
+	char* buf = new char[size] { 0, };
 	g_pFileSystem->Read(file, buf, size);
+
 	auto rw = SDL_RWFromMem(buf, size);
 	auto surface = IMG_Load_RW(rw, 1);
-	texture = SDL_CreateTextureFromSurface(m_pRenderer, surface);
+
 	delete[] buf;
 	g_pFileSystem->Close(file);
+
+	if (!surface)
+	{
+		printf("Failed to load surface!\n");
+		return false;
+	}
+
+	texture = SDL_CreateTextureFromSurface(m_pRenderer, surface);
+	if (!texture)
+	{
+		printf("Failed to create texture from surface!\n");
+		return false;
+	}
+
+	SDL_FreeSurface(surface);
 
 	return true;
 }
@@ -51,8 +66,8 @@ bool CDebugOverlay::Frame()
 	ImGui::NewFrame();
 
 	ShowFPS();
-	ImGui::Image(texture, ImVec2(372, 404));
-	if (ImGui::Button("monke"))
+	ImGui::Image(texture, ImVec2(256, 256));
+	if (ImGui::Button("coconut"))
 	{
 		printf("bob\n");
 	}

@@ -2,6 +2,7 @@
 #include "engine/iengine.h"
 #include "engine/ieventsystem.h"
 #include "render/igraphics.h"
+#include "render/ispritesystem.h"
 #include "core/icommandline.h"
 #include "core/ifilesystem.h"
 
@@ -14,6 +15,7 @@ struct SystemInfo_t
 IEngine* g_pEngine = nullptr;
 IEventSystem* g_pEventSystem = nullptr;
 IGraphics* g_pGraphics = nullptr;
+ISpriteSystem* g_pSpriteSystem = nullptr;
 ICommandLine* g_pCommandLine = nullptr;
 IFileSystem* g_pFileSystem = nullptr;
 
@@ -22,6 +24,7 @@ SystemInfo_t g_AppSystemList[] =
 	{ &g_pEngine, ENGINE_SYSTEM_VERSION },
 	{ &g_pEventSystem, EVENT_SYSTEM_VERSION },
 	{ &g_pGraphics, GRAPHICS_SYSTEM_VERSION },
+	{ &g_pSpriteSystem, SPRITE_SYSTEM_VERSION },
 	{ &g_pCommandLine, COMMANDLINE_SYSTEM_VERSION },
 	{ &g_pFileSystem, FILE_SYSTEM_VERSION }
 };

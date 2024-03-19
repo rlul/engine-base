@@ -2,9 +2,12 @@
 #include "subsystem.h"
 #include "subsystems.h"
 #include "debugoverlay.h"
+#include "render/ispritesystem.h"
 #include <SDL2/SDL.h>
 #include <SDL_image.h>
 #include <cstdio>
+#include <exception>
+
 #ifdef _WIN32
 #include <Windows.h>
 #endif
@@ -33,6 +36,8 @@ private:
 
 CGraphics g_Graphics;
 CREATE_SINGLE_SYSTEM(CGraphics, IGraphics, GRAPHICS_SYSTEM_VERSION, g_Graphics);
+
+ISprite* test_sprite;
 
 bool CGraphics::Setup()
 {
@@ -72,13 +77,27 @@ bool CGraphics::Setup()
 		return false;
 	}
 
-	g_pDebugOverlay->Setup(m_pWindow, m_pRenderer);
+	if (!g_pSpriteSystem->Setup(m_pRenderer))
+	{
+		printf("Failed while setting up sprite system!\n");
+		return false;
+	}
+
+	if (!g_pDebugOverlay->Setup(m_pWindow, m_pRenderer))
+	{
+		printf("Failed while setting up debug overlay!\n");
+		return false;
+	}
+
+	test_sprite = g_pSpriteSystem->LoadSprite("entity/blacksorcerer");
 
 	return true;
 }
 
 void CGraphics::Shutdown()
 {
+	g_pDebugOverlay->Shutdown();
+	g_pSpriteSystem->Shutdown();
 	SDL_DestroyRenderer(m_pRenderer);
 	SDL_DestroyWindow(m_pWindow);
 }
@@ -87,7 +106,9 @@ bool CGraphics::Frame()
 {
 	BeginScene();
 
+	g_pSpriteSystem->DrawSprite(test_sprite, 10, 10);
 	g_pDebugOverlay->Frame();
+
 	EndScene();
 
 	return true;

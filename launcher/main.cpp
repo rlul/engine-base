@@ -23,6 +23,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 int main(int argc, char** argv)
 #endif
 {
+	int result = 0;
 	auto factory = GetGameFactory();
 	ConnectSystems(&factory, 1);
 
@@ -49,8 +50,12 @@ int main(int argc, char** argv)
 	printf("Game Directory: %s\n", game_dir);
 
 #ifdef _WIN32
-	return EngineMain(hInstance, hPrevInstance, lpCmdLine, nCmdShow);
+	result = EngineMain(hInstance, hPrevInstance, lpCmdLine, nCmdShow);
 #else
-	return EngineMain(argc, argv);
+	result = EngineMain(argc, argv);
 #endif
+
+	g_pFileSystem->Shutdown();
+
+	return result;
 }

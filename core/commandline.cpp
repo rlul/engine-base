@@ -25,7 +25,7 @@ public:
 
 private:
 	static void Tokenize(const char* cmdline, std::vector<std::string>& tokens);
-	void ParseTokens(const std::vector<std::string>& tokens);
+	virtual void ParseTokens(const std::vector<std::string>& tokens);
 
 private:
 	std::string m_CommandLine;
