@@ -3,7 +3,7 @@ project(engine)
 set(ENGINE_SOURCES 
 	enginemain.cpp
 	engine.cpp
-	eventsystem.cpp
+	inputsystem.cpp
 	${PUBLIC_DIR}/subsystems.cpp
 	${PUBLIC_DIR}/subsystem.cpp
 	${PUBLIC_DIR}/common.cpp

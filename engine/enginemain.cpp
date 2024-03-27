@@ -6,6 +6,8 @@
 #include "render/ispritesystem.h"
 #include "core/icommandline.h"
 #include "core/ifilesystem.h"
+#include "engine/iinputsystem.h"
+#include "game/igameclient.h"
 
 #ifdef _WIN32
 int EngineMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
@@ -26,11 +28,15 @@ int EngineMain(int argc, char** argv)
 	printf("Command Line: %s\n", g_pCommandLine->Get());
 
 	g_pEngine->Setup();
+	g_pInputSystem->Setup();
 	g_pGraphics->Setup();
+	g_pGameClient->Setup();
 
 	g_pEngine->Main();
 
+	g_pGameClient->Shutdown();
 	g_pGraphics->Shutdown();
+	g_pInputSystem->Shutdown();
 	g_pEngine->Shutdown();
 
 	return 0;

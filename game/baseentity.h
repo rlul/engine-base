@@ -1,19 +1,32 @@
 #pragma once
 #include "game/ibaseentity.h"
 #include "game/irenderable.h"
-#include "math.h"
+#include "gamemath.h"
+
+class ISprite;
 
 class CBaseEntity : public IBaseEntity, IRenderable
 {
 public:
-	CBaseEntity() = default;
-	~CBaseEntity() override = default;
+	CBaseEntity();
+	virtual ~CBaseEntity() override = default;
 
-	void Spawn() override;
-	void Render() override;
+	virtual void Spawn() override;
 
-	transform_t& GetTransform();
+	virtual void Update(float dt) override;
+	virtual void Render() override;
+
+	virtual IRenderable* GetRenderable() override;
+
+	virtual bool MakeMove(MoveInfo_t& cmd) override;
+
+	virtual Transform_t& GetTransform() override;
+	virtual void SetPos(float x, float y) override;
+	virtual void SetScale(float scale) override;
+	virtual void SetScale(float scale_x, float scale_y) override;
 
 protected:
-	transform_t m_Transform;
+	Transform_t m_Transform;
+	Vector2D_t m_Velocity;
+	ISprite* m_pSprite;
 };

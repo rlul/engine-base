@@ -3,10 +3,14 @@
 #include "subsystems.h"
 #include "debugoverlay.h"
 #include "render/ispritesystem.h"
+#include "game/igameclient.h"
+#include "game/ibaseentity.h"
 #include <SDL2/SDL.h>
 #include <SDL_image.h>
 #include <cstdio>
-#include <exception>
+#include <algorithm>
+
+#include "game/irenderable.h"
 
 #ifdef _WIN32
 #include <Windows.h>
@@ -36,8 +40,6 @@ private:
 
 CGraphics g_Graphics;
 CREATE_SINGLE_SYSTEM(CGraphics, IGraphics, GRAPHICS_SYSTEM_VERSION, g_Graphics);
-
-ISprite* test_sprite;
 
 bool CGraphics::Setup()
 {
@@ -89,8 +91,6 @@ bool CGraphics::Setup()
 		return false;
 	}
 
-	test_sprite = g_pSpriteSystem->LoadSprite("entity/blacksorcerer");
-
 	return true;
 }
 
@@ -106,7 +106,8 @@ bool CGraphics::Frame()
 {
 	BeginScene();
 
-	g_pSpriteSystem->DrawSprite(test_sprite, 10, 10);
+	g_pGameClient->GetLocalPlayer()->GetRenderable()->Render();
+
 	g_pDebugOverlay->Frame();
 
 	EndScene();

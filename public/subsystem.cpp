@@ -58,6 +58,11 @@ GetSystemFn GetGameFactory()
 				if (system = factory(name))
 					return system;
 
+			factory = GetModuleFactory("game");
+			if (factory)
+				if (system = factory(name))
+					return system;
+
 			return nullptr;
 		};
 }

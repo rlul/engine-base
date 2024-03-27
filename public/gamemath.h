@@ -1,63 +1,68 @@
 #pragma once
 
-struct vec2_t
+struct Vector2D_t
 {
-	vec2_t()
+	Vector2D_t()
 		: x(0.0f), y(0.0f)
 	{}
-	vec2_t(float x, float y)
+	Vector2D_t(float x, float y)
 		: x(x), y(y)
 	{}
 
-	vec2_t operator+(const vec2_t& other) const
+	bool IsNull() const
+	{
+		return !x && !y;
+	}
+
+	Vector2D_t operator+(const Vector2D_t& other) const
 	{
 		return {x + other.x, y + other.y};
 	}
 
-	vec2_t operator-(const vec2_t& other) const
+	Vector2D_t operator-(const Vector2D_t& other) const
 	{
 		return {x - other.x, y - other.y};
 	}
 
-	vec2_t operator*(float scalar) const
+	Vector2D_t operator*(float scalar) const
 	{
 		return {x * scalar, y * scalar};
 	}
 
-	vec2_t operator/(float scalar) const
+	Vector2D_t operator/(float scalar) const
 	{
 		return { x / scalar, y / scalar };
 	}
 
-	vec2_t operator+=(const vec2_t& other)
+	Vector2D_t operator+=(const Vector2D_t& other)
 	{
 		x += other.x;
 		y += other.y;
 		return *this;
 	}
 
-	vec2_t operator-=(const vec2_t& other)
+	Vector2D_t operator-=(const Vector2D_t& other)
 	{
 		x -= other.x;
 		y -= other.y;
 		return *this;
 	}
 
-	vec2_t operator*=(float scalar)
+	Vector2D_t operator*=(float scalar)
 	{
 		x *= scalar;
 		y *= scalar;
 		return *this;
 	}
 
-	vec2_t operator/=(float scalar)
+	Vector2D_t operator/=(float scalar)
 	{
 		x /= scalar;
 		y /= scalar;
 		return *this;
 	}
 
-	vec2_t operator-() const
+	Vector2D_t operator-() const
 	{
 		return {-x, -y};
 	}
@@ -65,20 +70,17 @@ struct vec2_t
 	float x, y;
 };
 
-struct transform_t
+struct Transform_t
 {
-	transform_t()
+	Transform_t()
 		: position(0.0f, 0.0f), scale(1.0f, 1.0f), rotation(0.0f)
 	{}
-	transform_t(const vec2_t& position, const vec2_t& scale, float rotation)
+	Transform_t(const Vector2D_t& position, const Vector2D_t& scale, float rotation)
 		: position(position), scale(scale), rotation(rotation)
 	{}
 
-	
-
-
-	vec2_t position;
-	vec2_t scale;
+	Vector2D_t position;
+	Vector2D_t scale;
 	float rotation;
 };
 

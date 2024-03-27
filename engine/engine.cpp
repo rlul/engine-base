@@ -1,5 +1,10 @@
 #include "engine/iengine.h"
 #include "render/igraphics.h"
+#include "core/icommandline.h"
+#include "game/ibaseentity.h"
+#include "game/igameclient.h"
+#include "game/ievent.h"
+#include "game/ieventsystem.h"
 #include "subsystem.h"
 #include "common.h"
 #include <SDL2/SDL.h>
@@ -7,8 +12,7 @@
 #include <chrono>
 #include <cmath>
 
-#include "testeventlistener.h"
-#include "core/icommandline.h"
+#include "engine/iinputsystem.h"
 
 class CEngine : public IEngine
 {
@@ -49,8 +53,6 @@ bool CEngine::Setup()
 	}
 
 	m_flPreviousTime = COM_GetTime();
-
-	g_pEventSystem->AddListener(new CTestEventListener, "mousedown");
 
 	return true;
 }
@@ -117,14 +119,25 @@ void CEngine::PollEvent()
 		}
 		case SDL_MOUSEBUTTONDOWN:
 		{
-			int mouse_x, mouse_y;
+			float mouse_x, mouse_y;
 			IEvent* mouse_event = g_pEventSystem->CreateGameEvent("mousedown");
+			if (!mouse_event)
+				break;
 
-			SDL_GetMouseState(&mouse_x, &mouse_y);
+			SDL_GetMouseState((int*)&mouse_x, (int*)&mouse_y);
 			mouse_event->SetValue("mouse_x", mouse_x);
 			mouse_event->SetValue("mouse_y", mouse_y);
 			g_pEventSystem->FireGameEvent(mouse_event);
-
+			break;
+		}
+		case SDL_KEYDOWN:
+		{
+			g_pInputSystem->SetKeyState(event.key.keysym.sym, true);
+			break;
+		}
+		case SDL_KEYUP:
+		{
+			g_pInputSystem->SetKeyState(event.key.keysym.sym, false);
 			break;
 		}
 		default:
@@ -149,6 +162,8 @@ void CEngine::Frame()
 		return;
 	}
 
+	g_pInputSystem->Update();
+	g_pGameClient->GetLocalPlayer()->Update(m_flFrameTime);
 	g_pGraphics->Frame();
 
 	m_flFrameTime = 0.f;

@@ -1,18 +1,18 @@
-#include "engine/ievent.h"
-#include "engine/ieventsystem.h"
-#include "engine/ieventlistener.h"
+#include "game/ievent.h"
+#include "game/ieventsystem.h"
+#include "game/ieventlistener.h"
 #include "subsystems.h"
+#include "subsystem.h"
 #include <string>
 #include <vector>
 #include <unordered_map>
+#include <ranges>
 
-#include "subsystem.h"
-
-class CGameEvent : public IEvent
+class CEvent : public IEvent
 {
 public:
-	CGameEvent(const char* name);
-	~CGameEvent() override = default;
+	CEvent(const char* name);
+	~CEvent() override = default;
 
 	const char* GetName() const override;
 
@@ -24,23 +24,23 @@ private:
 	std::unordered_map<std::string, int> m_mapValues;
 };
 
-CGameEvent::CGameEvent(const char* name)
+CEvent::CEvent(const char* name)
 	: m_pszName(name)
 {
 
 }
 
-const char* CGameEvent::GetName() const
+const char* CEvent::GetName() const
 {
 	return m_pszName;
 }
 
-int CGameEvent::GetValue(const char* name) const
+int CEvent::GetValue(const char* name) const
 {
 	return m_mapValues.at(name);
 }
 
-void CGameEvent::SetValue(const char* name, int value)
+void CEvent::SetValue(const char* name, int value)
 {
 	m_mapValues[name] = value;
 }
@@ -57,6 +57,7 @@ public:
 
 	void AddListener(IEventListener* listener, const char* event_name) override;
 	void RemoveListener(IEventListener* listener, const char* event_name) override;
+	void RemoveListener(IEventListener* listener) override;
 
 	IEvent* CreateGameEvent(const char* event_name) override;
 	void FireGameEvent(IEvent* event) override;
@@ -85,6 +86,14 @@ void CEventSystem::RemoveListener(IEventListener* listener, const char* event_na
 	std::erase(m_mapEventListeners[event_name], listener);
 }
 
+void CEventSystem::RemoveListener(IEventListener* listener)
+{
+	for (auto& listeners : m_mapEventListeners | std::views::values)
+	{
+		std::erase(listeners, listener);
+	}
+}
+
 IEvent* CEventSystem::CreateGameEvent(const char* event_name)
 {
 	if (!m_mapEventListeners.contains(event_name))
@@ -93,7 +102,7 @@ IEvent* CEventSystem::CreateGameEvent(const char* event_name)
 		return nullptr;
 	}
 
-	return new CGameEvent(event_name);
+	return new CEvent(event_name);
 }
 
 void CEventSystem::FireGameEvent(IEvent* event)
