@@ -163,7 +163,7 @@ void CEngine::Frame()
 	}
 
 	g_pInputSystem->Update();
-	g_pGameClient->GetLocalPlayer()->Update(m_flFrameTime);
+	g_pGameClient->Update(m_flFrameTime);
 	g_pGraphics->Frame();
 
 	m_flFrameTime = 0.f;

@@ -45,6 +45,11 @@ bool CGraphics::Setup()
 {
 	int window_width = 1280, window_height = 720;
 
+	if (m_pWindow || m_pRenderer)
+	{
+		return false;
+	}
+
 #ifdef _WIN32
 	SetProcessDPIAware();
 #endif
@@ -106,7 +111,7 @@ bool CGraphics::Frame()
 {
 	BeginScene();
 
-	g_pGameClient->GetLocalPlayer()->GetRenderable()->Render();
+	g_pGameClient->Render();
 
 	g_pDebugOverlay->Frame();
 

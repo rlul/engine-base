@@ -6,7 +6,7 @@ class CBasePlayer : public CBaseAnimated, IEventListener
 {
 public:
 	CBasePlayer();
-	virtual ~CBasePlayer() override = default;
+	virtual ~CBasePlayer() override;
 	
 	virtual void Spawn() override;
 

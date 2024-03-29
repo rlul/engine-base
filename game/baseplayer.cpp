@@ -2,6 +2,8 @@
 #include "game/ievent.h"
 #include "render/ispritesystem.h"
 
+CBasePlayer* g_pLocalPlayer = nullptr;
+
 CBasePlayer::CBasePlayer()
 {
 	m_pSprite = g_pSpriteSystem->LoadSprite("entity/cavegirl_new");
@@ -9,9 +11,16 @@ CBasePlayer::CBasePlayer()
 	m_Transform.scale = { 4, 4 };
 }
 
+CBasePlayer::~CBasePlayer()
+{
+	if (g_pLocalPlayer == this)
+		g_pLocalPlayer = nullptr;
+}
+
 void CBasePlayer::Spawn()
 {
 	CBaseAnimated::Spawn();
+	g_pLocalPlayer = this;
 }
 
 void CBasePlayer::Update(float dt)
@@ -50,6 +59,5 @@ void CBasePlayer::FireGameEvent(IEvent* event)
 
 CBasePlayer* CBasePlayer::GetLocalPlayer()
 {
-	static CBasePlayer local_player;
-	return &local_player;
+	return g_pLocalPlayer;
 }

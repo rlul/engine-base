@@ -136,11 +136,15 @@ KeyCode_t CInputSystem::GetKeyForBind(const char* name)
 
 bool CInputSystem::MakeMove()
 {
+	IBaseEntity* player = g_pGameClient->GetLocalPlayer();
+
+	if (!player)
+		return false;
+
 	bool move_up = IsKeyPressed(GetKeyForBind("up"));
 	bool move_down = IsKeyPressed(GetKeyForBind("down"));
 	bool move_left = IsKeyPressed(GetKeyForBind("left"));
 	bool move_right = IsKeyPressed(GetKeyForBind("right"));
-	IBaseEntity* player = g_pGameClient->GetLocalPlayer();
 	MoveInfo_t move_info{};
 
 	if (move_up && !move_down)

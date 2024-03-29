@@ -12,5 +12,9 @@ public:
 
 	virtual bool Setup() = 0;
 
+	virtual void Update(float dt) = 0;
+	virtual void Render() = 0;
+	
+	virtual bool IsInGame() = 0;
 	virtual IBaseEntity* GetLocalPlayer() = 0;
 };
