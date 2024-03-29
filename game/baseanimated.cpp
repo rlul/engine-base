@@ -7,7 +7,7 @@
 #include <cmath>
 
 CBaseAnimated::CBaseAnimated()
-	: m_flAnimationTime(0.f), m_flCycle(0), m_flPlaybackRate(1.f), m_pszCurrentAnimation{ 0, }
+	: m_flAnimationTime(0.f), m_flCycle(0), m_bAnimationPaused(false), m_flPlaybackRate(1.f), m_CurrentAnimation()
 {
 }
 
@@ -18,17 +18,18 @@ void CBaseAnimated::Render()
 
 	UpdateAnimations();
 
-	g_pSpriteSystem->DrawSpriteEx(m_pSprite, m_flCycle, x, y, scale_x, scale_y);
+	g_pSpriteSystem->DrawSpriteEx(m_pSprite, m_CurrentAnimation.id, m_flCycle, x, y, scale_x, scale_y);
 }
 
-void CBaseAnimated::SetCurrentAnimation(const char* name) const
+void CBaseAnimated::SetCurrentAnimation(const char* name)
 {
-	if (!name || name[0] == '\0' || strcmp(name, m_pszCurrentAnimation) == 0)
+	if (!name || name[0] == '\0' || strcmp(name, m_CurrentAnimation.name) == 0)
 		return;
 
-	if (m_pSprite->SetCurrentAnimation(name))
+	if (m_pSprite->IsAnimationValid(name))
 	{
-		strcpy_s((char*)m_pszCurrentAnimation, 64, name);
+		m_CurrentAnimation.id = m_pSprite->GetAnimationId(name);
+		strcpy_s(m_CurrentAnimation.name, 64, name);
 	}
 }
 
@@ -79,8 +80,8 @@ float CBaseAnimated::FrameAdvance(float interval)
 	if (m_flPlaybackRate == 0.f)
 		return 0.f;
 	
-	int frame_count = m_pSprite->GetFrameCount();
-	float frame_rate = m_pSprite->GetFrameRate();
+	int frame_count = m_pSprite->GetFrameCount(m_CurrentAnimation.id);
+	float frame_rate = m_pSprite->GetFrameRate(m_CurrentAnimation.id);
 
 	m_flCycle += interval * m_flPlaybackRate * frame_rate;
 
@@ -98,5 +99,5 @@ float CBaseAnimated::FrameAdvance(float interval)
 
 const char* CBaseAnimated::GetCurrentAnimationName() const
 {
-	return m_pszCurrentAnimation;
+	return m_CurrentAnimation.name;
 }

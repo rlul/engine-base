@@ -3,6 +3,14 @@
 
 class CBaseAnimated : public CBaseEntity
 {
+	struct AnimationInfo_t
+	{
+		AnimationInfo_t() : name{ 0, }, id(-1) {}
+
+		char name[64];
+		int id;
+	};
+
 public:
 	CBaseAnimated();
 	virtual ~CBaseAnimated() override = default;
@@ -10,7 +18,7 @@ public:
 	virtual void Render() override;
 
 	virtual const char* GetCurrentAnimationName() const;
-	virtual void SetCurrentAnimation(const char* name) const;
+	virtual void SetCurrentAnimation(const char* name);
 
 	virtual float GetPlaybackRate() const;
 	virtual void SetPlaybackRate(float rate);
@@ -23,7 +31,7 @@ public:
 
 private:
 	float m_flAnimationTime, m_flCycle;
-	float m_flPlaybackRate;
 	bool m_bAnimationPaused;
-	char m_pszCurrentAnimation[64];
+	float m_flPlaybackRate;
+	AnimationInfo_t m_CurrentAnimation;
 };

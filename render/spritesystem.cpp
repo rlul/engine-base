@@ -123,10 +123,10 @@ void CSpriteSystem::UnloadSprite(ISprite* sprite)
 
 bool CSpriteSystem::DrawSprite(ISprite* sprite, int x, int y, float scale)
 {
-	return DrawSpriteEx(sprite, 0, x, y, scale, scale);
+	return DrawSpriteEx(sprite, 0, 0, x, y, scale, scale);
 }
 
-bool CSpriteSystem::DrawSpriteEx(ISprite* sprite, int frame_index, int x, int y, float scale_x, float scale_y)
+bool CSpriteSystem::DrawSpriteEx(ISprite* sprite, int animation_index, int frame_index, int x, int y, float scale_x, float scale_y)
 {
 	SDL_Rect src, dst;
 	int columns, rows;
@@ -139,8 +139,8 @@ bool CSpriteSystem::DrawSpriteEx(ISprite* sprite, int frame_index, int x, int y,
 	}
 	sprite->GetSpriteSize(columns, rows);
 	sprite->GetFrameSize(frame_width, frame_height);
-	frame_count = sprite->GetFrameCount();
-	frame = sprite->GetFrame(frame_index);
+	frame_count = sprite->GetFrameCount(animation_index);
+	frame = sprite->GetFrame(frame_index, animation_index);
 
 	if (frame < 0)
 	{

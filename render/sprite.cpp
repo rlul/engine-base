@@ -4,7 +4,7 @@
 
 CSprite::CSprite()
 	: m_pszPath(nullptr), m_pTexture(nullptr), m_iFrameWidth(0), m_iFrameHeight(0), m_nColumns(0), m_nRows(0)
-	, m_pAnimations(nullptr), m_nAnimationCount(0), m_nCurrentAnimation(0)
+	, m_pAnimations(nullptr), m_nAnimationCount(0)
 {
 }
 
@@ -23,6 +23,11 @@ const char* CSprite::GetPath() const
 	return m_pszPath;
 }
 
+SDL_Texture* CSprite::GetTexture() const
+{
+	return m_pTexture;
+}
+
 void CSprite::GetSpriteSize(int& columns, int& rows) const
 {
 	columns = m_nColumns;
@@ -35,55 +40,56 @@ void CSprite::GetFrameSize(int& width, int& height) const
 	height = m_iFrameHeight;
 }
 
-int CSprite::GetFrameCount() const
+int CSprite::GetFrameCount(int animation_id) const
 {
-	return m_pAnimations[m_nCurrentAnimation].frame_count;
+	if (!IsAnimationValid(animation_id))
+		return 0;
+
+	return m_pAnimations[animation_id].frame_count;
 }
 
-float CSprite::GetFrameRate() const
+float CSprite::GetFrameRate(int animation_id) const
 {
-	return m_pAnimations[m_nCurrentAnimation].frame_rate;
+	if (!IsAnimationValid(animation_id))
+		return 0.f;
+
+	return m_pAnimations[animation_id].frame_rate;
 }
 
-void CSprite::SetFrameRate(float frame_rate)
+int CSprite::GetFrame(int index, int animation_id) const
 {
-	if (frame_rate < 0)
-	{
-		return;
-	}
+	if (!IsAnimationValid(animation_id))
+		return 0;
 
-	m_pAnimations[m_nCurrentAnimation].frame_rate = frame_rate;
+	if (index < 0 || index >= m_pAnimations[animation_id].frame_count)
+		return 0;
+
+	return m_pAnimations[animation_id].frames[index];
 }
 
-int CSprite::GetFrame(int index) const
-{
-	if (index < 0 || index >= GetFrameCount())
-	{
-		return -1;
-	}
-	return m_pAnimations[m_nCurrentAnimation].frames[index];
-}
-
-SDL_Texture* CSprite::GetTexture() const
-{
-	return m_pTexture;
-}
-
-const char* CSprite::GetCurrentAnimation() const
-{
-	return m_pAnimations[m_nCurrentAnimation].name;
-}
-
-bool CSprite::SetCurrentAnimation(const char* name)
+int CSprite::GetAnimationId(const char* animation_name) const
 {
 	for (int i = 0; i < m_nAnimationCount; i++)
 	{
-		if (strcmp(m_pAnimations[i].name, name) == 0)
-		{
-			m_nCurrentAnimation = i;
-			return true;
-		}
+		if (std::strcmp(m_pAnimations[i].name, animation_name) == 0)
+		return i;
+	}
+
+	return -1;
+}
+
+bool CSprite::IsAnimationValid(const char* animation_name) const
+{
+	for (int i = 0; i < m_nAnimationCount; i++)
+	{
+		if (std::strcmp(m_pAnimations[i].name, animation_name) == 0)
+		return true;
 	}
 
 	return false;
+}
+
+bool CSprite::IsAnimationValid(int animation_id) const
+{
+	return animation_id >= 0 && animation_id < m_nAnimationCount;
 }

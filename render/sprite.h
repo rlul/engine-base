@@ -16,18 +16,21 @@ class CSprite : public ISprite
 
 public:
 	CSprite();
-	~CSprite() override;
+	virtual ~CSprite() override;
 
-	const char* GetPath() const override;
-	void GetSpriteSize(int& columns, int& rows) const override;
-	void GetFrameSize(int& width, int& height) const override;
-	int GetFrameCount() const override;
-	float GetFrameRate() const override;
-	void SetFrameRate(float frame_rate) override;
-	int GetFrame(int index) const override;
-	SDL_Texture* GetTexture() const override;
-	const char* GetCurrentAnimation() const override;
-	bool SetCurrentAnimation(const char* name) override;
+	virtual const char* GetPath() const override;
+	virtual SDL_Texture* GetTexture() const override;
+
+	virtual void GetSpriteSize(int& columns, int& rows) const override;
+	virtual void GetFrameSize(int& width, int& height) const override;
+
+	virtual int GetFrameCount(int animation_id) const override;
+	virtual float GetFrameRate(int animation_id) const override;
+	virtual int GetFrame(int index, int animation_id) const override;
+
+	virtual int GetAnimationId(const char* animation_name) const override;
+	virtual bool IsAnimationValid(const char* animation_name) const override;
+	virtual bool IsAnimationValid(int animation_id) const override;
 
 private:
 	const char* m_pszPath;
@@ -36,5 +39,4 @@ private:
 	int m_nColumns, m_nRows;
 	Animation_t* m_pAnimations;
 	int m_nAnimationCount;
-	int m_nCurrentAnimation;
 };
