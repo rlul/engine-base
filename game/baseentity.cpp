@@ -2,16 +2,18 @@
 #include "render/isprite.h"
 
 CBaseEntity::CBaseEntity()
-	: m_pSprite(nullptr)
+	: m_ViewDirection(ViewDirection_t::Down), m_pSprite(nullptr), m_flSpawnTime(0)
 {
 }
 
 void CBaseEntity::Spawn()
 {
+	m_flSpawnTime = 0;
 }
 
 void CBaseEntity::Update(float dt)
 {
+	m_flSpawnTime += dt;
 	m_Transform.position += m_Velocity * dt * 200;
 }
 
@@ -27,6 +29,7 @@ IRenderable* CBaseEntity::GetRenderable()
 bool CBaseEntity::MakeMove(MoveInfo_t& cmd)
 {
 	m_Velocity = { cmd.sidemove, cmd.forwardmove };
+	m_ViewDirection = cmd.viewdirection;
 
 	return true;
 }

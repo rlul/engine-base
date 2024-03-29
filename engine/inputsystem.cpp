@@ -150,21 +150,25 @@ bool CInputSystem::MakeMove()
 	if (move_up && !move_down)
 	{
 		move_info.forwardmove = -1;
+		move_info.viewdirection = ViewDirection_t::Up;
 	}
 
 	if (!move_up && move_down)
 	{
 		move_info.forwardmove = 1;
+		move_info.viewdirection = ViewDirection_t::Down;
 	}
 
 	if (move_left && !move_right)
 	{
 		move_info.sidemove = -1;
+		move_info.viewdirection = ViewDirection_t::Left;
 	}
 
 	if (!move_left && move_right)
 	{
 		move_info.sidemove = 1;
+		move_info.viewdirection = ViewDirection_t::Right;
 	}
 
 	player->MakeMove(move_info);

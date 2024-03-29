@@ -2,6 +2,7 @@
 #include "subsystem.h"
 #include "baseentity.h"
 #include "baseplayer.h"
+#include "ent_darkmage.h"
 #include "game/ientitylist.h"
 
 class CGameClient : public IGameClient
@@ -34,11 +35,10 @@ bool CGameClient::Setup()
 
 	g_pEntityList->Setup();
 
-	auto test_entity = new CBasePlayer;
+	g_pEntityList->AddEntity(new CBasePlayer);
+	auto test_entity = new CDarkMage;
 	test_entity->SetPos(100, 100);
 	g_pEntityList->AddEntity(test_entity);
-
-	g_pEntityList->AddEntity(new CBasePlayer);
 
 	for (int i = 0; i < g_pEntityList->GetEntityCount(); i++)
 	{

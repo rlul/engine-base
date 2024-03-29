@@ -13,6 +13,8 @@ public:
 	virtual void Update(float dt) override;
 	virtual void Render() override;
 
+	void CheckAnimationEvents() override;
+
 	virtual void FireGameEvent(IEvent* event) override;
 
 	static CBasePlayer* GetLocalPlayer();

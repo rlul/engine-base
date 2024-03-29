@@ -28,5 +28,7 @@ public:
 protected:
 	Transform_t m_Transform;
 	Vector2D_t m_Velocity;
+	ViewDirection_t m_ViewDirection;
 	ISprite* m_pSprite;
+	float m_flSpawnTime;
 };

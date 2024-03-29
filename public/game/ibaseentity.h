@@ -1,11 +1,20 @@
 #pragma once
 #include "gamemath.h"
 
+enum class ViewDirection_t
+{
+	Up,
+	Down,
+	Left,
+	Right
+};
+
 struct MoveInfo_t
 {
 	float forwardmove;
 	float sidemove;
     float rotation;
+	ViewDirection_t viewdirection;
 };
 
 class IRenderable;

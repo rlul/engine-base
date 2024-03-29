@@ -15,6 +15,7 @@ public:
 	CBaseAnimated();
 	virtual ~CBaseAnimated() override = default;
 
+	virtual void Update(float dt) override;
 	virtual void Render() override;
 
 	virtual const char* GetCurrentAnimationName() const;
@@ -28,6 +29,7 @@ public:
 	virtual bool IsPaused() const;
 	virtual void ResetAnimation();
 	virtual float FrameAdvance(float interval  = 0.f);
+	virtual void CheckAnimationEvents();
 
 private:
 	float m_flAnimationTime, m_flCycle;

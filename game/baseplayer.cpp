@@ -1,14 +1,24 @@
 #include "baseplayer.h"
 #include "game/ievent.h"
 #include "render/ispritesystem.h"
+#include <cstdio>
 
 CBasePlayer* g_pLocalPlayer = nullptr;
 
 CBasePlayer::CBasePlayer()
 {
-	m_pSprite = g_pSpriteSystem->LoadSprite("entity/cavegirl_new");
+	m_pSprite = g_pSpriteSystem->LoadSprite("entity/cavegirl");
 	SetCurrentAnimation("idle");
 	m_Transform.scale = { 4, 4 };
+
+	if (g_pLocalPlayer == nullptr)
+	{
+		g_pLocalPlayer = this;
+	}
+	else
+	{
+		printf("Warning: tried creating multiple local players!\n");
+	}
 }
 
 CBasePlayer::~CBasePlayer()
@@ -20,12 +30,23 @@ CBasePlayer::~CBasePlayer()
 void CBasePlayer::Spawn()
 {
 	CBaseAnimated::Spawn();
-	g_pLocalPlayer = this;
 }
 
 void CBasePlayer::Update(float dt)
 {
 	CBaseAnimated::Update(dt);
+
+	CheckAnimationEvents();
+}
+
+void CBasePlayer::Render()
+{
+	CBaseAnimated::Render();
+}
+
+void CBasePlayer::CheckAnimationEvents()
+{
+	CBaseAnimated::CheckAnimationEvents();
 
 	if (m_Velocity.IsNull())
 	{
@@ -36,20 +57,22 @@ void CBasePlayer::Update(float dt)
 	{
 		PauseAnimation(false);
 
-		if (m_Velocity.y < 0)
+		switch (m_ViewDirection)
+		{
+		case ViewDirection_t::Up:
 			SetCurrentAnimation("run_up");
-		if (m_Velocity.y > 0)
+			break;
+		case ViewDirection_t::Down:
 			SetCurrentAnimation("run_down");
-		if (m_Velocity.x < 0)
+			break;
+		case ViewDirection_t::Left:
 			SetCurrentAnimation("run_left");
-		if (m_Velocity.x > 0)
+			break;
+		case ViewDirection_t::Right:
 			SetCurrentAnimation("run_right");
+			break;
+		}
 	}
-}
-
-void CBasePlayer::Render()
-{
-	CBaseAnimated::Render();
 }
 
 void CBasePlayer::FireGameEvent(IEvent* event)

@@ -99,14 +99,6 @@ ISprite* CSpriteSystem::LoadSprite(const char* filename)
 		}
 	}
 
-	//sprite->m_flFrameRate = sprite_data.frame_rate;
-	//sprite->m_pFrames = new int[sprite_data.frame_count];
-	//for (int i = 0; i < sprite_data.frame_count; i++)
-	//{
-	//	sprite->m_pFrames[i] = sprite_data.frames[i];
-	//}
-	//sprite->m_nFrameCount = sprite_data.frame_count;
-
 	SDL_QueryTexture(texture, NULL, NULL, &sprite->m_iFrameWidth, &sprite->m_iFrameHeight);
 	sprite->m_iFrameWidth /= sprite_data.columns;
 	sprite->m_iFrameHeight /= sprite_data.rows;
@@ -252,7 +244,7 @@ CSpriteSystem::SpriteData_t CSpriteSystem::ParseSpriteData(nlohmann::json& json_
 		{
 			int first = animation["frames"]["first"];
 			int last = animation["frames"]["last"];
-			int step = animation.contains("step") ? static_cast<int>(animation["frames"]["step"]) : 1;
+			int step = animation["frames"].contains("step") ? static_cast<int>(animation["frames"]["step"]) : 1;
 
 			data.animations[i].frame_count = (last - first) / step + 1;
 

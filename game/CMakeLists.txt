@@ -9,6 +9,7 @@ set(GAME_SOURCES
     gameclient.cpp
     eventlistener.cpp
     eventsystem.cpp
+    ent_darkmage.cpp
     ${PUBLIC_DIR}/subsystem.cpp
 	${PUBLIC_DIR}/subsystems.cpp
     ${PUBLIC_DIR}/common.cpp

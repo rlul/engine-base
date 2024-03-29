@@ -11,6 +11,11 @@ CBaseAnimated::CBaseAnimated()
 {
 }
 
+void CBaseAnimated::Update(float dt)
+{
+	CBaseEntity::Update(dt);
+}
+
 void CBaseAnimated::Render()
 {
 	int x = m_Transform.position.x, y = m_Transform.position.y;
@@ -95,6 +100,11 @@ float CBaseAnimated::FrameAdvance(float interval)
 	}
 
 	return interval;
+}
+
+void CBaseAnimated::CheckAnimationEvents()
+{
+
 }
 
 const char* CBaseAnimated::GetCurrentAnimationName() const
