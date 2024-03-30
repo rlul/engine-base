@@ -18,8 +18,8 @@ void CBaseAnimated::Update(float dt)
 
 void CBaseAnimated::Render()
 {
-	int x = m_Transform.position.x, y = m_Transform.position.y;
-	float scale_x = m_Transform.scale.x, scale_y = m_Transform.scale.y;
+	int x = m_Position.x, y = m_Position.y;
+	float scale_x = m_Scale.x, scale_y = m_Scale.y;
 
 	UpdateAnimations();
 

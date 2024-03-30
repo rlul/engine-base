@@ -69,18 +69,3 @@ struct Vector2D_t
 
 	float x, y;
 };
-
-struct Transform_t
-{
-	Transform_t()
-		: position(0.0f, 0.0f), scale(1.0f, 1.0f), rotation(0.0f)
-	{}
-	Transform_t(const Vector2D_t& position, const Vector2D_t& scale, float rotation)
-		: position(position), scale(scale), rotation(rotation)
-	{}
-
-	Vector2D_t position;
-	Vector2D_t scale;
-	float rotation;
-};
-

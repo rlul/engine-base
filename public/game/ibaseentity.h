@@ -1,5 +1,6 @@
 #pragma once
 #include "gamemath.h"
+#include "irenderable.h"
 
 enum class ViewDirection_t
 {
@@ -17,9 +18,7 @@ struct MoveInfo_t
 	ViewDirection_t viewdirection;
 };
 
-class IRenderable;
-
-abstract_class IBaseEntity
+abstract_class IBaseEntity : public IRenderable
 {
 public:
 	virtual ~IBaseEntity() = default;
@@ -28,12 +27,19 @@ public:
 
 	virtual void Update(float dt) = 0;
 
-	virtual IRenderable* GetRenderable() = 0;
-
 	virtual bool MakeMove(MoveInfo_t& cmd) = 0;
 
-	virtual Transform_t& GetTransform() = 0;
+	virtual void GetPos(float& x, float& y) = 0;
+	virtual Vector2D_t GetPos() const = 0;
+	virtual void GetBounds(Vector2D_t& mins, Vector2D_t& maxs) const = 0;
+	virtual void GetWorldBounds(Vector2D_t& mins, Vector2D_t& maxs) const = 0;
+	virtual void GetSize(float& width, float& height) const = 0;
+	virtual Vector2D_t GetSize() const = 0;
+
 	virtual void SetPos(float x, float y) = 0;
+	virtual void SetPos(Vector2D_t& pos) = 0;
+	virtual void SetSize(float width, float height) = 0;
+	virtual void SetSize(Vector2D_t& size) = 0;
 	virtual void SetScale(float scale) = 0;
 	virtual void SetScale(float scale_x, float scale_y) = 0;
 };

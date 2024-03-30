@@ -1,5 +1,4 @@
 #include "ent_darkmage.h"
-#include "common.h"
 #include "subsystems.h"
 #include "render/ispritesystem.h"
 
@@ -8,7 +7,7 @@ CDarkMage::CDarkMage()
 {
 	m_pSprite = g_pSpriteSystem->LoadSprite("entity/darkmage");
 	SetCurrentAnimation("idle");
-	m_Transform.scale = { 4, 4 };
+	SetScale(4);
 }
 
 CDarkMage::~CDarkMage()

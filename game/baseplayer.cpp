@@ -9,7 +9,7 @@ CBasePlayer::CBasePlayer()
 {
 	m_pSprite = g_pSpriteSystem->LoadSprite("entity/cavegirl");
 	SetCurrentAnimation("idle");
-	m_Transform.scale = { 4, 4 };
+	SetScale(4);
 
 	if (g_pLocalPlayer == nullptr)
 	{

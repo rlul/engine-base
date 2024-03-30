@@ -1,8 +1,9 @@
 #pragma once
 #include "subsystems.h"
-#include "ibaseentity.h"
 
 #define ENTITY_LIST_VERSION "EntityList001"
+
+class IBaseEntity;
 
 abstract_class IEntityList : public IAppSystem
 {
