@@ -1,6 +1,9 @@
 #include "debugoverlay.h"
 #include "engine/iengine.h"
+#include "engine/iinputsystem.h"
 #include "core/ifilesystem.h"
+#include "game/ientitylist.h"
+#include "game/ibaseentity.h"
 #include "subsystems.h"
 #include <SDL2/SDL.h>
 #include <SDL_image.h>
@@ -10,6 +13,15 @@
 #include <cstdio>
 
 SDL_Texture* texture = nullptr;
+
+CDebugOverlay::CDebugOverlay()
+	: m_bShouldDraw(true), m_pWindow(nullptr), m_pRenderer(nullptr)
+{
+}
+
+CDebugOverlay::~CDebugOverlay()
+{
+}
 
 bool CDebugOverlay::Setup(SDL_Window* window, SDL_Renderer* renderer)
 {
@@ -61,11 +73,22 @@ void CDebugOverlay::Shutdown()
 
 bool CDebugOverlay::Frame()
 {
+	if (g_pInputSystem->IsKeyPressed(SDLK_INSERT))
+		m_bShouldDraw = !m_bShouldDraw;
+
+	if (!m_bShouldDraw)
+		return false;
+
+	DrawEntityBounds();
+	DrawEntityPos();
+
 	ImGui_ImplSDLRenderer2_NewFrame();
 	ImGui_ImplSDL2_NewFrame();
 	ImGui::NewFrame();
 
-	ShowFPS();
+	char buf[32];
+	sprintf(buf, "FPS: %f", CalculateFPS());
+	ImGui::Text(buf);
 	ImGui::Image(texture, ImVec2(256, 256));
 	if (ImGui::Button("coconut"))
 	{
@@ -83,19 +106,64 @@ void CDebugOverlay::ProcessEvent(void* sdl_event)
 	ImGui_ImplSDL2_ProcessEvent((SDL_Event*)sdl_event);
 }
 
-void CDebugOverlay::ShowFPS() const
+bool CDebugOverlay::ShouldDraw()
 {
-	char buf[32];
+	return m_pRenderer;
+}
+
+float CDebugOverlay::CalculateFPS()
+{
+	float result;
 	static float frames_per_second = 0.f, total_time = 0.f;
 
 	++frames_per_second;
 	total_time += g_pEngine->GetFrameTime();
-
-	sprintf(buf, "FPS: %f", frames_per_second / total_time);
-	ImGui::Text(buf);
+	result = frames_per_second / total_time;
 
 	if (total_time > 1.f)
 		frames_per_second = total_time = 0.f;
+
+	return result;
+}
+
+void CDebugOverlay::DrawEntityPos()
+{
+	Uint8 old_r, old_g, old_b, old_a;
+	SDL_GetRenderDrawColor(m_pRenderer, &old_r, &old_g, &old_b, &old_a);
+	SDL_SetRenderDrawColor(m_pRenderer, 0, 255, 0, 255);
+
+	for (int i = 0; i < g_pEntityList->GetEntityCount(); i++)
+	{
+		float x, y;
+		auto entity = g_pEntityList->GetEntity(i);
+		entity->GetPos(x, y);
+
+		SDL_RenderDrawLineF(m_pRenderer, x - 5, y, x + 5, y);
+		SDL_RenderDrawLineF(m_pRenderer, x, y - 5, x, y + 5);
+	}
+
+	SDL_SetRenderDrawColor(m_pRenderer, old_r, old_g, old_b, old_a);
+}
+
+void CDebugOverlay::DrawEntityBounds()
+{
+	Uint8 old_r, old_g, old_b, old_a;
+	SDL_GetRenderDrawColor(m_pRenderer, &old_r, &old_g, &old_b, &old_a);
+	SDL_SetRenderDrawColor(m_pRenderer, 255, 0, 0, 255);
+
+	for (int i = 0; i < g_pEntityList->GetEntityCount(); i++)
+	{
+		Vector2D_t mins, maxs;
+		float x, y;
+
+		auto entity = g_pEntityList->GetEntity(i);
+		entity->GetWorldBounds(mins, maxs);
+		
+		SDL_FRect rect{ mins.x, mins.y, maxs.x-mins.x, maxs.y-mins.y };
+		SDL_RenderDrawRectF(m_pRenderer, &rect);
+	}
+
+	SDL_SetRenderDrawColor(m_pRenderer, old_r, old_g, old_b, old_a);
 }
 
 CDebugOverlay g_DebugOverlay;

@@ -1,52 +1,10 @@
+#include "inputsystem.h"
 #include "subsystem.h"
-#include "engine/iinputsystem.h"
-#include <SDL2/SDL.h>
-#include <unordered_map>
-#include <string>
-
 #include "game/ibaseentity.h"
 #include "game/igameclient.h"
 
-class CInputSystem : public IInputSystem
-{
-public:
-	CInputSystem() = default;
-	~CInputSystem() override = default;
-
-	bool Setup() override;
-	void Shutdown() override;
-	const char* GetSystemName() const override { return INPUT_SYSTEM_VERSION; }
-
-    void Update() override;
-	void SetMousePosition(int x, int y) override;
-	void GetMousePosition(int& x, int& y) override;
-	void SetMouseDelta(int dx, int dy) override;
-	void GetMouseDelta(int& dx, int& dy) override;
-	void SetKeyState(KeyCode_t key, bool down) override;
-	KeyState_t GetKeyState(KeyCode_t key) override;
-	bool IsKeyDown(KeyCode_t key) override;
-	bool IsKeyPressed(KeyCode_t key) override;
-	bool IsKeyUp(KeyCode_t key) override;
-	void SetKeyForBind(const char* name, KeyCode_t key) override;
-	KeyCode_t GetKeyForBind(const char* name) override;
-
-private:
-	virtual bool MakeMove();
-	virtual void KeyDown(KeyState_t& key_state);
-	virtual void KeyUp(KeyState_t& key_state);
-
-private:
-	int m_iMouseX = 0;
-	int m_iMouseY = 0;
-	int m_iMouseDX = 0;
-	int m_iMouseDY = 0;
-	std::unordered_map<KeyCode_t, KeyState_t> m_iKeyStates;
-	std::unordered_map<std::string, KeyCode_t> m_iKeyBinds;
-	
-};
-
 CInputSystem g_InputSystem;
-CREATE_SINGLE_SYSTEM( CInputSystem, IInputSystem, INPUT_SYSTEM_VERSION, g_InputSystem );
+CREATE_SINGLE_SYSTEM(CInputSystem, IInputSystem, INPUT_SYSTEM_VERSION, g_InputSystem);
 
 bool CInputSystem::Setup()
 {
@@ -55,7 +13,7 @@ bool CInputSystem::Setup()
 	SetKeyForBind("left", 'a');
 	SetKeyForBind("right", 'd');
 
-    return true;
+	return true;
 }
 
 void CInputSystem::Shutdown()
@@ -104,26 +62,6 @@ void CInputSystem::SetKeyState(KeyCode_t key, bool down)
 	}
 }
 
-KeyState_t CInputSystem::GetKeyState(KeyCode_t key)
-{
-	return m_iKeyStates[key];
-}
-
-bool CInputSystem::IsKeyDown(KeyCode_t key)
-{
-	return m_iKeyStates[key] & KEY_DOWN;
-}
-
-bool CInputSystem::IsKeyUp(KeyCode_t key)
-{
-	return m_iKeyStates[key] & KEY_UP;
-}
-
-bool CInputSystem::IsKeyPressed(KeyCode_t key)
-{
-	return m_iKeyStates[key] & KEY_PRESSED;
-}
-
 void CInputSystem::SetKeyForBind(const char* name, KeyCode_t key)
 {
 	m_iKeyBinds[name] = key;
@@ -134,6 +72,77 @@ KeyCode_t CInputSystem::GetKeyForBind(const char* name)
 	return m_iKeyBinds[name];
 }
 
+
+bool CInputSystem::IsKeyPressed(KeyCode_t key)
+{
+	return GetKeyState(key) & KEY_PRESSED;
+}
+bool CInputSystem::IsKeyDown(KeyCode_t key)
+{
+	return GetKeyState(key) & KEY_DOWN;
+}
+bool CInputSystem::IsKeyReleased(KeyCode_t key)
+{
+	return GetKeyState(key) & KEY_RELEASED;
+}
+bool CInputSystem::IsKeyUp(KeyCode_t key)
+{
+	return GetKeyState(key) & KEY_UP;
+}
+
+int CInputSystem::GetKeyState(KeyCode_t key)
+{
+	auto& key_state = m_iKeyStates[key];
+
+	int result = 0;
+	int impulsedown, impulseup, down;
+
+	impulsedown = key_state.state & 2;
+	impulseup = key_state.state & 4;
+	down = key_state.state & 1;
+
+	if (impulsedown)
+	{
+		result |= KEY_PRESSED;
+	}
+
+	if (impulseup)
+	{
+		result |= KEY_RELEASED;
+	}
+
+	if (down)
+	{
+		result |= KEY_DOWN;
+	}
+	else
+	{
+		result |= KEY_UP;
+	}
+
+	key_state.state &= 1;	// clear impulse
+	return result;
+}
+
+void CInputSystem::KeyDown(KeyState_t& key_state)
+{
+	if (key_state.down)
+		return;
+
+	if (!key_state.down)
+		key_state.down = true;
+
+	if (key_state.state & 1)
+		return;		// still down
+	key_state.state |= 1 + 2;	// down + impulse down
+}
+
+void CInputSystem::KeyUp(KeyState_t& key_state)
+{
+	key_state.down = false;
+	key_state.state = 4;	// impulse up
+}
+
 bool CInputSystem::MakeMove()
 {
 	IBaseEntity* player = g_pGameClient->GetLocalPlayer();
@@ -141,10 +150,10 @@ bool CInputSystem::MakeMove()
 	if (!player)
 		return false;
 
-	bool move_up = IsKeyPressed(GetKeyForBind("up"));
-	bool move_down = IsKeyPressed(GetKeyForBind("down"));
-	bool move_left = IsKeyPressed(GetKeyForBind("left"));
-	bool move_right = IsKeyPressed(GetKeyForBind("right"));
+	bool move_up = IsKeyDown(GetKeyForBind("up"));
+	bool move_down = IsKeyDown(GetKeyForBind("down"));
+	bool move_left = IsKeyDown(GetKeyForBind("left"));
+	bool move_right = IsKeyDown(GetKeyForBind("right"));
 	MoveInfo_t move_info{};
 
 	if (move_up && !move_down)
@@ -174,30 +183,4 @@ bool CInputSystem::MakeMove()
 	player->MakeMove(move_info);
 
 	return false;
-}
-
-void CInputSystem::KeyDown(KeyState_t& key_state)
-{
-	if ((key_state & KEY_DOWN) && (key_state & KEY_PRESSED))
-		return;
-
-	if (!(key_state & KEY_PRESSED)) 
-	{
-		key_state |= KEY_PRESSED;
-		return;
-	}
-
-	if (!(key_state & KEY_DOWN)) 
-	{
-		key_state |= KEY_DOWN;
-		return;
-	}
-}
-
-void CInputSystem::KeyUp(KeyState_t& key_state)
-{
-	if (key_state & KEY_UP)
-		return;
-
-	key_state = KEY_UP;
 }

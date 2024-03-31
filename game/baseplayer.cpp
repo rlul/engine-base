@@ -3,6 +3,8 @@
 #include "render/ispritesystem.h"
 #include <cstdio>
 
+#include "render/isprite.h"
+
 CBasePlayer* g_pLocalPlayer = nullptr;
 
 CBasePlayer::CBasePlayer()

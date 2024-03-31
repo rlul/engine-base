@@ -3,13 +3,12 @@
 
 #define INPUT_SYSTEM_VERSION "InputSystem001"
 
-#define KEY_UP		0
-#define KEY_DOWN	(1 << 0)
-#define KEY_PRESSED	(1 << 1)
-#define KEY_PRESSED	(1 << 2)
-#define KEY_INVALID	(1 << 31)
+#define KEY_UP			0
+#define KEY_DOWN		(1 << 0)
+#define KEY_PRESSED		(1 << 1)
+#define KEY_RELEASED	(1 << 2)
+#define KEY_INVALID		(1 << 31)
 
-typedef int KeyState_t;
 typedef int KeyCode_t;
 
 abstract_class IInputSystem : public IAppSystem
@@ -28,11 +27,11 @@ public:
 	virtual void GetMouseDelta(int& dx, int& dy) = 0;
 
 	virtual void SetKeyState(KeyCode_t key, bool down) = 0;
-	virtual KeyState_t GetKeyState(KeyCode_t key) = 0;
-	virtual bool IsKeyDown(KeyCode_t key) = 0;
-	virtual bool IsKeyUp(KeyCode_t key) = 0;
-	virtual bool IsKeyPressed(KeyCode_t key) = 0;
-
 	virtual void SetKeyForBind(const char* name, KeyCode_t key) = 0;
 	virtual KeyCode_t GetKeyForBind(const char* name) = 0;
+
+	virtual bool IsKeyPressed(KeyCode_t key) = 0;
+	virtual bool IsKeyDown(KeyCode_t key) = 0;
+	virtual bool IsKeyReleased(KeyCode_t key) = 0;
+	virtual bool IsKeyUp(KeyCode_t key) = 0;
 };

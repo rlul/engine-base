@@ -11,6 +11,16 @@ CBaseAnimated::CBaseAnimated()
 {
 }
 
+void CBaseAnimated::Spawn()
+{
+	CBaseEntity::Spawn();
+
+	int width, height;
+	m_pSprite->GetFrameSize(width, height);
+	m_BoundsMins = { -width / 2, -height / 2 };
+	m_BoundsMaxs = { width / 2, height / 2 };
+}
+
 void CBaseAnimated::Update(float dt)
 {
 	CBaseEntity::Update(dt);
@@ -18,12 +28,14 @@ void CBaseAnimated::Update(float dt)
 
 void CBaseAnimated::Render()
 {
-	int x = m_Position.x, y = m_Position.y;
+	Vector2D_t mins, maxs;
 	float scale_x = m_Scale.x, scale_y = m_Scale.y;
+
+	GetWorldBounds(mins, maxs);
 
 	UpdateAnimations();
 
-	g_pSpriteSystem->DrawSpriteEx(m_pSprite, m_CurrentAnimation.id, m_flCycle, x, y, scale_x, scale_y);
+	g_pSpriteSystem->DrawSpriteEx(m_pSprite, m_CurrentAnimation.id, m_flCycle, mins.x, mins.y, scale_x, scale_y);
 }
 
 void CBaseAnimated::SetCurrentAnimation(const char* name)

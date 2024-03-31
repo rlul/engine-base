@@ -15,6 +15,8 @@ public:
 	CBaseAnimated();
 	virtual ~CBaseAnimated() override = default;
 
+	virtual void Spawn() override;
+
 	virtual void Update(float dt) override;
 	virtual void Render() override;
 

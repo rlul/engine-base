@@ -4,19 +4,24 @@
 class CDebugOverlay
 {
 public:
-	CDebugOverlay() = default;
-	~CDebugOverlay() = default;
+	CDebugOverlay();
+	virtual ~CDebugOverlay();
 
-	bool Setup(SDL_Window* window, SDL_Renderer* renderer);
-	void Shutdown();
+	virtual bool Setup(SDL_Window* window, SDL_Renderer* renderer);
+	virtual void Shutdown();
 
-	bool Frame();
-	void ProcessEvent(void* sdl_event);
+	virtual bool Frame();
+	virtual void ProcessEvent(void* sdl_event);
+
+	virtual bool ShouldDraw();
 
 private:
-	void ShowFPS() const;
+	virtual float CalculateFPS();
+	virtual void DrawEntityPos();
+	virtual void DrawEntityBounds();
 
 private:
+	bool m_bShouldDraw;
 	SDL_Window* m_pWindow;
 	SDL_Renderer* m_pRenderer;
 };

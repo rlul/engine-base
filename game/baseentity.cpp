@@ -41,12 +41,15 @@ Vector2D_t CBaseEntity::GetPos() const
 
 void CBaseEntity::GetBounds(Vector2D_t& mins, Vector2D_t& maxs) const
 {
-	mins = m_BoundsMins; maxs = m_BoundsMaxs;
+	mins = { m_BoundsMins.x * m_Scale.x, m_BoundsMins.y * m_Scale.y };
+	maxs = { m_BoundsMaxs.x * m_Scale.x, m_BoundsMaxs.y * m_Scale.y };
 }
 
 void CBaseEntity::GetWorldBounds(Vector2D_t& mins, Vector2D_t& maxs) const
 {
-
+	GetBounds(mins, maxs);
+	mins += GetPos();
+	maxs += GetPos();
 }
 
 void CBaseEntity::GetSize(float& width, float& height) const
@@ -57,8 +60,7 @@ void CBaseEntity::GetSize(float& width, float& height) const
 
 Vector2D_t CBaseEntity::GetSize() const
 {
-	// calculate from bounds
-	return { 0,0 };
+    return m_BoundsMaxs - m_BoundsMins;
 }
 
 void CBaseEntity::SetPos(float x, float y)
@@ -73,7 +75,8 @@ void CBaseEntity::SetPos(Vector2D_t& pos)
 
 void CBaseEntity::SetSize(float width, float height)
 {
-	// calculate bounds
+	m_BoundsMins = { -width / 2, -height / 2 };
+	m_BoundsMaxs = { width / 2, height / 2 };
 }
 
 void CBaseEntity::SetSize(Vector2D_t& size)
