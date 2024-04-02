@@ -72,3 +72,299 @@ struct Vector2D_t
 
 	float x, y;
 };
+
+struct Vector3D_t
+{
+	Vector3D_t()
+		: x(0.0f), y(0.0f), z(0.0f)
+	{}
+	Vector3D_t(float x, float y, float z)
+		: x(x), y(y), z(z)
+	{}
+	Vector3D_t(int x, int y, int z)
+		: x(x), y(y), z(z)
+	{}
+
+	bool IsNull() const
+	{
+		return !x && !y && !z;
+	}
+
+	Vector3D_t operator+(const Vector3D_t& other) const
+	{
+		return {x + other.x, y + other.y, z + other.z};
+	}
+
+	Vector3D_t operator-(const Vector3D_t& other) const
+	{
+		return {x - other.x, y - other.y, z - other.z};
+	}
+
+	Vector3D_t operator*(float scalar) const
+	{
+		return {x * scalar, y * scalar, z * scalar};
+	}
+
+	Vector3D_t operator/(float scalar) const
+	{
+		return { x / scalar, y / scalar, z / scalar };
+	}
+
+	Vector3D_t operator+=(const Vector3D_t& other)
+	{
+		x += other.x;
+		y += other.y;
+		z += other.z;
+		return *this;
+	}
+
+	Vector3D_t operator-=(const Vector3D_t& other)
+	{
+		x -= other.x;
+		y -= other.y;
+		z -= other.z;
+		return *this;
+	}
+
+	Vector3D_t operator*=(float scalar)
+	{
+		x *= scalar;
+		y *= scalar;
+		z *= scalar;
+		return *this;
+	}
+
+	Vector3D_t operator/=(float scalar)
+	{
+		x /= scalar;
+		y /= scalar;
+		z /= scalar;
+		return *this;
+	}
+
+	Vector3D_t operator-() const
+	{
+		return {-x, -y, -z};
+	}
+
+	float x, y, z;
+};
+
+struct Vector4D_t
+{
+	Vector4D_t()
+		: x(0.0f), y(0.0f), z(0.0f), w(0.0f)
+	{}
+	Vector4D_t(float x, float y, float z, float w)
+		: x(x), y(y), z(z), w(w)
+	{}
+	Vector4D_t(int x, int y, int z, int w)
+		: x(x), y(y), z(z), w(w)
+	{}
+
+	bool IsNull() const
+	{
+		return !x && !y && !z && !w;
+	}
+
+	Vector4D_t operator+(const Vector4D_t& other) const
+	{
+		return {x + other.x, y + other.y, z + other.z, w + other.w};
+	}
+
+	Vector4D_t operator-(const Vector4D_t& other) const
+	{
+		return {x - other.x, y - other.y, z - other.z, w - other.w};
+	}
+
+	Vector4D_t operator*(float scalar) const
+	{
+		return {x * scalar, y * scalar, z * scalar, w * scalar};
+	}
+
+	Vector4D_t operator/(float scalar) const
+	{
+		return { x / scalar, y / scalar, z / scalar, w / scalar };
+	}
+
+	Vector4D_t operator+=(const Vector4D_t& other)
+	{
+		x += other.x;
+		y += other.y;
+		z += other.z;
+		w += other.w;
+		return *this;
+	}
+
+	Vector4D_t operator-=(const Vector4D_t& other)
+	{
+		x -= other.x;
+		y -= other.y;
+		z -= other.z;
+		w -= other.w;
+		return *this;
+	}
+
+	Vector4D_t operator*=(float scalar)
+	{
+		x *= scalar;
+		y *= scalar;
+		z *= scalar;
+		w *= scalar;
+		return *this;
+	}
+
+	Vector4D_t operator/=(float scalar)
+	{
+		x /= scalar;
+		y /= scalar;
+		z /= scalar;
+		w /= scalar;
+		return *this;
+	}
+
+	Vector4D_t operator-() const
+	{
+		return {-x, -y, -z, -w};
+	}
+
+	float x, y, z, w;
+};
+
+struct Matrix4x4_t
+{
+	Matrix4x4_t()
+	{
+		for (auto& i : m)
+			for (float& j : i)
+				j = 0.0f;
+	}
+	Matrix4x4_t(float m00, float m01, float m02, float m03,
+				float m10, float m11, float m12, float m13,
+				float m20, float m21, float m22, float m23,
+				float m30, float m31, float m32, float m33)
+	{
+		m[0][0] = m00; m[0][1] = m01; m[0][2] = m02; m[0][3] = m03;
+		m[1][0] = m10; m[1][1] = m11; m[1][2] = m12; m[1][3] = m13;
+		m[2][0] = m20; m[2][1] = m21; m[2][2] = m22; m[2][3] = m23;
+		m[3][0] = m30; m[3][1] = m31; m[3][2] = m32; m[3][3] = m33;
+	}
+
+    Matrix4x4_t operator*(const Matrix4x4_t& other) const
+	{
+		Matrix4x4_t result;
+		for (int i = 0; i < 4; ++i)
+			for (int j = 0; j < 4; ++j)
+				result.m[i][j] = m[i][0] * other.m[0][j] + m[i][1] * other.m[1][j] + m[i][2] * other.m[2][j] + m[i][3] * other.m[3][j];
+		return result;
+	}
+
+	Vector4D_t operator*(const Vector4D_t& vector) const
+	{
+		return {
+			m[0][0] * vector.x + m[0][1] * vector.y + m[0][2] * vector.z + m[0][3] * vector.w,
+			m[1][0] * vector.x + m[1][1] * vector.y + m[1][2] * vector.z + m[1][3] * vector.w,
+			m[2][0] * vector.x + m[2][1] * vector.y + m[2][2] * vector.z + m[2][3] * vector.w,
+			m[3][0] * vector.x + m[3][1] * vector.y + m[3][2] * vector.z + m[3][3] * vector.w
+		};
+	}
+
+	Matrix4x4_t operator+(const Matrix4x4_t& other) const
+	{
+		Matrix4x4_t result;
+		for (int i = 0; i < 4; ++i)
+			for (int j = 0; j < 4; ++j)
+				result.m[i][j] = m[i][j] + other.m[i][j];
+		return result;
+	}
+
+	Matrix4x4_t operator-(const Matrix4x4_t& other) const
+	{
+		Matrix4x4_t result;
+		for (int i = 0; i < 4; ++i)
+			for (int j = 0; j < 4; ++j)
+				result.m[i][j] = m[i][j] - other.m[i][j];
+		return result;
+	}
+
+	Matrix4x4_t operator*(float scalar) const
+	{
+		Matrix4x4_t result;
+		for (int i = 0; i < 4; ++i)
+			for (int j = 0; j < 4; ++j)
+				result.m[i][j] = m[i][j] * scalar;
+		return result;
+	}
+
+	Matrix4x4_t operator/(float scalar) const
+	{
+		Matrix4x4_t result;
+		for (int i = 0; i < 4; ++i)
+			for (int j = 0; j < 4; ++j)
+				result.m[i][j] = m[i][j] / scalar;
+		return result;
+	}
+
+	Matrix4x4_t operator+=(const Matrix4x4_t& other)
+	{
+		for (int i = 0; i < 4; ++i)
+			for (int j = 0; j < 4; ++j)
+				m[i][j] += other.m[i][j];
+		return *this;
+	}
+
+    Matrix4x4_t operator-=(const Matrix4x4_t& other)
+	{
+		for (int i = 0; i < 4; ++i)
+			for (int j = 0; j < 4; ++j)
+				m[i][j] -= other.m[i][j];
+		return *this;
+	}
+
+	Matrix4x4_t operator*=(float scalar)
+	{
+		for (int i = 0; i < 4; ++i)
+			for (int j = 0; j < 4; ++j)
+				m[i][j] *= scalar;
+		return *this;
+	}
+
+	Matrix4x4_t operator/=(float scalar)
+	{
+		for (int i = 0; i < 4; ++i)
+			for (int j = 0; j < 4; ++j)
+				m[i][j] /= scalar;
+		return *this;
+	}
+
+	Matrix4x4_t operator-() const
+	{
+		Matrix4x4_t result;
+		for (int i = 0; i < 4; ++i)
+			for (int j = 0; j < 4; ++j)
+				result.m[i][j] = -m[i][j];
+		return result;
+	}
+
+	static Matrix4x4_t CreateTranslation(Vector3D_t const& translation)
+	{
+		return {
+			1.0f,	0.0f,	0.0f,	translation.x,
+			0.0f,	1.0f,	0.0f,	translation.y,
+			0.0f,	0.0f,	1.0f,	translation.z,
+			0.0f,	0.0f,	0.0f,	1.0f
+		};
+	}
+
+	static Matrix4x4_t CreateScale(Vector3D_t const& scale)
+	{
+		return {
+			scale.x,	0.0f,		0.0f,		0.0f,
+			0.0f,		scale.y,	0.0f,		0.0f,
+			0.0f,		0.0f,		scale.z,	0.0f,
+			0.0f,		0.0f,		0.0f,		1.0f
+		};
+	}
+
+	float m[4][4];
+};
