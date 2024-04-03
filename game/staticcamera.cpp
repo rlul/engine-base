@@ -1,0 +1,92 @@
+#include "staticcamera.h"
+#include "game/ibaseentity.h"
+
+CStaticCamera::CStaticCamera()
+	: m_pRenderer(nullptr), m_Viewport(), m_flZoom(1.f), m_flRotation(0.f)
+{
+}
+
+bool CStaticCamera::Setup(SDL_Renderer* renderer)
+{
+	if (m_pRenderer)
+	{
+		return false;
+	}
+	m_pRenderer = renderer;
+	return true;
+}
+
+void CStaticCamera::Shutdown()
+{
+	m_pRenderer = nullptr;
+}
+
+void CStaticCamera::Update(float dt)
+{
+
+}
+
+void CStaticCamera::Render() const
+{
+	SDL_RenderSetViewport(m_pRenderer, &m_Viewport);
+}
+
+void CStaticCamera::ScreenToWorld(float x, float y, float& out_x, float& out_y) const
+{
+
+}
+
+bool CStaticCamera::WorldToScreen(float x, float y, float& out_x, float& out_y) const
+{
+	const Vector4D_t world = { x, y, 0.f, 1.f };
+	const Vector4D_t screen = m_ViewMatrix * world;
+
+	out_x = screen.x; out_y = screen.y;
+	return IsVisible(out_x, out_y);
+}
+
+bool CStaticCamera::IsVisible(float x, float y, float w, float h) const
+{
+	// TODO: Implement this
+	return true;
+}
+
+bool CStaticCamera::IsVisible(const IBaseEntity* entity) const
+{
+	return IsVisible(entity->GetPos(), entity->GetSize());
+}
+
+void CStaticCamera::GetViewport(float& x, float& y, float& w, float& h) const
+{
+	x = m_Viewport.x; y = m_Viewport.y;
+	w = m_Viewport.w; h = m_Viewport.h;
+}
+
+
+void CStaticCamera::SetViewport(float x, float y, float w, float h)
+{
+	m_Viewport = { static_cast<int>(x), static_cast<int>(y), static_cast<int>(w), static_cast<int>(h) };
+}
+
+void CStaticCamera::UpdateViewMatrix()
+{
+	m_ViewMatrix = m_TransformMatrix * m_RotationMatrix * m_ScaleMatrix;
+}
+
+void CStaticCamera::UpdateTransformMatrix()
+{
+	m_TransformMatrix = Matrix4x4_t::Translate({ -m_Pos.x, -m_Pos.y, 0.f });
+	UpdateViewMatrix();
+}
+
+void CStaticCamera::UpdateRotationMatrix()
+{
+	m_RotationMatrix = Matrix4x4_t::RotateZ(m_flRotation);
+	UpdateViewMatrix();
+}
+
+void CStaticCamera::UpdateScaleMatrix()
+{
+	m_ScaleMatrix = Matrix4x4_t::Scale({ m_flZoom, m_flZoom, 1.f });
+	UpdateViewMatrix();
+}

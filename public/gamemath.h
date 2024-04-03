@@ -1,4 +1,5 @@
 #pragma once
+#include <corecrt_math.h>
 
 struct Vector2D_t
 {
@@ -346,7 +347,17 @@ struct Matrix4x4_t
 		return result;
 	}
 
-	static Matrix4x4_t CreateTranslation(Vector3D_t const& translation)
+	static Matrix4x4_t Identity()
+	{
+		return {
+			1.0f,	0.0f,	0.0f,	0.0f,
+			0.0f,	1.0f,	0.0f,	0.0f,
+			0.0f,	0.0f,	1.0f,	0.0f,
+			0.0f,	0.0f,	0.0f,	1.0f
+		};
+	}
+
+	static Matrix4x4_t Translate(Vector3D_t const& translation)
 	{
 		return {
 			1.0f,	0.0f,	0.0f,	translation.x,
@@ -356,13 +367,25 @@ struct Matrix4x4_t
 		};
 	}
 
-	static Matrix4x4_t CreateScale(Vector3D_t const& scale)
+	static Matrix4x4_t Scale(Vector3D_t const& scale)
 	{
 		return {
 			scale.x,	0.0f,		0.0f,		0.0f,
 			0.0f,		scale.y,	0.0f,		0.0f,
 			0.0f,		0.0f,		scale.z,	0.0f,
 			0.0f,		0.0f,		0.0f,		1.0f
+		};
+	}
+
+	static Matrix4x4_t RotateZ(float angle)
+	{
+		float c = cosf(angle);
+		float s = sinf(angle);
+		return {
+			c,		-s,		0.0f,	0.0f,
+			s,		c,		0.0f,	0.0f,
+			0.0f,	0.0f,	1.0f,	0.0f,
+			0.0f,	0.0f,	0.0f,	1.0f
 		};
 	}
 
