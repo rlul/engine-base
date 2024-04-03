@@ -158,13 +158,13 @@ bool CInputSystem::MakeMove()
 
 	if (move_up && !move_down)
 	{
-		move_info.forwardmove = -1;
+		move_info.forwardmove = 1;
 		move_info.viewdirection = ViewDirection_t::Up;
 	}
 
 	if (!move_up && move_down)
 	{
-		move_info.forwardmove = 1;
+		move_info.forwardmove = -1;
 		move_info.viewdirection = ViewDirection_t::Down;
 	}
 

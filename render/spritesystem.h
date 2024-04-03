@@ -36,8 +36,7 @@ public:
 
 	virtual ISprite* LoadSprite(const char* filename) override;
 	virtual void UnloadSprite(ISprite* sprite) override;
-	virtual bool DrawSprite(ISprite* sprite, int x, int y, float scale) override;
-	virtual bool DrawSpriteEx(ISprite* sprite, int animation_index, int frame_index, int x, int y, float scale_x, float scale_y) override;
+	virtual void DrawSprite(ISprite* sprite, int animation_index, int frame_index, int x1, int y1, int x2, int y2, float rotation) const override;
 
 private:
 	virtual SDL_Texture* LoadTexture(const char* filename);

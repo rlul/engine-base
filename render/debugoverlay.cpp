@@ -1,4 +1,5 @@
 #include "debugoverlay.h"
+#include "render/igraphics.h"
 #include "engine/iengine.h"
 #include "engine/iinputsystem.h"
 #include "core/ifilesystem.h"
@@ -134,12 +135,15 @@ void CDebugOverlay::DrawEntityPos()
 
 	for (int i = 0; i < g_pEntityList->GetEntityCount(); i++)
 	{
-		float x, y;
-		auto entity = g_pEntityList->GetEntity(i);
-		entity->GetPos(x, y);
+		float world_x, world_y;
+		float screen_x, screen_y;
 
-		SDL_RenderDrawLineF(m_pRenderer, x - 5, y, x + 5, y);
-		SDL_RenderDrawLineF(m_pRenderer, x, y - 5, x, y + 5);
+		auto entity = g_pEntityList->GetEntity(i);
+		entity->GetPos(world_x, world_y);
+		g_pGraphics->WorldToScreen(world_x, world_y, screen_x, screen_y);
+
+		SDL_RenderDrawLineF(m_pRenderer, screen_x - 5, screen_y, screen_x + 5, screen_y);
+		SDL_RenderDrawLineF(m_pRenderer, screen_x, screen_y - 5, screen_x, screen_y + 5);
 	}
 
 	SDL_SetRenderDrawColor(m_pRenderer, old_r, old_g, old_b, old_a);
@@ -153,13 +157,15 @@ void CDebugOverlay::DrawEntityBounds()
 
 	for (int i = 0; i < g_pEntityList->GetEntityCount(); i++)
 	{
-		Vector2D_t mins, maxs;
-		float x, y;
+		Vector2D_t world_mins, world_maxs;
+		Vector2D_t screen_mins, screen_maxs;
 
 		auto entity = g_pEntityList->GetEntity(i);
-		entity->GetWorldBounds(mins, maxs);
+		entity->GetWorldBounds(world_mins, world_maxs);
+		g_pGraphics->WorldToScreen(world_mins, screen_mins);
+		g_pGraphics->WorldToScreen(world_maxs, screen_maxs);
 		
-		SDL_FRect rect{ mins.x, mins.y, maxs.x-mins.x, maxs.y-mins.y };
+		SDL_FRect rect{ screen_mins.x, screen_mins.y, screen_maxs.x- screen_mins.x, screen_maxs.y- screen_mins.y };
 		SDL_RenderDrawRectF(m_pRenderer, &rect);
 	}
 

@@ -113,38 +113,26 @@ void CSpriteSystem::UnloadSprite(ISprite* sprite)
 	// TODO: check if spite's texture is still in use by other sprites and unload it if not
 }
 
-bool CSpriteSystem::DrawSprite(ISprite* sprite, int x, int y, float scale)
+void CSpriteSystem::DrawSprite(ISprite* sprite, int animation_index, int frame_index, int x1, int y1, int x2, int y2, float rotation) const
 {
-	return DrawSpriteEx(sprite, 0, 0, x, y, scale, scale);
-}
-
-bool CSpriteSystem::DrawSpriteEx(ISprite* sprite, int animation_index, int frame_index, int x, int y, float scale_x, float scale_y)
-{
-	SDL_Rect src, dst;
+	SDL_Rect src_rect, dest_rect;
 	int columns, rows;
 	int frame_width, frame_height;
 	int frame_count, frame;
 
-	if (!sprite)
-	{
-		return false;
-	}
+	if (!sprite) return;
+
 	sprite->GetSpriteSize(columns, rows);
 	sprite->GetFrameSize(frame_width, frame_height);
 	frame_count = sprite->GetFrameCount(animation_index);
 	frame = sprite->GetFrame(frame_index, animation_index);
 
-	if (frame < 0)
-	{
-		return false;
-	}
+	if (frame < 0) return;
 
-	src = { (frame % columns) * frame_width, (frame / columns) * frame_height, frame_width, frame_height };
-	dst = { x, y, int(frame_width * scale_x), int(frame_height * scale_y) };
+	src_rect = { (frame % columns) * frame_width, (frame / columns) * frame_height, frame_width, frame_height };
+	dest_rect = { x1, y1, x2 - x1, y2 - y1 };
 
-	SDL_RenderCopy(m_pRenderer, sprite->GetTexture(), &src, &dst);
-
-	return true;
+	SDL_RenderCopyEx(m_pRenderer, sprite->GetTexture(), &src_rect, &dest_rect, rotation, NULL, SDL_FLIP_NONE);
 }
 
 SDL_Texture* CSpriteSystem::LoadTexture(const char* filename)

@@ -1,9 +1,12 @@
 #include "game/igameclient.h"
+#include "game/ientitylist.h"
+#include "game/icamera.h"
+#include "render/igraphics.h"
 #include "subsystem.h"
+#include "staticcamera.h"
 #include "baseentity.h"
 #include "baseplayer.h"
 #include "ent_darkmage.h"
-#include "game/ientitylist.h"
 
 class CGameClient : public IGameClient
 {
@@ -19,10 +22,11 @@ public:
 	virtual void Render() override;
 
 	virtual bool IsInGame() override;
-	IBaseEntity* GetLocalPlayer() override;
+	virtual IBaseEntity* GetLocalPlayer() override;
+	virtual ICamera* GetActiveCamera() override { return m_pActiveCamera; }
 
 private:
-	
+	ICamera* m_pActiveCamera;
 };
 
 CGameClient g_GameClient;
@@ -46,6 +50,13 @@ bool CGameClient::Setup()
 		entity->Spawn();
 	}
 
+	m_pActiveCamera = new CStaticCamera;
+	m_pActiveCamera->Setup(g_pGraphics->GetRenderer());
+	m_pActiveCamera->SetPos(0, 0);
+	m_pActiveCamera->SetZoom(1.f);
+	m_pActiveCamera->SetRotation(0.f);
+	m_pActiveCamera->SetViewport(0, 0);
+
 	return true;
 }
 
@@ -66,6 +77,8 @@ void CGameClient::Update(float dt)
 		auto entity = g_pEntityList->GetEntity(i);
 		entity->Update(dt);
 	}
+
+	m_pActiveCamera->Update(dt);
 }
 
 void CGameClient::Render()
@@ -75,11 +88,7 @@ void CGameClient::Render()
 		return;
 	}
 
-	for (int i = 0; i < g_pEntityList->GetEntityCount(); i++)
-	{
-		auto entity = g_pEntityList->GetEntity(i);
-		entity->GetRenderable()->Render();
-	}
+	m_pActiveCamera->Render();
 }
 
 bool CGameClient::IsInGame()

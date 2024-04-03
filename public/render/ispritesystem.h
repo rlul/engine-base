@@ -15,7 +15,6 @@ public:
 	
 	virtual ISprite* LoadSprite(const char* filename) = 0;
 	virtual void UnloadSprite(ISprite* sprite) = 0;
-	virtual bool DrawSprite(ISprite* sprite, int x, int y, float scale) = 0;
-	virtual bool DrawSpriteEx(ISprite* sprite, int animation_index, int frame_index, int x, int y, float scale_x, float scale_y) = 0;
+	virtual void DrawSprite(ISprite* sprite, int animation_index, int frame_index, int x1, int y1, int x2, int y2, float rotation) const = 0;
 
 };

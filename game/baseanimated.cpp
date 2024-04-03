@@ -6,6 +6,8 @@
 #include <cstring>
 #include <cmath>
 
+#include "render/igraphics.h"
+
 CBaseAnimated::CBaseAnimated()
 	: m_flAnimationTime(0.f), m_flCycle(0), m_bAnimationPaused(false), m_flPlaybackRate(1.f), m_CurrentAnimation()
 {
@@ -28,14 +30,18 @@ void CBaseAnimated::Update(float dt)
 
 void CBaseAnimated::Render()
 {
-	Vector2D_t mins, maxs;
-	float scale_x = m_Scale.x, scale_y = m_Scale.y;
+	Vector2D_t world_mins, world_maxs;
+	Vector2D_t screen_mins, screen_maxs;
 
-	GetWorldBounds(mins, maxs);
+	GetWorldBounds(world_mins, world_maxs);
+
+	g_pGraphics->WorldToScreen(world_mins, screen_mins);
+	g_pGraphics->WorldToScreen(world_maxs, screen_maxs);
 
 	UpdateAnimations();
 
-	g_pSpriteSystem->DrawSpriteEx(m_pSprite, m_CurrentAnimation.id, m_flCycle, mins.x, mins.y, scale_x, scale_y);
+	g_pSpriteSystem->DrawSprite(m_pSprite, m_CurrentAnimation.id, m_flCycle, 
+		screen_mins.x, screen_maxs.y, screen_maxs.x, screen_mins.y, 0.f);
 }
 
 void CBaseAnimated::SetCurrentAnimation(const char* name)

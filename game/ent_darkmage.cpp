@@ -31,7 +31,7 @@ void CDarkMage::Update(float dt)
 	{
 	case 0:
 		move_info.forwardmove = 1;
-		move_info.viewdirection = ViewDirection_t::Down;
+		move_info.viewdirection = ViewDirection_t::Up;
 		break;
 	case 1:
 		move_info.sidemove = 1;
@@ -39,7 +39,7 @@ void CDarkMage::Update(float dt)
 		break;
 	case 2:
 		move_info.forwardmove = -1;
-		move_info.viewdirection = ViewDirection_t::Up;
+		move_info.viewdirection = ViewDirection_t::Down;
 		break;
 	case 3:
 		move_info.sidemove = -1;

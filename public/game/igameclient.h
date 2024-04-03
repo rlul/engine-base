@@ -4,6 +4,7 @@
 #define GAME_CLIENT_VERSION "GameClient001"
 
 class IBaseEntity;
+class ICamera;
 
 abstract_class IGameClient : public IAppSystem
 {
@@ -17,4 +18,5 @@ public:
 	
 	virtual bool IsInGame() = 0;
 	virtual IBaseEntity* GetLocalPlayer() = 0;
+	virtual ICamera* GetActiveCamera() = 0;
 };

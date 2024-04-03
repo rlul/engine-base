@@ -1,6 +1,7 @@
 #pragma once
 #include "game/icamera.h"
 #include "gamemath.h"
+#include <SDL2/SDL.h>
 
 class CStaticCamera : public ICamera
 {

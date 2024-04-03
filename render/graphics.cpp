@@ -4,14 +4,11 @@
 #include "debugoverlay.h"
 #include "render/ispritesystem.h"
 #include "game/igameclient.h"
-#include "game/ibaseentity.h"
+#include "game/icamera.h"
 #include <SDL2/SDL.h>
 #include <SDL_image.h>
 #include <cstdio>
 #include <algorithm>
-
-#include "game/irenderable.h"
-
 #ifdef _WIN32
 #include <Windows.h>
 #endif
@@ -20,14 +17,23 @@ class CGraphics : public IGraphics
 {
 public:
 	CGraphics() = default;
-	~CGraphics() override = default;
+	virtual ~CGraphics() override = default;
 
-	bool Setup() override;
-	void Shutdown() override;
-	const char* GetSystemName() const override { return GRAPHICS_SYSTEM_VERSION; }
+	virtual bool Setup() override;
+	virtual void Shutdown() override;
+	virtual const char* GetSystemName() const override { return GRAPHICS_SYSTEM_VERSION; }
 
-	bool Frame() override;
-	void ProcessEvent(void* sdl_event) override;
+	virtual bool Frame() override;
+	virtual void ProcessEvent(void* sdl_event) override;
+
+	virtual void ScreenToWorld(float x, float y, float& out_x, float& out_y) const override;
+	virtual inline void ScreenToWorld(const Vector2D_t& screen, Vector2D_t& world) const override;
+	virtual bool WorldToScreen(float x, float y, float& out_x, float& out_y) const override;
+	virtual inline bool WorldToScreen(const Vector2D_t& world, Vector2D_t& screen) const override;
+
+	virtual SDL_Window* GetWindow() const { return m_pWindow; }
+	virtual SDL_Renderer* GetRenderer() const { return m_pRenderer; }
+	virtual void GetScreenSize(int& w, int& h) const { w = m_iScreenWidth; h = m_iScreenHeight; }
 
 private:
 	virtual void BeginScene();
@@ -36,6 +42,7 @@ private:
 private:
 	SDL_Window* m_pWindow;
 	SDL_Renderer* m_pRenderer;
+	int m_iScreenWidth, m_iScreenHeight;
 };
 
 CGraphics g_Graphics;
@@ -43,7 +50,7 @@ CREATE_SINGLE_SYSTEM(CGraphics, IGraphics, GRAPHICS_SYSTEM_VERSION, g_Graphics);
 
 bool CGraphics::Setup()
 {
-	int window_width = 1280, window_height = 720;
+	m_iScreenWidth = 1280; m_iScreenHeight = 720;
 
 	if (m_pWindow || m_pRenderer)
 	{
@@ -70,7 +77,7 @@ bool CGraphics::Setup()
 	}
 
 	m_pWindow = SDL_CreateWindow("demo", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 
-		window_width, window_height, NULL);
+		m_iScreenWidth, m_iScreenHeight, NULL);
 	if (m_pWindow == NULL)
 	{
 		printf("SDL_CreateWindow failed! (%s)\n", SDL_GetError());
@@ -123,6 +130,25 @@ bool CGraphics::Frame()
 void CGraphics::ProcessEvent(void* sdl_event)
 {
 	g_pDebugOverlay->ProcessEvent(sdl_event);
+}
+
+void CGraphics::ScreenToWorld(float x, float y, float& out_x, float& out_y) const
+{
+}
+
+void CGraphics::ScreenToWorld(const Vector2D_t& screen, Vector2D_t& world) const
+{
+	ScreenToWorld(screen.x, screen.y, world.x, world.y);
+}
+
+bool CGraphics::WorldToScreen(float x, float y, float& out_x, float& out_y) const
+{
+	return g_pGameClient->GetActiveCamera()->WorldToScreen(x, y, out_x, out_y);
+}
+
+bool CGraphics::WorldToScreen(const Vector2D_t& world, Vector2D_t& screen) const
+{
+	return WorldToScreen(world.x, world.y, screen.x, screen.y);
 }
 
 void CGraphics::BeginScene()

@@ -1,7 +1,7 @@
 #pragma once
 #include "gamemath.h"
-#include <SDL2/SDL.h>
 
+class SDL_Renderer;
 class IBaseEntity;
 
 abstract_class ICamera
@@ -27,7 +27,7 @@ public:
 	virtual inline bool IsVisible(const IBaseEntity* entity) const = 0;
 
 	virtual void GetViewport(float& x, float& y, float& w, float& h) const = 0;
-	virtual void SetViewport(float x, float y, float w, float h) = 0;
+	virtual void SetViewport(float x, float y, float w = NULL, float h = NULL) = 0;
 
 	virtual void GetPos(float& x, float& y) const = 0;
 	virtual inline Vector2D_t GetPos() const = 0;
@@ -40,8 +40,6 @@ public:
 	virtual inline void LookAt(const Vector2D_t& pos) = 0;
 	virtual void SetPos(float x, float y) = 0;
 	virtual inline void SetPos(const Vector2D_t& pos) = 0;
-	virtual void SetSize(float w, float h) = 0;
-	virtual inline void SetSize(const Vector2D_t& size) = 0;
 	virtual void SetZoom(float zoom) = 0;
 	virtual void SetRotation(float rotation) = 0;
 };

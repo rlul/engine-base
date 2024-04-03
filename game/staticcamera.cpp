@@ -1,5 +1,12 @@
 #include "staticcamera.h"
+#include "subsystems.h"
 #include "game/ibaseentity.h"
+#include "game/ientitylist.h"
+#include "render/igraphics.h"
+#include <vector>
+#include <algorithm>
+
+#include "engine/iinputsystem.h"
 
 CStaticCamera::CStaticCamera()
 	: m_pRenderer(nullptr), m_Viewport(), m_flZoom(1.f), m_flRotation(0.f)
@@ -23,12 +30,32 @@ void CStaticCamera::Shutdown()
 
 void CStaticCamera::Update(float dt)
 {
-
+	if (g_pInputSystem->IsKeyPressed(SDLK_UP))
+	{
+		SetZoom(2);
+	}
+	if (g_pInputSystem->IsKeyPressed(SDLK_DOWN))
+	{
+		SetZoom(1);
+	}
 }
 
 void CStaticCamera::Render() const
 {
 	SDL_RenderSetViewport(m_pRenderer, &m_Viewport);
+	std::vector<IBaseEntity*> entities;
+
+	for (int i = 0; i < g_pEntityList->GetEntityCount(); i++)
+		entities.push_back(g_pEntityList->GetEntity(i));
+
+	std::ranges::sort(entities, [](const IBaseEntity* first, const IBaseEntity* second) -> bool
+	{
+		return first->GetPos().y > second->GetPos().y;
+	});
+
+	for (const auto& entity : entities) {
+		entity->GetRenderable()->Render();
+	}
 }
 
 void CStaticCamera::ScreenToWorld(float x, float y, float& out_x, float& out_y) const
@@ -41,7 +68,7 @@ bool CStaticCamera::WorldToScreen(float x, float y, float& out_x, float& out_y) 
 	const Vector4D_t world = { x, y, 0.f, 1.f };
 	const Vector4D_t screen = m_ViewMatrix * world;
 
-	out_x = screen.x; out_y = screen.y;
+	out_x = screen.x; out_y = m_Viewport.h - screen.y;
 	return IsVisible(out_x, out_y);
 }
 
@@ -65,6 +92,15 @@ void CStaticCamera::GetViewport(float& x, float& y, float& w, float& h) const
 
 void CStaticCamera::SetViewport(float x, float y, float w, float h)
 {
+	int screen_width, screen_height;
+
+	if (w == NULL || h == NULL)
+	{
+		g_pGraphics->GetScreenSize(screen_width, screen_height);
+		w = w != NULL ? w : screen_width - x;
+		h = h != NULL ? h : screen_height - y;
+	}
+
 	m_Viewport = { static_cast<int>(x), static_cast<int>(y), static_cast<int>(w), static_cast<int>(h) };
 }
 
