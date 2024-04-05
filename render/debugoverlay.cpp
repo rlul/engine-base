@@ -163,15 +163,19 @@ void CDebugOverlay::DrawEntityBounds()
 	for (int i = 0; i < g_pEntityList->GetEntityCount(); i++)
 	{
 		Vector2D_t world_mins, world_maxs;
-		Vector2D_t screen_mins, screen_maxs;
+		Vector2D_t screen_bl, screen_tl, screen_br, screen_tr;
 
 		auto entity = g_pEntityList->GetEntity(i);
 		entity->GetWorldBounds(world_mins, world_maxs);
-		g_pGraphics->WorldToScreen(world_mins, screen_mins);
-		g_pGraphics->WorldToScreen(world_maxs, screen_maxs);
-		
-		SDL_FRect rect{ screen_mins.x, screen_mins.y, screen_maxs.x- screen_mins.x, screen_maxs.y- screen_mins.y };
-		SDL_RenderDrawRectF(m_pRenderer, &rect);
+		g_pGraphics->WorldToScreen(world_mins, screen_bl);
+		g_pGraphics->WorldToScreen(world_mins.x, world_maxs.y, screen_tl.x, screen_tl.y);
+		g_pGraphics->WorldToScreen(world_maxs, screen_tr);
+		g_pGraphics->WorldToScreen(world_maxs.x, world_mins.y, screen_br.x, screen_br.y);
+
+		SDL_RenderDrawLineF(m_pRenderer, screen_bl.x, screen_bl.y, screen_tl.x, screen_tl.y);
+		SDL_RenderDrawLineF(m_pRenderer, screen_tl.x, screen_tl.y, screen_tr.x, screen_tr.y);
+		SDL_RenderDrawLineF(m_pRenderer, screen_tr.x, screen_tr.y, screen_br.x, screen_br.y);
+		SDL_RenderDrawLineF(m_pRenderer, screen_br.x, screen_br.y, screen_bl.x, screen_bl.y);
 	}
 
 	SDL_SetRenderDrawColor(m_pRenderer, old_r, old_g, old_b, old_a);

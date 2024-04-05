@@ -6,6 +6,8 @@
 #include <cstring>
 #include <cmath>
 
+#include "game/icamera.h"
+#include "game/igameclient.h"
 #include "render/igraphics.h"
 
 CBaseAnimated::CBaseAnimated()
@@ -41,7 +43,7 @@ void CBaseAnimated::Render()
 	UpdateAnimations();
 
 	g_pSpriteSystem->DrawSprite(m_pSprite, m_CurrentAnimation.id, m_flCycle, 
-		screen_mins.x, screen_maxs.y, screen_maxs.x, screen_mins.y, 0.f);
+		screen_mins.x, screen_maxs.y, screen_maxs.x, screen_mins.y, g_pGameClient->GetActiveCamera()->GetRotation());
 }
 
 void CBaseAnimated::SetCurrentAnimation(const char* name)
