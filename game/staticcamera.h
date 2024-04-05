@@ -45,6 +45,7 @@ public:
 protected:
 	virtual void UpdateViewMatrix();
 	virtual void UpdateTranslateMatrix();
+	virtual void UpdateOffsetMatrix();
 	virtual void UpdateRotationMatrix();
 	virtual void UpdateScaleMatrix();
 
@@ -54,5 +55,5 @@ protected:
 	Vector2D_t m_Pos;
 	float m_flZoom;
 	float m_flRotation;
-	Matrix3x3_t m_ViewMatrix, m_TranslateMatrix, m_RotationMatrix, m_ScaleMatrix;
+	Matrix3x3_t m_ViewMatrix, m_TranslateMatrix, m_OffsetMatrix, m_RotationMatrix, m_ScaleMatrix;
 };

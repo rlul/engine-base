@@ -103,6 +103,11 @@ struct Vector3D_t
 		return !x && !y && !z;
 	}
 
+	bool operator==(const Vector3D_t& other) const
+	{
+		return x == other.x && y == other.y && z == other.z;
+	}
+
 	Vector3D_t operator+(const Vector3D_t& other) const
 	{
 		return {x + other.x, y + other.y, z + other.z};
@@ -259,6 +264,15 @@ struct Matrix3x3_t
 		m[0][0] = m00; m[0][1] = m01; m[0][2] = m02;
 		m[1][0] = m10; m[1][1] = m11; m[1][2] = m12;
 		m[2][0] = m20; m[2][1] = m21; m[2][2] = m22;
+	}
+
+	bool operator==(const Matrix3x3_t& other) const
+	{
+		for (int i = 0; i < 3; ++i)
+			for (int j = 0; j < 3; ++j)
+				if (m[i][j] != other.m[i][j])
+					return false;
+		return true;
 	}
 
 	Matrix3x3_t operator*(const Matrix3x3_t& other) const

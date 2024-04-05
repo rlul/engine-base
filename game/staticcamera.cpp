@@ -91,12 +91,8 @@ void CStaticCamera::ScreenToWorld(float x, float y, float& out_x, float& out_y) 
 
 bool CStaticCamera::WorldToScreen(float x, float y, float& out_x, float& out_y) const
 {
-	Vector3D_t size = { GetSize().x, GetSize().y, 0.f };
-	Vector3D_t pos = { GetPos().x, GetPos().y, 1.f };
-	Vector3D_t world = { x, y, 1.0f};
-	world -= pos - size * 0.5f;
-	Vector3D_t screen = m_ViewMatrix * world;
-	//screen.x -= size.x; screen.y -= size.y;
+	const Vector3D_t world = { x, y, 1.0f};
+	const Vector3D_t screen = m_ViewMatrix * world;
 
 	out_x = screen.x; out_y = m_Viewport.h - screen.y;
 	return IsVisible(out_x, out_y);
@@ -132,23 +128,29 @@ void CStaticCamera::SetViewport(float x, float y, float w, float h)
 	}
 
 	m_Viewport = { static_cast<int>(x), static_cast<int>(y), static_cast<int>(w), static_cast<int>(h) };
-	UpdateTranslateMatrix();
+	UpdateOffsetMatrix();
 }
 
 void CStaticCamera::UpdateViewMatrix()
 {
-	m_ViewMatrix = m_TranslateMatrix * m_RotationMatrix * m_ScaleMatrix;
+	m_ViewMatrix = m_OffsetMatrix * m_ScaleMatrix * m_RotationMatrix * m_TranslateMatrix;
 }
 
 void CStaticCamera::UpdateTranslateMatrix()
 {
-	m_TranslateMatrix = Matrix3x3_t::Translate({ -m_Pos.x, -m_Pos.y});
+	m_TranslateMatrix = Matrix3x3_t::Translate({ -m_Pos.x, -m_Pos.y });
+	UpdateViewMatrix();
+}
+
+void CStaticCamera::UpdateOffsetMatrix()
+{
+	m_OffsetMatrix = Matrix3x3_t::Translate({ m_Viewport.w * 0.5f, m_Viewport.h * 0.5f });
 	UpdateViewMatrix();
 }
 
 void CStaticCamera::UpdateRotationMatrix()
 {
-	m_RotationMatrix = Matrix3x3_t::Rotate(m_flRotation);
+	m_RotationMatrix = Matrix3x3_t::Rotate(-m_flRotation);
 	UpdateViewMatrix();
 }
 
