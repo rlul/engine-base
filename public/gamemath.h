@@ -377,8 +377,35 @@ struct Matrix4x4_t
 		};
 	}
 
+	static Matrix4x4_t RotateX(float angle)
+	{
+		angle *= 3.1415f / 180.0f;
+		float c = cosf(angle);
+		float s = sinf(angle);
+		return {
+			1.0f,	0.0f,	0.0f,	0.0f,
+			0.0f,	c,		-s,		0.0f,
+			0.0f,	s,		c,		0.0f,
+			0.0f,	0.0f,	0.0f,	1.0f
+		};
+	}
+
+	static Matrix4x4_t RotateY(float angle)
+	{
+		angle *= 3.1415f / 180.0f;
+		float c = cosf(angle);
+		float s = sinf(angle);
+		return {
+			c,		0.0f,	s,		0.0f,
+			0.0f,	1.0f,	0.0f,	0.0f,
+			-s,		0.0f,	c,		0.0f,
+			0.0f,	0.0f,	0.0f,	1.0f
+		};
+	}
+
 	static Matrix4x4_t RotateZ(float angle)
 	{
+		angle *= 3.1415f / 180.0f;
 		float c = cosf(angle);
 		float s = sinf(angle);
 		return {

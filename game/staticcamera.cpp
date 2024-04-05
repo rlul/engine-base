@@ -1,12 +1,11 @@
 #include "staticcamera.h"
 #include "subsystems.h"
+#include "engine/iinputsystem.h"
 #include "game/ibaseentity.h"
 #include "game/ientitylist.h"
 #include "render/igraphics.h"
 #include <vector>
 #include <algorithm>
-
-#include "engine/iinputsystem.h"
 
 CStaticCamera::CStaticCamera()
 	: m_pRenderer(nullptr), m_Viewport(), m_flZoom(1.f), m_flRotation(0.f)
@@ -30,13 +29,21 @@ void CStaticCamera::Shutdown()
 
 void CStaticCamera::Update(float dt)
 {
-	if (g_pInputSystem->IsKeyPressed(SDLK_UP))
+	if (g_pInputSystem->IsKeyDown(SDLK_UP))
 	{
-		SetZoom(2);
+		SetPos(m_Pos + Vector2D_t{ 0, 5 });
 	}
-	if (g_pInputSystem->IsKeyPressed(SDLK_DOWN))
+	if (g_pInputSystem->IsKeyDown(SDLK_DOWN))
 	{
-		SetZoom(1);
+		SetPos(m_Pos + Vector2D_t{0, -5});
+	}
+	if (g_pInputSystem->IsKeyDown(SDLK_LEFT))
+	{
+		SetPos(m_Pos + Vector2D_t{ -5, 0 });
+	}
+	if (g_pInputSystem->IsKeyDown(SDLK_RIGHT))
+	{
+		SetPos(m_Pos + Vector2D_t{ 5, 0 });
 	}
 }
 

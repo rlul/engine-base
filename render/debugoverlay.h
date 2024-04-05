@@ -19,6 +19,7 @@ private:
 	virtual float CalculateFPS();
 	virtual void DrawEntityPos();
 	virtual void DrawEntityBounds();
+	virtual void DrawWorldOrigin();
 
 private:
 	bool m_bShouldDraw;

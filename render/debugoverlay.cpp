@@ -82,6 +82,7 @@ bool CDebugOverlay::Frame()
 
 	DrawEntityBounds();
 	DrawEntityPos();
+	DrawWorldOrigin();
 
 	ImGui_ImplSDLRenderer2_NewFrame();
 	ImGui_ImplSDL2_NewFrame();
@@ -168,6 +169,21 @@ void CDebugOverlay::DrawEntityBounds()
 		SDL_FRect rect{ screen_mins.x, screen_mins.y, screen_maxs.x- screen_mins.x, screen_maxs.y- screen_mins.y };
 		SDL_RenderDrawRectF(m_pRenderer, &rect);
 	}
+
+	SDL_SetRenderDrawColor(m_pRenderer, old_r, old_g, old_b, old_a);
+}
+
+void CDebugOverlay::DrawWorldOrigin()
+{
+	Uint8 old_r, old_g, old_b, old_a;
+	SDL_GetRenderDrawColor(m_pRenderer, &old_r, &old_g, &old_b, &old_a);
+	SDL_SetRenderDrawColor(m_pRenderer, 255, 255, 255, 255);
+
+	float screen_x, screen_y;
+	g_pGraphics->WorldToScreen(0, 0, screen_x, screen_y);
+
+	SDL_RenderDrawLineF(m_pRenderer, screen_x - 15, screen_y, screen_x + 15, screen_y);
+	SDL_RenderDrawLineF(m_pRenderer, screen_x, screen_y - 15, screen_x, screen_y + 15);
 
 	SDL_SetRenderDrawColor(m_pRenderer, old_r, old_g, old_b, old_a);
 }
