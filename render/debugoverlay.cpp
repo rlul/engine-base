@@ -5,6 +5,7 @@
 #include "core/ifilesystem.h"
 #include "game/ientitylist.h"
 #include "game/ibaseentity.h"
+#include "game/icamera.h"
 #include "subsystems.h"
 #include <SDL2/SDL.h>
 #include <SDL_image.h>
@@ -12,6 +13,8 @@
 #include <backends/imgui_impl_sdlrenderer2.h>
 #include <backends/imgui_impl_sdl2.h>
 #include <cstdio>
+
+#include "game/igameclient.h"
 
 SDL_Texture* texture = nullptr;
 
@@ -82,6 +85,7 @@ bool CDebugOverlay::Frame()
 
 	DrawEntityBounds();
 	DrawEntityPos();
+	DrawCameraPos();
 	DrawWorldOrigin();
 
 	ImGui_ImplSDLRenderer2_NewFrame();
@@ -169,6 +173,22 @@ void CDebugOverlay::DrawEntityBounds()
 		SDL_FRect rect{ screen_mins.x, screen_mins.y, screen_maxs.x- screen_mins.x, screen_maxs.y- screen_mins.y };
 		SDL_RenderDrawRectF(m_pRenderer, &rect);
 	}
+
+	SDL_SetRenderDrawColor(m_pRenderer, old_r, old_g, old_b, old_a);
+}
+
+void CDebugOverlay::DrawCameraPos()
+{
+	Uint8 old_r, old_g, old_b, old_a;
+	SDL_GetRenderDrawColor(m_pRenderer, &old_r, &old_g, &old_b, &old_a);
+	SDL_SetRenderDrawColor(m_pRenderer, 255, 0, 255, 255);
+
+	Vector2D_t world_pos, screen_pos;
+	world_pos = g_pGameClient->GetActiveCamera()->GetPos();
+	g_pGraphics->WorldToScreen(world_pos, screen_pos);
+
+	SDL_RenderDrawLineF(m_pRenderer, screen_pos.x - 15, screen_pos.y, screen_pos.x + 15, screen_pos.y);
+	SDL_RenderDrawLineF(m_pRenderer, screen_pos.x, screen_pos.y - 15, screen_pos.x, screen_pos.y + 15);
 
 	SDL_SetRenderDrawColor(m_pRenderer, old_r, old_g, old_b, old_a);
 }

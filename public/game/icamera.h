@@ -36,8 +36,6 @@ public:
 	virtual float GetZoom() const = 0;
 	virtual float GetRotation() const = 0;
 
-	virtual void LookAt(float x, float y) = 0;
-	virtual void LookAt(const Vector2D_t& pos) = 0;
 	virtual void SetPos(float x, float y) = 0;
 	virtual void SetPos(const Vector2D_t& pos) = 0;
 	virtual void SetZoom(float zoom) = 0;

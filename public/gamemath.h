@@ -18,6 +18,12 @@ struct Vector2D_t
 		return !x && !y;
 	}
 
+	Vector2D_t Normalize() const
+	{
+		float length = sqrtf(x * x + y * y);
+		return {x / length, y / length};
+	}
+
 	Vector2D_t operator+(const Vector2D_t& other) const
 	{
 		return {x + other.x, y + other.y};
@@ -85,6 +91,12 @@ struct Vector3D_t
 	Vector3D_t(int x, int y, int z)
 		: x(x), y(y), z(z)
 	{}
+
+	Vector3D_t Normalize() const
+	{
+		float length = sqrtf(x * x + y * y + z * z);
+		return {x / length, y / length, z / length};
+	}
 
 	bool IsNull() const
 	{
@@ -230,6 +242,169 @@ struct Vector4D_t
 	}
 
 	float x, y, z, w;
+};
+
+struct Matrix3x3_t
+{
+	Matrix3x3_t()
+	{
+		for (auto& i : m)
+			for (float& j : i)
+				j = 0.0f;
+	}
+	Matrix3x3_t(float m00, float m01, float m02,
+				float m10, float m11, float m12,
+				float m20, float m21, float m22)
+	{
+		m[0][0] = m00; m[0][1] = m01; m[0][2] = m02;
+		m[1][0] = m10; m[1][1] = m11; m[1][2] = m12;
+		m[2][0] = m20; m[2][1] = m21; m[2][2] = m22;
+	}
+
+	Matrix3x3_t operator*(const Matrix3x3_t& other) const
+	{
+		Matrix3x3_t result;
+		for (int i = 0; i < 3; ++i)
+			for (int j = 0; j < 3; ++j)
+				result.m[i][j] = m[i][0] * other.m[0][j] + m[i][1] * other.m[1][j] + m[i][2] * other.m[2][j];
+		return result;
+	}
+
+	Vector3D_t operator*(const Vector3D_t& vector) const
+	{
+		return {
+			m[0][0] * vector.x + m[0][1] * vector.y + m[0][2] * vector.z,
+			m[1][0] * vector.x + m[1][1] * vector.y + m[1][2] * vector.z,
+			m[2][0] * vector.x + m[2][1] * vector.y + m[2][2] * vector.z
+		};
+	}
+
+	Matrix3x3_t operator+(const Matrix3x3_t& other) const
+	{
+		Matrix3x3_t result;
+		for (int i = 0; i < 3; ++i)
+			for (int j = 0; j < 3; ++j)
+				result.m[i][j] = m[i][j] + other.m[i][j];
+		return result;
+	}
+
+	Matrix3x3_t operator-(const Matrix3x3_t& other) const
+	{
+		Matrix3x3_t result;
+		for (int i = 0; i < 3; ++i)
+			for (int j = 0; j < 3; ++j)
+				result.m[i][j] = m[i][j] - other.m[i][j];
+		return result;
+	}
+
+	Matrix3x3_t operator*(float scalar) const
+	{
+				Matrix3x3_t result;
+		for (int i = 0; i < 3; ++i)
+			for (int j = 0; j < 3; ++j)
+				result.m[i][j] = m[i][j] * scalar;
+		return result;
+	}
+
+	Matrix3x3_t operator/(float scalar) const
+	{
+				Matrix3x3_t result;
+		for (int i = 0; i < 3; ++i)
+			for (int j = 0; j < 3; ++j)
+				result.m[i][j] = m[i][j] / scalar;
+		return result;
+	}
+
+	Matrix3x3_t operator+=(const Matrix3x3_t& other)
+	{
+		for (int i = 0; i < 3; ++i)
+			for (int j = 0; j < 3; ++j)
+				m[i][j] += other.m[i][j];
+		return *this;
+	}
+
+	Matrix3x3_t operator-=(const Matrix3x3_t& other)
+	{
+		for (int i = 0; i < 3; ++i)
+			for (int j = 0; j < 3; ++j)
+				m[i][j] -= other.m[i][j];
+		return *this;
+	}
+
+	Matrix3x3_t operator*=(float scalar)
+	{
+		for (auto& i : m)
+			for (float& j : i)
+				j *= scalar;
+		return *this;
+	}
+
+	Matrix3x3_t operator/=(float scalar)
+	{
+		for (auto& i : m)
+			for (float& j : i)
+				j /= scalar;
+		return *this;
+	}
+
+	Matrix3x3_t operator-() const
+	{
+		Matrix3x3_t result;
+		for (int i = 0; i < 3; ++i)
+			for (int j = 0; j < 3; ++j)
+				result.m[i][j] = -m[i][j];
+		return result;
+	}
+
+	Matrix3x3_t Transpose() const
+	{
+		Matrix3x3_t result;
+		for (int i = 0; i < 3; ++i)
+			for (int j = 0; j < 3; ++j)
+				result.m[i][j] = m[j][i];
+		return result;
+	}
+
+	static Matrix3x3_t Identity()
+	{
+		return {
+			1.0f,	0.0f,	0.0f,
+			0.0f,	1.0f,	0.0f,
+			0.0f,	0.0f,	1.0f
+		};
+	}
+
+	static Matrix3x3_t Translate(Vector2D_t const& translation)
+	{
+		return {
+			1.0f,	0.0f,	translation.x,
+			0.0f,	1.0f,	translation.y,
+			0.0f,	0.0f,	1.0f
+		};
+	}
+
+	static Matrix3x3_t Scale(Vector2D_t const& scale)
+	{
+		return {
+			scale.x,	0.0f,		0.0f,
+			0.0f,		scale.y,	0.0f,
+			0.0f,		0.0f,		1.0f
+		};
+	}
+
+	static Matrix3x3_t Rotate(float angle)
+	{
+		angle *= 3.1415f / 180.0f;
+		float c = cosf(angle);
+		float s = sinf(angle);
+		return {
+			c,		-s,		0.0f,
+			s,		c,		0.0f,
+			0.0f,	0.0f,	1.0f
+		};
+	}
+
+	float m[3][3];
 };
 
 struct Matrix4x4_t

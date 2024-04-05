@@ -36,10 +36,7 @@ public:
 	virtual float GetZoom() const override { return m_flZoom; }
 	virtual float GetRotation() const override { return m_flRotation; }
 
-	// TODO: behaviour should be replaced by SetPos
-	virtual inline void LookAt(float x, float y) override { auto size = GetSize(); SetPos(x - size.x / 2, y - size.y / 2); }
-	virtual inline void LookAt(const Vector2D_t& pos) override { LookAt(pos.x, pos.y); }
-	virtual void SetPos(float x, float y) override { m_Pos.x = x; m_Pos.y = y; UpdateTransformMatrix(); }
+	virtual void SetPos(float x, float y) override { m_Pos.x = x; m_Pos.y = y; UpdateTranslateMatrix(); }
 	virtual inline void SetPos(const Vector2D_t& pos) override { SetPos(pos.x, pos.y); }
 	virtual void SetZoom(float zoom) override { m_flZoom = zoom; UpdateScaleMatrix(); }
 	// TODO: fix rotation point
@@ -47,7 +44,7 @@ public:
 
 protected:
 	virtual void UpdateViewMatrix();
-	virtual void UpdateTransformMatrix();
+	virtual void UpdateTranslateMatrix();
 	virtual void UpdateRotationMatrix();
 	virtual void UpdateScaleMatrix();
 
@@ -57,5 +54,5 @@ protected:
 	Vector2D_t m_Pos;
 	float m_flZoom;
 	float m_flRotation;
-	Matrix4x4_t m_ViewMatrix, m_TransformMatrix, m_RotationMatrix, m_ScaleMatrix;
+	Matrix3x3_t m_ViewMatrix, m_TranslateMatrix, m_RotationMatrix, m_ScaleMatrix;
 };

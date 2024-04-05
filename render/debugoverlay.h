@@ -19,6 +19,7 @@ private:
 	virtual float CalculateFPS();
 	virtual void DrawEntityPos();
 	virtual void DrawEntityBounds();
+	virtual void DrawCameraPos();
 	virtual void DrawWorldOrigin();
 
 private:
