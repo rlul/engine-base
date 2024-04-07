@@ -1,7 +1,4 @@
 #include "spritesystem.h"
-
-#include <iostream>
-
 #include "render/ispritesystem.h"
 #include "core/ifilesystem.h"
 #include "subsystem.h"
@@ -9,6 +6,7 @@
 #include <SDL2/SDL.h>
 #include <SDL_image.h>
 #include <sstream>
+#include <iostream>
 
 CSpriteSystem g_SpriteSystem;
 CREATE_SINGLE_SYSTEM( CSpriteSystem, ISpriteSystem, SPRITE_SYSTEM_VERSION, g_SpriteSystem );

@@ -57,6 +57,7 @@ set(SDL2IMAGE_WEBP OFF)
 set(SDL2IMAGE_XCF OFF)
 set(SDL2IMAGE_XPM OFF)
 set(SDL2IMAGE_XV OFF)
+set(TMXLITE_STATIC_LIB ON)
 
 set(GAME_NAME "demo")
 set(BIN_DIR ${CMAKE_SOURCE_DIR}/../game/bin/${OS}${BITS}${DEBUG_SUFFIX})
@@ -74,6 +75,7 @@ add_subdirectory(thirdparty/SDL)
 add_subdirectory(thirdparty/SDL_image)
 add_subdirectory(thirdparty/imgui_cmake)
 add_subdirectory(thirdparty/json)
+add_subdirectory(thirdparty/tmxlite/tmxlite)
 
 set(TARGETS 
     launcher engine core render game SDL2 SDL2_image
