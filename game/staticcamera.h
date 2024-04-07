@@ -1,5 +1,6 @@
 #pragma once
 #include "game/icamera.h"
+#include "render/renderview.h"
 #include "gamemath.h"
 #include <SDL2/SDL.h>
 
@@ -7,9 +8,9 @@ class CStaticCamera : public ICamera
 {
 public:
 	CStaticCamera();
-	virtual ~CStaticCamera() override = default;
+	virtual ~CStaticCamera() override;
 
-	virtual bool Setup(SDL_Renderer* renderer) override;
+	virtual bool Setup() override;
 	virtual void Shutdown() override;
 
 	virtual void Update(float dt) override;
@@ -20,40 +21,30 @@ public:
 	virtual bool WorldToScreen(float x, float y, float& out_x, float& out_y) const override;
 	virtual inline bool WorldToScreen(const Vector2D_t& world, Vector2D_t& screen) const override { return WorldToScreen(world.x, world.y, screen.x, screen.y); }
 
-	virtual inline bool IsVisible(float x, float y) const override { return IsVisible(x, y, 1, 1); }
-	virtual inline bool IsVisible(const Vector2D_t& pos) const override { return IsVisible(pos.x, pos.y); }
+	virtual bool IsVisible(float x, float y) const override { return IsVisible(x, y, 1, 1); }
+	virtual bool IsVisible(const Vector2D_t& pos) const override { return IsVisible(pos.x, pos.y); }
 	virtual bool IsVisible(float x, float y, float w, float h) const override;
-	virtual inline bool IsVisible(const Vector2D_t& pos, const Vector2D_t& size) const override { return IsVisible(pos.x, pos.y, size.x, size.y); }
+	virtual bool IsVisible(const Vector2D_t& pos, const Vector2D_t& size) const override { return IsVisible(pos.x, pos.y, size.x, size.y); }
 	virtual inline bool IsVisible(const IBaseEntity* entity) const override;
 
-	virtual void GetViewport(float& x, float& y, float& w, float& h) const override;
-	virtual void SetViewport(float x, float y, float w, float h) override;
+	virtual void GetPos(float& x, float& y) const override { x = m_pRenderView->m_Pos.x; y = m_pRenderView->m_Pos.y; }
+	virtual Vector2D_t GetPos() const override { return m_pRenderView->m_Pos; }
+	virtual void GetSize(float& w, float& h) const override { w = m_pRenderView->m_Size.x; h = m_pRenderView->m_Size.y; }
+	virtual Vector2D_t GetSize() const override { return m_pRenderView->m_Size; }
+	virtual float GetScale() const override { return m_pRenderView->m_flScale; }
+	virtual float GetRotation() const override { return m_pRenderView->m_flRotation; }
 
-	virtual void GetPos(float& x, float& y) const override { x = m_Pos.x; y = m_Pos.y; }
-	virtual inline Vector2D_t GetPos() const override { return m_Pos; }
-	virtual void GetSize(float& w, float& h) const override { w = m_Viewport.w; h = m_Viewport.h; }
-	virtual inline Vector2D_t GetSize() const override { return { m_Viewport.w, m_Viewport.h }; }
-	virtual float GetZoom() const override { return m_flZoom; }
-	virtual float GetRotation() const override { return m_flRotation; }
-
-	virtual void SetPos(float x, float y) override { m_Pos.x = x; m_Pos.y = y; UpdateTranslateMatrix(); }
-	virtual inline void SetPos(const Vector2D_t& pos) override { SetPos(pos.x, pos.y); }
-	virtual void SetZoom(float zoom) override { m_flZoom = zoom; UpdateScaleMatrix(); }
+	virtual void SetPos(float x, float y) override { m_pRenderView->m_Pos.x = x; m_pRenderView->m_Pos.y = y; UpdateViewMatrix(); }
+	virtual void SetPos(const Vector2D_t& pos) override { SetPos(pos.x, pos.y); }
+	virtual void SetSize(float w, float h) override { m_pRenderView->m_Size.x = w; m_pRenderView->m_Size.y = h; }
+	virtual void GetSize(const Vector2D_t& size) override { m_pRenderView->m_Size = size; }
+	virtual void SetScale(float zoom) override { m_pRenderView->m_flScale = zoom; UpdateViewMatrix(); }
 	// TODO: fix rotation point
-	virtual void SetRotation(float rotation) override { m_flRotation = rotation; UpdateRotationMatrix(); }
+	virtual void SetRotation(float rotation) override { m_pRenderView->m_flRotation = rotation; UpdateViewMatrix(); }
 
 protected:
 	virtual void UpdateViewMatrix();
-	virtual void UpdateTranslateMatrix();
-	virtual void UpdateOffsetMatrix();
-	virtual void UpdateRotationMatrix();
-	virtual void UpdateScaleMatrix();
 
 protected:
-	SDL_Renderer* m_pRenderer;
-	SDL_Rect m_Viewport;
-	Vector2D_t m_Pos;
-	float m_flZoom;
-	float m_flRotation;
-	Matrix3x3_t m_ViewMatrix, m_TranslateMatrix, m_OffsetMatrix, m_RotationMatrix, m_ScaleMatrix;
+	CRenderView* m_pRenderView;
 };

@@ -1,10 +1,11 @@
 #include "render/igraphics.h"
-#include "subsystem.h"
-#include "subsystems.h"
-#include "debugoverlay.h"
 #include "render/ispritesystem.h"
 #include "game/igameclient.h"
 #include "game/icamera.h"
+#include "subsystem.h"
+#include "subsystems.h"
+#include "gamemath.h"
+#include "debugoverlay.h"
 #include <SDL2/SDL.h>
 #include <SDL_image.h>
 #include <cstdio>
@@ -43,6 +44,7 @@ private:
 	SDL_Window* m_pWindow;
 	SDL_Renderer* m_pRenderer;
 	int m_iScreenWidth, m_iScreenHeight;
+	Matrix4x4_t m_ViewMatrix, m_WorldToScreenMatrix;
 };
 
 CGraphics g_Graphics;

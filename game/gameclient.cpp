@@ -1,12 +1,14 @@
 #include "game/igameclient.h"
 #include "game/ientitylist.h"
 #include "game/icamera.h"
+#include "game/iviewport.h"
 #include "render/igraphics.h"
 #include "subsystem.h"
-#include "staticcamera.h"
 #include "baseentity.h"
 #include "baseplayer.h"
 #include "ent_darkmage.h"
+#include "gameviewport.h"
+#include "engine/iengine.h"
 
 class CGameClient : public IGameClient
 {
@@ -21,12 +23,11 @@ public:
 	virtual void Update(float dt) override;
 	virtual void Render() override;
 
-	virtual bool IsInGame() override;
 	virtual IBaseEntity* GetLocalPlayer() override;
-	virtual ICamera* GetActiveCamera() override { return m_pActiveCamera; }
+	virtual ICamera* GetActiveCamera() override { return m_pViewport->GetCamera(); }
 
 private:
-	ICamera* m_pActiveCamera;
+	IViewport* m_pViewport;
 };
 
 CGameClient g_GameClient;
@@ -50,12 +51,8 @@ bool CGameClient::Setup()
 		entity->Spawn();
 	}
 
-	m_pActiveCamera = new CStaticCamera;
-	m_pActiveCamera->Setup(g_pGraphics->GetRenderer());
-	m_pActiveCamera->SetPos(0, 0);
-	m_pActiveCamera->SetZoom(1.f);
-	m_pActiveCamera->SetRotation(0.f);
-	m_pActiveCamera->SetViewport(0, 0);
+	m_pViewport = new CGameViewport;
+	m_pViewport->Setup(g_pGraphics->GetRenderer());
 
 	return true;
 }
@@ -67,7 +64,7 @@ void CGameClient::Shutdown()
 
 void CGameClient::Update(float dt)
 {
-	if (!IsInGame())
+	if (!g_pEngine->IsInGame())
 	{
 		return;
 	}
@@ -78,22 +75,17 @@ void CGameClient::Update(float dt)
 		entity->Update(dt);
 	}
 
-	m_pActiveCamera->Update(dt);
+	m_pViewport->Update(dt);
 }
 
 void CGameClient::Render()
 {
-	if (!IsInGame())
+	if (!g_pEngine->IsInGame())
 	{
 		return;
 	}
 
-	m_pActiveCamera->Render();
-}
-
-bool CGameClient::IsInGame()
-{
-	return true;
+	m_pViewport->Render();
 }
 
 IBaseEntity* CGameClient::GetLocalPlayer()

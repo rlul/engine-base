@@ -1,4 +1,5 @@
 #include "engine/iengine.h"
+#include "engine/iinputsystem.h"
 #include "render/igraphics.h"
 #include "core/icommandline.h"
 #include "game/ibaseentity.h"
@@ -11,8 +12,6 @@
 #include <thread>
 #include <chrono>
 #include <cmath>
-
-#include "engine/iinputsystem.h"
 
 class CEngine : public IEngine
 {
@@ -29,6 +28,8 @@ public:
 	void SetQuitting(bool quit) override;
 
 	float GetFrameTime() const override;
+
+	bool IsInGame() const override;
 
 private:
 	virtual bool MainLoop();
@@ -89,6 +90,11 @@ float CEngine::GetFrameTime() const
 	return m_flFrameTime;
 }
 
+bool CEngine::IsInGame() const
+{
+	return true;
+}
+
 bool CEngine::MainLoop()
 {
 	while (true)
@@ -119,15 +125,7 @@ void CEngine::PollEvent()
 		}
 		case SDL_MOUSEBUTTONDOWN:
 		{
-			float mouse_x, mouse_y;
-			IEvent* mouse_event = g_pEventSystem->CreateGameEvent("mousedown");
-			if (!mouse_event)
-				break;
-
-			SDL_GetMouseState((int*)&mouse_x, (int*)&mouse_y);
-			mouse_event->SetValue("mouse_x", mouse_x);
-			mouse_event->SetValue("mouse_y", mouse_y);
-			g_pEventSystem->FireGameEvent(mouse_event);
+			
 			break;
 		}
 		case SDL_KEYDOWN:

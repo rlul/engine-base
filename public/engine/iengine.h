@@ -15,4 +15,6 @@ public:
 	virtual void SetQuitting(bool quit) = 0;
 
 	virtual float GetFrameTime() const = 0;
+
+	virtual bool IsInGame() const = 0;
 };

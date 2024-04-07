@@ -7,6 +7,7 @@ set(GAME_SOURCES
     baseplayer.cpp
     entitylist.cpp
     gameclient.cpp
+    gameviewport.cpp
     staticcamera.cpp
     eventlistener.cpp
     eventsystem.cpp
