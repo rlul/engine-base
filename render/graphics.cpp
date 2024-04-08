@@ -1,5 +1,5 @@
 #include "render/igraphics.h"
-#include "render/ispritesystem.h"
+#include "render/itexturesystem.h"
 #include "game/igameclient.h"
 #include "game/icamera.h"
 #include "subsystem.h"
@@ -93,7 +93,7 @@ bool CGraphics::Setup()
 		return false;
 	}
 
-	if (!g_pSpriteSystem->Setup(m_pRenderer))
+	if (!g_pTextureSystem->Setup(m_pRenderer))
 	{
 		printf("Failed while setting up sprite system!\n");
 		return false;
@@ -111,7 +111,7 @@ bool CGraphics::Setup()
 void CGraphics::Shutdown()
 {
 	g_pDebugOverlay->Shutdown();
-	g_pSpriteSystem->Shutdown();
+	g_pTextureSystem->Shutdown();
 	SDL_DestroyRenderer(m_pRenderer);
 	SDL_DestroyWindow(m_pWindow);
 }

@@ -4,7 +4,8 @@ set(RENDER_SOURCES
 	graphics.cpp
 	debugoverlay.cpp
 	sprite.cpp
-	spritesystem.cpp
+	texture.cpp
+	texturesystem.cpp
 	${PUBLIC_DIR}/subsystem.cpp
 	${PUBLIC_DIR}/subsystems.cpp
 	${PUBLIC_DIR}/common.cpp

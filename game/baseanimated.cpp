@@ -1,6 +1,6 @@
 #include "baseanimated.h"
 #include "render/isprite.h"
-#include "render/ispritesystem.h"
+#include "render/itexturesystem.h"
 #include "subsystems.h"
 #include "common.h"
 #include <cstring>
@@ -42,7 +42,7 @@ void CBaseAnimated::Render()
 
 	UpdateAnimations();
 
-	g_pSpriteSystem->DrawSprite(m_pSprite, m_CurrentAnimation.id, m_flCycle, 
+	g_pTextureSystem->DrawSprite(m_pSprite, m_CurrentAnimation.id, m_flCycle, 
 		screen_mins.x, screen_maxs.y, screen_maxs.x, screen_mins.y, g_pGameClient->GetActiveCamera()->GetRotation());
 }
 

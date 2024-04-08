@@ -1,15 +1,13 @@
 #include "baseplayer.h"
 #include "game/ievent.h"
-#include "render/ispritesystem.h"
+#include "render/itexturesystem.h"
 #include <cstdio>
-
-#include "render/isprite.h"
 
 CBasePlayer* g_pLocalPlayer = nullptr;
 
 CBasePlayer::CBasePlayer()
 {
-	m_pSprite = g_pSpriteSystem->LoadSprite("entity/cavegirl");
+	m_pSprite = g_pTextureSystem->LoadSprite("entity/cavegirl");
 	SetCurrentAnimation("idle");
 	SetScale(4);
 
@@ -25,6 +23,8 @@ CBasePlayer::CBasePlayer()
 
 CBasePlayer::~CBasePlayer()
 {
+	g_pTextureSystem->UnloadSprite(m_pSprite);
+
 	if (g_pLocalPlayer == this)
 		g_pLocalPlayer = nullptr;
 }

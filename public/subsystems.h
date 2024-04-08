@@ -16,7 +16,7 @@ typedef IAppSystem* (*GetSystemFn)(const char* name);
 DECLARE_SYSTEM( IEngine, g_pEngine );
 DECLARE_SYSTEM( IInputSystem, g_pInputSystem );
 DECLARE_SYSTEM( IGraphics, g_pGraphics );
-DECLARE_SYSTEM( ISpriteSystem, g_pSpriteSystem );
+DECLARE_SYSTEM( ITextureSystem, g_pTextureSystem );
 DECLARE_SYSTEM( ICommandLine, g_pCommandLine );
 DECLARE_SYSTEM( IFileSystem, g_pFileSystem );
 DECLARE_SYSTEM( IGameClient, g_pGameClient );

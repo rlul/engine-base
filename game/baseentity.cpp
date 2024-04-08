@@ -99,7 +99,7 @@ bool CBaseEntity::ShouldRender() const
 	return true;
 }
 
-ISprite* CBaseEntity::GetSprite() const
+std::shared_ptr<ISprite> CBaseEntity::GetSprite() const
 {
 	return m_pSprite;
 }

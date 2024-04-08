@@ -3,7 +3,7 @@
 #include "engine/module.h"
 #include "engine/iengine.h"
 #include "render/igraphics.h"
-#include "render/ispritesystem.h"
+#include "render/itexturesystem.h"
 #include "core/icommandline.h"
 #include "core/ifilesystem.h"
 #include "engine/iinputsystem.h"

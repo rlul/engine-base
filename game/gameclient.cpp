@@ -3,6 +3,7 @@
 #include "game/icamera.h"
 #include "game/iviewport.h"
 #include "render/igraphics.h"
+#include "render/itexturesystem.h"
 #include "subsystem.h"
 #include "baseentity.h"
 #include "baseplayer.h"
@@ -41,10 +42,12 @@ bool CGameClient::Setup()
 	g_pEntityList->Setup();
 
 	g_pEntityList->AddEntity(new CBasePlayer);
+	g_pTextureSystem->PrintReport();
 	auto test_entity = new CDarkMage;
 	test_entity->SetPos(100, 100);
 	g_pEntityList->AddEntity(test_entity);
-
+	g_pEntityList->AddEntity(new CBasePlayer);
+	g_pTextureSystem->PrintReport();
 	for (int i = 0; i < g_pEntityList->GetEntityCount(); i++)
 	{
 		auto entity = g_pEntityList->GetEntity(i);

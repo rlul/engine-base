@@ -1,29 +1,40 @@
 #include "sprite.h"
+#include "render/itexture.h"
 #include <SDL2/SDL.h>
-#include <cstring>
 
-CSprite::CSprite()
-	: m_pszPath(nullptr), m_pTexture(nullptr), m_iFrameWidth(0), m_iFrameHeight(0), m_nColumns(0), m_nRows(0)
-	, m_pAnimations(nullptr), m_nAnimationCount(0)
+CSprite::CSprite(const char* name, const std::shared_ptr<ITexture>& texture, const SpriteData_t& sprite_data)
+	: m_pszName(name), m_pTexture(texture), m_nColumns(sprite_data.columns), m_nRows(sprite_data.rows)
 {
+	int texture_width, texture_height;
+	if (SDL_QueryTexture(texture->GetTexture(), NULL, NULL, &texture_width, &texture_height))
+	{
+		printf("%s\n", SDL_GetError());
+	}
+	m_iFrameWidth = texture_width / sprite_data.columns;
+	m_iFrameHeight = texture_height / sprite_data.rows;
+
+	for (const auto& animation : sprite_data.animations)
+	{
+		Animation_t anim;
+		anim.name = animation.name;
+		anim.frame_rate = animation.frame_rate;
+		anim.frames = animation.frames;
+
+		m_pAnimations.push_back(anim);
+	}
 }
 
 CSprite::~CSprite()
 {
-	for (int i = 0; i < m_nAnimationCount; i++)
-	{
-		delete[] m_pAnimations[i].frames;
-	}
-
-	delete[] m_pAnimations;
+	// unload texture
 }
 
-const char* CSprite::GetPath() const
+const char* CSprite::GetName() const
 {
-	return m_pszPath;
+	return m_pszName;
 }
 
-SDL_Texture* CSprite::GetTexture() const
+std::shared_ptr<ITexture> CSprite::GetTexture() const
 {
 	return m_pTexture;
 }
@@ -42,54 +53,53 @@ void CSprite::GetFrameSize(int& width, int& height) const
 
 int CSprite::GetFrameCount(int animation_id) const
 {
-	if (!IsAnimationValid(animation_id))
+	if (animation_id < 0 || animation_id >= m_pAnimations.size())
+	{
 		return 0;
-
-	return m_pAnimations[animation_id].frame_count;
+	}
+	return m_pAnimations[animation_id].frames.size();
 }
 
-float CSprite::GetFrameRate(int animation_id) const
+int CSprite::GetFrameRate(int animation_id) const
 {
-	if (!IsAnimationValid(animation_id))
-		return 0.f;
-
+	if (animation_id < 0 || animation_id >= m_pAnimations.size())
+	{
+		return 0;
+	}
 	return m_pAnimations[animation_id].frame_rate;
 }
 
 int CSprite::GetFrame(int index, int animation_id) const
 {
-	if (!IsAnimationValid(animation_id))
-		return 0;
-
-	if (index < 0 || index >= m_pAnimations[animation_id].frame_count)
-		return 0;
-
+	if (animation_id < 0 || animation_id >= m_pAnimations.size())
+	{
+		return -1;
+	}
+	if (index < 0 || index >= m_pAnimations[animation_id].frames.size())
+	{
+		return -1;
+	}
 	return m_pAnimations[animation_id].frames[index];
 }
 
-int CSprite::GetAnimationId(const char* animation_name) const
+int CSprite::GetAnimationId(const char* name) const
 {
-	for (int i = 0; i < m_nAnimationCount; i++)
+	for (size_t i = 0; i < m_pAnimations.size(); i++)
 	{
-		if (std::strcmp(m_pAnimations[i].name, animation_name) == 0)
-		return i;
+		if (m_pAnimations[i].name == name)
+		{
+			return i;
+		}
 	}
-
 	return -1;
-}
-
-bool CSprite::IsAnimationValid(const char* animation_name) const
-{
-	for (int i = 0; i < m_nAnimationCount; i++)
-	{
-		if (std::strcmp(m_pAnimations[i].name, animation_name) == 0)
-		return true;
-	}
-
-	return false;
 }
 
 bool CSprite::IsAnimationValid(int animation_id) const
 {
-	return animation_id >= 0 && animation_id < m_nAnimationCount;
+	return animation_id >= 0 && animation_id < m_pAnimations.size();
+}
+
+bool CSprite::IsAnimationValid(const char* name) const
+{
+	return GetAnimationId(name) != -1;
 }

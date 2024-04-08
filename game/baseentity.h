@@ -2,6 +2,7 @@
 #include "game/ibaseentity.h"
 #include "game/irenderable.h"
 #include "gamemath.h"
+#include <memory>
 
 class ISprite;
 
@@ -33,7 +34,7 @@ public:
 	virtual void SetScale(float scale_x, float scale_y) override;
 
 	bool ShouldRender() const override;
-	ISprite* GetSprite() const override;
+	std::shared_ptr<ISprite> GetSprite() const override;
 	void GetRenderBounds(Vector2D_t& mins, Vector2D_t& maxs) const override;
 
 	IRenderable* GetRenderable() override;
@@ -46,6 +47,6 @@ protected:
 
 	Vector2D_t m_Velocity;
 	ViewDirection_t m_ViewDirection;
-	ISprite* m_pSprite;
+	std::shared_ptr<ISprite> m_pSprite;
 	float m_flSpawnTime;
 };

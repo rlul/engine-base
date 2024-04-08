@@ -1,11 +1,11 @@
 #include "ent_darkmage.h"
 #include "subsystems.h"
-#include "render/ispritesystem.h"
+#include "render/itexturesystem.h"
 
 CDarkMage::CDarkMage()
 	: CBaseAnimated()
 {
-	m_pSprite = g_pSpriteSystem->LoadSprite("entity/darkmage");
+	m_pSprite = g_pTextureSystem->LoadSprite("entity/darkmage");
 	SetCurrentAnimation("idle");
 	SetScale(4);
 }

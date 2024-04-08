@@ -2,7 +2,7 @@
 #include "engine/iengine.h"
 #include "engine/iinputsystem.h"
 #include "render/igraphics.h"
-#include "render/ispritesystem.h"
+#include "render/itexturesystem.h"
 #include "core/icommandline.h"
 #include "core/ifilesystem.h"
 #include "game/igameclient.h"
@@ -18,7 +18,7 @@ struct SystemInfo_t
 IEngine* g_pEngine = nullptr;
 IInputSystem* g_pInputSystem = nullptr;
 IGraphics* g_pGraphics = nullptr;
-ISpriteSystem* g_pSpriteSystem = nullptr;
+ITextureSystem* g_pTextureSystem = nullptr;
 ICommandLine* g_pCommandLine = nullptr;
 IFileSystem* g_pFileSystem = nullptr;
 IGameClient* g_pGameClient = nullptr;
@@ -30,7 +30,7 @@ SystemInfo_t g_AppSystemList[] =
 	{ &g_pEngine, ENGINE_SYSTEM_VERSION },
 	{ &g_pInputSystem, INPUT_SYSTEM_VERSION },
 	{ &g_pGraphics, GRAPHICS_SYSTEM_VERSION },
-	{ &g_pSpriteSystem, SPRITE_SYSTEM_VERSION },
+	{ &g_pTextureSystem, TEXTURE_SYSTEM_VERSION },
 	{ &g_pCommandLine, COMMANDLINE_SYSTEM_VERSION },
 	{ &g_pFileSystem, FILE_SYSTEM_VERSION },
 	{ &g_pGameClient, GAME_CLIENT_VERSION },
