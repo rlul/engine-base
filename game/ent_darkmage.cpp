@@ -12,6 +12,7 @@ CDarkMage::CDarkMage()
 
 CDarkMage::~CDarkMage()
 {
+	g_pTextureSystem->UnloadSprite(m_pSprite);
 	CBaseAnimated::~CBaseAnimated();
 }
 

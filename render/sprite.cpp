@@ -1,9 +1,12 @@
 #include "sprite.h"
+#include "subsystems.h"
 #include "render/itexture.h"
+#include "render/itexturesystem.h"
 #include <SDL2/SDL.h>
 
-CSprite::CSprite(const char* name, const std::shared_ptr<ITexture>& texture, const SpriteData_t& sprite_data)
-	: m_pszName(name), m_pTexture(texture), m_nColumns(sprite_data.columns), m_nRows(sprite_data.rows)
+
+CSprite::CSprite(std::string_view name, const std::shared_ptr<ITexture>& texture, const SpriteData_t& sprite_data)
+	: m_Name(name), m_pTexture(texture), m_nColumns(sprite_data.columns), m_nRows(sprite_data.rows)
 {
 	int texture_width, texture_height;
 	if (SDL_QueryTexture(texture->GetTexture(), NULL, NULL, &texture_width, &texture_height))
@@ -26,12 +29,12 @@ CSprite::CSprite(const char* name, const std::shared_ptr<ITexture>& texture, con
 
 CSprite::~CSprite()
 {
-	// unload texture
+	g_pTextureSystem->UnloadTexture(m_pTexture);
 }
 
-const char* CSprite::GetName() const
+std::string CSprite::GetName() const
 {
-	return m_pszName;
+	return m_Name;
 }
 
 std::shared_ptr<ITexture> CSprite::GetTexture() const

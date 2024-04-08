@@ -5,12 +5,12 @@
 class CTexture : public ITexture
 {
 public:
-	CTexture(const char* name, SDL_Texture* texture);
+	CTexture(std::string_view name, SDL_Texture* texture);
 	virtual ~CTexture() override;
 
-	virtual const char* GetName() const override;
+	virtual std::string GetName() const override;
 	virtual SDL_Texture* GetTexture() const override;
 
-	const char* m_pszName;
+	std::string m_Name;
 	SDL_Texture* m_pTexture;
 };

@@ -1,5 +1,6 @@
 #pragma once
 #include <memory>
+#include <string>
 
 class ITexture;
 
@@ -8,7 +9,7 @@ abstract_class ISprite
 public:
 	virtual ~ISprite() = default;
 
-	virtual const char* GetName() const = 0;
+	virtual std::string GetName() const = 0;
 	virtual std::shared_ptr<ITexture> GetTexture() const = 0;
 	virtual void GetSpriteSize(int& columns, int& rows) const = 0;
 

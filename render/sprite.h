@@ -26,10 +26,10 @@ class CSprite : public ISprite
 	};
 
 public:
-	CSprite(const char* name, const std::shared_ptr<ITexture>& texture, const SpriteData_t& sprite_data);
+	CSprite(std::string_view name, const std::shared_ptr<ITexture>& texture, const SpriteData_t& sprite_data);
 	virtual ~CSprite() override;
 
-	virtual const char* GetName() const override;
+	virtual std::string GetName() const override;
 	virtual std::shared_ptr<ITexture> GetTexture() const override;
 	virtual void GetSpriteSize(int& columns, int& rows) const override;
 
@@ -43,7 +43,7 @@ public:
 	virtual bool IsAnimationValid(const char* name) const override;
 
 private:
-	const char* m_pszName;
+	std::string m_Name;
 	std::shared_ptr<ITexture> m_pTexture;
 	int m_iFrameWidth, m_iFrameHeight;
 	int m_nColumns, m_nRows;

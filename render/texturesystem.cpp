@@ -44,7 +44,16 @@ void CTextureSystem::Clear()
 
 void CTextureSystem::PrintReport() const
 {
-	
+	printf("Loaded textures:\n");
+    for (auto& loaded_texture : m_pLoadedTextures)
+	{
+		printf("%s: %u\n", loaded_texture.first->GetName().c_str(), loaded_texture.second);
+	}
+	printf("Loaded sprites:\n");
+	for (auto& loaded_sprite : m_pLoadedSprites)
+	{
+		printf("%s: %u\n", loaded_sprite.first->GetName().c_str(), loaded_sprite.second);
+	}
 }
 
 void CTextureSystem::DrawSprite(const std::shared_ptr<ISprite>& sprite, int animation_index, int frame_index, int x1, int y1, int x2, int y2, float rotation)
@@ -72,7 +81,7 @@ std::shared_ptr<ISprite> CTextureSystem::LoadSprite(const char* sprite_id)
 {
 	for (auto& loaded_sprite : m_pLoadedSprites)
 	{
-		if (strcmp(loaded_sprite.first->GetName(), sprite_id) == 0)
+		if (loaded_sprite.first->GetName() == sprite_id)
 		{
 			++loaded_sprite.second;
 			return loaded_sprite.first;
@@ -105,17 +114,22 @@ std::shared_ptr<ISprite> CTextureSystem::LoadSprite(const char* sprite_id)
 
 void CTextureSystem::UnloadSprite(const char* sprite_id)
 {
+	erase_if(m_pLoadedSprites, [sprite_id](std::pair<std::shared_ptr<ISprite>, unsigned>& sprite) -> bool
+		{
+			return sprite.first->GetName() == sprite_id && --sprite.second == 0;
+		});
 }
 
 void CTextureSystem::UnloadSprite(const std::shared_ptr<ISprite>& sprite)
 {
+	UnloadSprite(sprite->GetName().c_str());
 }
 
 std::shared_ptr<ITexture> CTextureSystem::LoadTexture(const char* texture_id)
 {
 	for (auto& loaded_texture : m_pLoadedTextures)
 	{
-		if (strcmp(loaded_texture.first->GetName(), texture_id) == 0)
+		if (loaded_texture.first->GetName() == texture_id)
 		{
 			++loaded_texture.second;
 			return loaded_texture.first;
@@ -161,10 +175,15 @@ std::shared_ptr<ITexture> CTextureSystem::LoadTexture(const char* texture_id)
 
 void CTextureSystem::UnloadTexture(const char* texture_id)
 {
+	erase_if(m_pLoadedTextures, [texture_id](std::pair<std::shared_ptr<ITexture>, unsigned>& texture) -> bool
+		{
+			return texture.first->GetName() == texture_id && --texture.second == 0;
+		});
 }
 
 void CTextureSystem::UnloadTexture(const std::shared_ptr<ITexture>& texture)
 {
+	UnloadTexture(texture->GetName().c_str());
 }
 
 SpriteData_t CTextureSystem::ParseSpriteData(const char* data) const
