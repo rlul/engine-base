@@ -16,8 +16,6 @@ CTileLayer::CTileLayer(std::string_view name, TileSetList_t& tile_sets)
 
 bool CTileLayer::Load(const tmx::Layer& layer_handle)
 {
-	printf("Loading layer: %s\n", m_Name.c_str());
-
 	auto& data = layer_handle.getLayerAs<tmx::TileLayer>().getTiles();
 	auto size = layer_handle.getLayerAs<tmx::TileLayer>().getSize();
 	auto width = size.x; auto height = size.y;
@@ -35,10 +33,6 @@ bool CTileLayer::Load(const tmx::Layer& layer_handle)
 			m_iTileMap[x][y] = tile.ID;
 		}
 	}
-
-	printf("Finished loading layer: %s\n", m_Name.c_str());
-
-	Print();
 
 	return true;
 }

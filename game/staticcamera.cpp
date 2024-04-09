@@ -58,14 +58,14 @@ void CStaticCamera::Update(float dt)
 		SetScale(m_pRenderView->m_flScale - 0.03f);
 	}
 
-	if (g_pInputSystem->IsKeyDown(SDLK_LEFTBRACKET))
-	{
-		SetRotation(m_pRenderView->m_flRotation - 1.f);
-	}
-	if (g_pInputSystem->IsKeyDown(SDLK_RIGHTBRACKET))
-	{
-		SetRotation(m_pRenderView->m_flRotation + 1.f);
-	}
+	//if (g_pInputSystem->IsKeyDown(SDLK_LEFTBRACKET))
+	//{
+	//	SetRotation(m_pRenderView->m_flRotation - 1.f);
+	//}
+	//if (g_pInputSystem->IsKeyDown(SDLK_RIGHTBRACKET))
+	//{
+	//	SetRotation(m_pRenderView->m_flRotation + 1.f);
+	//}
 }
 
 void CStaticCamera::Render() const

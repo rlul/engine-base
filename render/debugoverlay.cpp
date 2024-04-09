@@ -83,10 +83,10 @@ bool CDebugOverlay::Frame()
 	if (!m_bShouldDraw)
 		return false;
 
-	DrawEntityBounds();
-	DrawEntityPos();
-	DrawCameraPos();
 	DrawWorldOrigin();
+	DrawCameraPos();
+	DrawEntityPos();
+	DrawEntityBounds();
 
 	ImGui_ImplSDLRenderer2_NewFrame();
 	ImGui_ImplSDL2_NewFrame();

@@ -9,6 +9,8 @@ set(GAME_SOURCES
     gameclient.cpp
     gameviewport.cpp
     staticcamera.cpp
+    followcamera.cpp
+    boundboxcamera.cpp
     eventlistener.cpp
     eventsystem.cpp
     ent_darkmage.cpp

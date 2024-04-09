@@ -3,6 +3,8 @@
 #include "render/renderview.h"
 #include "subsystems.h"
 #include "staticcamera.h"
+#include "followcamera.h"
+#include "boundboxcamera.h"
 #include "render/igraphics.h"
 
 CGameViewport::CGameViewport()
@@ -24,11 +26,14 @@ bool CGameViewport::Setup(SDL_Renderer* renderer)
 	g_pGraphics->GetScreenSize(screen_w, screen_h);
 	m_Rect = { 0,0, screen_w/1, screen_h/1 };
 
-	m_pCamera = new CStaticCamera;
-	m_pCamera->Setup();
-	m_pCamera->SetPos(0, 0);
-	m_pCamera->SetSize(screen_w, screen_h);
-	m_pCamera->SetScale(1.f);
+	auto camera = new CFollowCamera;
+	camera->Setup();
+	camera->SetPos(0, 0);
+	//camera->SetBoundBoxSize({ 1280 * 0.5f, 720 * 0.5f });
+	camera->SetSize(screen_w, screen_h);
+	camera->SetScale(1.f);
+
+	m_pCamera = camera;
 
 	return true;
 }
