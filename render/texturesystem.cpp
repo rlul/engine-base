@@ -74,7 +74,7 @@ void CTextureSystem::DrawSprite(const std::shared_ptr<ISprite>& sprite, int anim
 	src_rect = { (frame % columns) * frame_width, (frame / columns) * frame_height, frame_width, frame_height };
 	dest_rect = { x1, y1, x2 - x1, y2 - y1 };
 
-	SDL_RenderCopyEx(m_pRenderer, sprite->GetTexture()->GetTexture(), &src_rect, &dest_rect, rotation, NULL, SDL_FLIP_NONE);
+	SDL_RenderCopyEx(m_pRenderer, *sprite->GetTexture(), &src_rect, &dest_rect, rotation, NULL, SDL_FLIP_NONE);
 }
 
 std::shared_ptr<ISprite> CTextureSystem::LoadSprite(const char* sprite_id)

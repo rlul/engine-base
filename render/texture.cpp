@@ -16,7 +16,7 @@ std::string CTexture::GetName() const
 	return m_Name;
 }
 
-SDL_Texture* CTexture::GetTexture() const
+CTexture::operator SDL_Texture*() const
 {
 	return m_pTexture;
 }

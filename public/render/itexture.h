@@ -8,5 +8,5 @@ public:
 	virtual ~ITexture() = default;
 
 	virtual std::string GetName() const = 0;
-	virtual SDL_Texture* GetTexture() const = 0;
+	virtual operator SDL_Texture*() const = 0;
 };

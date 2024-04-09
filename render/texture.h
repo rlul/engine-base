@@ -9,7 +9,7 @@ public:
 	virtual ~CTexture() override;
 
 	virtual std::string GetName() const override;
-	virtual SDL_Texture* GetTexture() const override;
+	virtual operator SDL_Texture*() const override;
 
 	std::string m_Name;
 	SDL_Texture* m_pTexture;

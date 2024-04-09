@@ -9,7 +9,7 @@ CSprite::CSprite(std::string_view name, const std::shared_ptr<ITexture>& texture
 	: m_Name(name), m_pTexture(texture), m_nColumns(sprite_data.columns), m_nRows(sprite_data.rows)
 {
 	int texture_width, texture_height;
-	if (SDL_QueryTexture(texture->GetTexture(), NULL, NULL, &texture_width, &texture_height))
+	if (SDL_QueryTexture(*texture, NULL, NULL, &texture_width, &texture_height))
 	{
 		printf("%s\n", SDL_GetError());
 	}
