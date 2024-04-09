@@ -7,7 +7,7 @@ CDarkMage::CDarkMage()
 {
 	m_pSprite = g_pTextureSystem->LoadSprite("entity/darkmage");
 	SetCurrentAnimation("idle");
-	SetScale(4);
+	SetScale(1);
 }
 
 CDarkMage::~CDarkMage()

@@ -39,7 +39,9 @@ public:
 	 * \return Handle to the file if successful, nullptr otherwise.
 	 */
 	virtual FileHandle_t Open(const char* file_name, OpenFileOptions_t options) = 0;
+	virtual FileHandle_t OpenFullPath(const char* file_path, OpenFileOptions_t options) = 0;
 	virtual bool FileExists(const char* file_name, const char* path_id) = 0;
+	virtual const char* GetFilePath(FileHandle_t file) = 0;
 	virtual void Close(FileHandle_t file) = 0;
 
 	/**

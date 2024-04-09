@@ -14,7 +14,7 @@ void CBaseEntity::Spawn()
 void CBaseEntity::Update(float dt)
 {
 	m_flSpawnTime += dt;
-	m_Position += m_Velocity * dt * 200;
+	m_Position += m_Velocity * dt * 50;
 }
 
 void CBaseEntity::Render()

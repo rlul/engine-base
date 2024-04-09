@@ -1,47 +1,19 @@
-#include "engine/iengine.h"
+#include "engine.h"
 #include "engine/iinputsystem.h"
 #include "render/igraphics.h"
 #include "core/icommandline.h"
-#include "game/ibaseentity.h"
+#include "core/ifilesystem.h"
 #include "game/igameclient.h"
-#include "game/ievent.h"
-#include "game/ieventsystem.h"
 #include "subsystem.h"
 #include "common.h"
 #include <SDL2/SDL.h>
+#include <tmxlite/Map.hpp>
 #include <thread>
 #include <chrono>
 #include <cmath>
+#include <filesystem>
 
-class CEngine : public IEngine
-{
-public:
-	CEngine() = default;
-	~CEngine() override = default;
-
-	bool Setup() override;
-	void Shutdown() override;
-	const char* GetSystemName() const override { return ENGINE_SYSTEM_VERSION; }
-
-	int Main() override;
-	bool GetQuitting() const override;
-	void SetQuitting(bool quit) override;
-
-	float GetFrameTime() const override;
-
-	bool IsInGame() const override;
-
-private:
-	virtual bool MainLoop();
-	virtual void PollEvent();
-	virtual void Frame();
-	virtual bool FilterTime(float deltatime);
-
-private:
-	bool m_bQuitting;
-	float m_flPreviousTime, m_flCurrentTime;
-	float m_flFrameTime, m_flMinFrameTime;
-};
+#include "tilemap.h"
 
 CEngine g_Engine;
 CREATE_SINGLE_SYSTEM( CEngine, IEngine, ENGINE_SYSTEM_VERSION, g_Engine );
@@ -66,6 +38,8 @@ void CEngine::Shutdown()
 int CEngine::Main()
 {
 	int result = 0;	// stop
+
+	LoadScene("testmap");
 
 	if (!MainLoop())
 	{
@@ -93,6 +67,49 @@ float CEngine::GetFrameTime() const
 bool CEngine::IsInGame() const
 {
 	return true;
+}
+
+bool CEngine::LoadScene(const char* name)
+{
+	std::ostringstream map_path;
+	map_path << "scenes/" << name << ".tmx";
+
+	auto file_handle = g_pFileSystem->Open(map_path.str().c_str(), IFileSystem::OPEN_READ);
+	auto file_path = g_pFileSystem->GetFilePath(file_handle);
+	auto file_size = g_pFileSystem->Size(file_handle) + 1;
+	auto file_data = new char[file_size] { 0, };
+	g_pFileSystem->Read(file_handle, file_data, file_size);
+	g_pFileSystem->Close(file_handle);
+
+	std::filesystem::path working_directory = file_path;
+	working_directory.remove_filename();
+
+	tmx::Map map;
+	map.loadFromString(file_data, working_directory.string());
+	delete[] file_data;
+
+	auto scene = new CTileMap(name);
+
+	if (!scene->Load(map))
+	{
+		delete scene;
+		return false;
+	}
+
+	m_pScene = scene;
+
+	return true;
+}
+
+void CEngine::UnloadScene()
+{
+	delete m_pScene;
+	m_pScene = nullptr;
+}
+
+ITileMap* CEngine::GetScene() const
+{
+	return m_pScene;
 }
 
 bool CEngine::MainLoop()

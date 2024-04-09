@@ -3,6 +3,8 @@
 
 #define ENGINE_SYSTEM_VERSION "Engine001"
 
+class ITileMap;
+
 abstract_class IEngine : public IAppSystem
 {
 public:
@@ -17,4 +19,7 @@ public:
 	virtual float GetFrameTime() const = 0;
 
 	virtual bool IsInGame() const = 0;
+	virtual bool LoadScene(const char* name) = 0;
+	virtual void UnloadScene() = 0;
+	virtual ITileMap* GetScene() const = 0;
 };

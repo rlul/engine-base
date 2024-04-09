@@ -34,28 +34,28 @@ void CStaticCamera::Update(float dt)
 {
 	if (g_pInputSystem->IsKeyDown(SDLK_UP))
 	{
-		SetPos(m_pRenderView->m_Pos + Vector2D_t{ 0, 5 });
+		SetPos(m_pRenderView->m_Pos + Vector2D_t{ 0, 2 });
 	}
 	if (g_pInputSystem->IsKeyDown(SDLK_DOWN))
 	{
-		SetPos(m_pRenderView->m_Pos + Vector2D_t{0, -5});
+		SetPos(m_pRenderView->m_Pos + Vector2D_t{0, -2});
 	}
 	if (g_pInputSystem->IsKeyDown(SDLK_LEFT))
 	{
-		SetPos(m_pRenderView->m_Pos + Vector2D_t{ -5, 0 });
+		SetPos(m_pRenderView->m_Pos + Vector2D_t{ -2, 0 });
 	}
 	if (g_pInputSystem->IsKeyDown(SDLK_RIGHT))
 	{
-		SetPos(m_pRenderView->m_Pos + Vector2D_t{ 5, 0 });
+		SetPos(m_pRenderView->m_Pos + Vector2D_t{ 2, 0 });
 	}
 
 	if (g_pInputSystem->IsKeyDown(SDLK_PAGEUP))
 	{
-		SetScale(m_pRenderView->m_flScale + 0.01f);
+		SetScale(m_pRenderView->m_flScale + 0.03f);
 	}
 	if (g_pInputSystem->IsKeyDown(SDLK_PAGEDOWN))
 	{
-		SetScale(m_pRenderView->m_flScale - 0.01f);
+		SetScale(m_pRenderView->m_flScale - 0.03f);
 	}
 
 	if (g_pInputSystem->IsKeyDown(SDLK_LEFTBRACKET))

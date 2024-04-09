@@ -7,6 +7,7 @@
 #include <nlohmann/json.hpp>
 #include <SDL2/SDL.h>
 #include <SDL_image.h>
+#include <tmxlite/Tileset.hpp>
 #include <sstream>
 
 CTextureSystem g_TextureSystem;
@@ -56,9 +57,10 @@ void CTextureSystem::PrintReport() const
 	}
 }
 
-void CTextureSystem::DrawSprite(const std::shared_ptr<ISprite>& sprite, int animation_index, int frame_index, int x1, int y1, int x2, int y2, float rotation)
+void CTextureSystem::DrawSprite(const std::shared_ptr<ISprite>& sprite, int animation_index, int frame_index, float x1, float y1, float x2, float y2, float rotation)
 {
-	SDL_Rect src_rect, dest_rect;
+	SDL_Rect src_rect;
+	SDL_FRect dest_rect;
 	int columns, rows;
 	int frame_width, frame_height;
 	int frame;
@@ -74,14 +76,14 @@ void CTextureSystem::DrawSprite(const std::shared_ptr<ISprite>& sprite, int anim
 	src_rect = { (frame % columns) * frame_width, (frame / columns) * frame_height, frame_width, frame_height };
 	dest_rect = { x1, y1, x2 - x1, y2 - y1 };
 
-	SDL_RenderCopyEx(m_pRenderer, *sprite->GetTexture(), &src_rect, &dest_rect, rotation, NULL, SDL_FLIP_NONE);
+	SDL_RenderCopyExF(m_pRenderer, *sprite->GetTexture(), &src_rect, &dest_rect, rotation, NULL, SDL_FLIP_NONE);
 }
 
-std::shared_ptr<ISprite> CTextureSystem::LoadSprite(const char* sprite_id)
+std::shared_ptr<ISprite> CTextureSystem::LoadSprite(const char* name)
 {
 	for (auto& loaded_sprite : m_pLoadedSprites)
 	{
-		if (loaded_sprite.first->GetName() == sprite_id)
+		if (loaded_sprite.first->GetName() == name)
 		{
 			++loaded_sprite.second;
 			return loaded_sprite.first;
@@ -89,7 +91,7 @@ std::shared_ptr<ISprite> CTextureSystem::LoadSprite(const char* sprite_id)
 	}
 
 	std::ostringstream sprite_path;
-	sprite_path << "sprites/" << sprite_id << ".json";
+	sprite_path << "sprites/" << name << ".json";
 
 	auto file = g_pFileSystem->Open(sprite_path.str().c_str(), IFileSystem::OPEN_READ);
 	auto file_size = g_pFileSystem->Size(file) + 1;
@@ -106,7 +108,7 @@ std::shared_ptr<ISprite> CTextureSystem::LoadSprite(const char* sprite_id)
 		return nullptr;
 	}
 
-	auto sprite = std::make_shared<CSprite>(sprite_id, texture, sprite_data);
+	auto sprite = std::make_shared<CSprite>(name, texture, sprite_data);
 
 	m_pLoadedSprites.emplace_back(sprite, 1);
 	return sprite;
@@ -125,21 +127,61 @@ void CTextureSystem::UnloadSprite(const std::shared_ptr<ISprite>& sprite)
 	UnloadSprite(sprite->GetName().c_str());
 }
 
-std::shared_ptr<ITexture> CTextureSystem::LoadTexture(const char* texture_id)
+void CTextureSystem::DrawTile(const std::shared_ptr<ITileSet>& tileset, Tile_t tile_id, float x1, float y1, float x2, float y2)
+{
+	if (!tileset)
+		return;
+
+	auto texture = tileset->GetTexture();
+	if (!texture)
+		return;
+
+	SDL_Rect src_rect;
+	SDL_FRect dest_rect;
+	tileset->GetTileRect(tile_id, src_rect.x, src_rect.y, src_rect.w, src_rect.h);
+	dest_rect = { x1, y2, x2 - x1, y1 - y2 };
+
+	SDL_RenderCopyExF(m_pRenderer, *texture, &src_rect, &dest_rect, 0, NULL, SDL_FLIP_NONE);
+}
+
+std::shared_ptr<ITileSet> CTextureSystem::LoadTileSet(const tmx::Tileset& tileset_handle)
+{
+	auto tileset = std::make_shared<CTileSet>(tileset_handle);
+	return tileset;
+}
+
+void CTextureSystem::UnloadTileSet(const char* tileset_id)
+{
+
+}
+
+void CTextureSystem::UnloadTileSet(const std::shared_ptr<ITileSet>& tileset)
+{
+
+}
+
+std::shared_ptr<ITexture> CTextureSystem::LoadTexture(const char* name)
 {
 	for (auto& loaded_texture : m_pLoadedTextures)
 	{
-		if (loaded_texture.first->GetName() == texture_id)
+		if (loaded_texture.first->GetName() == name)
 		{
 			++loaded_texture.second;
 			return loaded_texture.first;
 		}
 	}
 
-	std::ostringstream texture_path;
-	texture_path << "textures/" << texture_id << ".png";
-
-	auto file_handle = g_pFileSystem->Open(texture_path.str().c_str(), IFileSystem::OPEN_READ);
+	FileHandle_t file_handle = nullptr;
+	if (std::filesystem::path(name).is_absolute())
+	{
+		file_handle = g_pFileSystem->OpenFullPath(name, IFileSystem::OPEN_READ);
+	}
+	else
+	{
+		std::ostringstream texture_path;
+		texture_path << "textures/" << name << ".png";
+		file_handle = g_pFileSystem->Open(texture_path.str().c_str(), IFileSystem::OPEN_READ);
+	}
 	auto file_size = g_pFileSystem->Size(file_handle);
 	auto file_data = new char[file_size] { 0, };
 	g_pFileSystem->Read(file_handle, file_data, file_size);
@@ -152,18 +194,18 @@ std::shared_ptr<ITexture> CTextureSystem::LoadTexture(const char* texture_id)
 
 	if (!surface)
 	{
-		printf("Failed to load surface %s\n", texture_id);
+		printf("Failed to load surface %s\n", name);
 		return nullptr;
 	}
 
 	auto texure_handle = SDL_CreateTextureFromSurface(m_pRenderer, surface);
 	if (!texure_handle)
 	{
-		printf("Failed to create texture from surface %s\n", texture_id);
+		printf("Failed to create texture from surface %s\n", name);
 		return nullptr;
 	}
 
-	auto texture = std::make_shared<CTexture>(texture_id, texure_handle);
+	auto texture = std::make_shared<CTexture>(name, texure_handle);
 	if (!texture)
 	{
 		return nullptr;

@@ -7,18 +7,19 @@
 class CFileHandle
 {
 public:
-	CFileHandle(std::fstream* p_file_stream)
-		: m_FileStream(p_file_stream)
+	CFileHandle(std::fstream* p_file_stream, const char* path)
+		: m_pFileStream(p_file_stream), m_pPath(path)
 	{
 		
 	}
 	~CFileHandle()
 	{
+		delete[] m_pPath;
 		Close();
 	}
 
 	void Close();
-	const char* GetFileName() const;
+	const char* GetFilePath() const;
 	unsigned int Read(void* buffer, unsigned int size) const;
 	unsigned int Write(const void* buffer, unsigned int size) const;
 	void Flush() const;
@@ -28,7 +29,8 @@ public:
 	bool EndOfFile() const;
 
 private:
-	std::fstream* m_FileStream;
+	std::fstream* m_pFileStream;
+	const char* m_pPath;
 };
 
 class CSearchPath
@@ -53,28 +55,30 @@ class CFileSystem : public IFileSystem
 {
 public:
 	CFileSystem() = default;
-	~CFileSystem() override = default;
+	virtual ~CFileSystem() override = default;
 
-	bool Setup(const char* absolute_game_path) override;
-	void Shutdown() override;
-	const char* GetSystemName() const override { return FILE_SYSTEM_VERSION; }
+	virtual bool Setup(const char* absolute_game_path) override;
+	virtual void Shutdown() override;
+	virtual const char* GetSystemName() const override { return FILE_SYSTEM_VERSION; }
 
-	bool AddSearchPath(const char* path, const char* path_id) override;
-	const char* GetSearchPath(const char* path_id) const override;
-	void RemoveSearchPath(const char* path_id) override;
+	virtual bool AddSearchPath(const char* path, const char* path_id) override;
+	virtual const char* GetSearchPath(const char* path_id) const override;
+	virtual void RemoveSearchPath(const char* path_id) override;
 
-	FileHandle_t Open(const char* file_name, const char* path_id, OpenFileOptions_t options) override;
-	FileHandle_t Open(const char* file_name, OpenFileOptions_t options) override;
-	bool FileExists(const char* file_name, const char* path_id) override;
-	void Close(FileHandle_t file) override;
+	virtual FileHandle_t Open(const char* file_name, const char* path_id, OpenFileOptions_t options) override;
+	virtual FileHandle_t Open(const char* file_name, OpenFileOptions_t options) override;
+	virtual FileHandle_t OpenFullPath(const char* file_path, OpenFileOptions_t options) override;
+	virtual bool FileExists(const char* file_name, const char* path_id) override;
+	virtual const char* GetFilePath(FileHandle_t file) override;
+	virtual void Close(FileHandle_t file) override;
 
-	unsigned int Read(FileHandle_t file, void* buffer, unsigned int size) override;
-	unsigned int Write(FileHandle_t file, const void* buffer, unsigned int size) override;
-	void Flush(FileHandle_t file) override;
-	void Seek(FileHandle_t file, unsigned int position) override;
-	unsigned int Tell(FileHandle_t file) override;
-	unsigned int Size(FileHandle_t file) override;
-	bool EndOfFile(FileHandle_t file) override;
+	virtual unsigned int Read(FileHandle_t file, void* buffer, unsigned int size) override;
+	virtual unsigned int Write(FileHandle_t file, const void* buffer, unsigned int size) override;
+	virtual void Flush(FileHandle_t file) override;
+	virtual void Seek(FileHandle_t file, unsigned int position) override;
+	virtual unsigned int Tell(FileHandle_t file) override;
+	virtual unsigned int Size(FileHandle_t file) override;
+	virtual bool EndOfFile(FileHandle_t file) override;
 
 private:
 	std::vector<CSearchPath*> m_SearchPaths;

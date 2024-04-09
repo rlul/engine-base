@@ -5,6 +5,7 @@ set(ENGINE_SOURCES
 	engine.cpp
 	inputsystem.cpp
 	tilemap.cpp
+	tilelayer.cpp
 	${PUBLIC_DIR}/subsystems.cpp
 	${PUBLIC_DIR}/subsystem.cpp
 	${PUBLIC_DIR}/common.cpp

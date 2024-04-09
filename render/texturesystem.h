@@ -1,8 +1,9 @@
 #pragma once
 #include "render/itexturesystem.h"
 #include "sprite.h"
+#include "tileset.h"
+#include "texture.h"
 #include <vector>
-#include <string>
 
 class CTextureSystem : public ITextureSystem
 {
@@ -16,12 +17,17 @@ public:
 	virtual void Clear() override;
 	virtual void PrintReport() const override;
 
-	virtual void DrawSprite(const std::shared_ptr<ISprite>& sprite, int animation_index, int frame_index, int x1, int y1, int x2, int y2, float rotation) override;
-	virtual std::shared_ptr<ISprite> LoadSprite(const char* sprite_id) override;
+	virtual void DrawSprite(const std::shared_ptr<ISprite>& sprite, int animation_index, int frame_index, float x1, float y1, float x2, float y2, float rotation) override;
+	virtual std::shared_ptr<ISprite> LoadSprite(const char* name) override;
 	virtual void UnloadSprite(const char* sprite_id) override;
 	virtual void UnloadSprite(const std::shared_ptr<ISprite>& sprite) override;
 
-	virtual std::shared_ptr<ITexture> LoadTexture(const char* texture_id) override;
+	virtual void DrawTile(const std::shared_ptr<ITileSet>& tileset, Tile_t tile_id, float x1, float y1, float x2, float y2) override;
+	virtual std::shared_ptr<ITileSet> LoadTileSet(const tmx::Tileset& tileset_handle) override;
+	virtual void UnloadTileSet(const char* tileset_id) override;
+	virtual void UnloadTileSet(const std::shared_ptr<ITileSet>& tileset) override;
+
+	virtual std::shared_ptr<ITexture> LoadTexture(const char* name) override;
 	virtual void UnloadTexture(const char* texture_id) override;
 	virtual void UnloadTexture(const std::shared_ptr<ITexture>& texture) override;
 

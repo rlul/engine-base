@@ -22,7 +22,7 @@ int EngineMain(int argc, char** argv)
 	unsigned int size = g_pFileSystem->Size(file);
 	char* buffer = new char[size + 1] {0, };
 	g_pFileSystem->Read(file, buffer, size);
-	printf("File: %s\n", buffer);
+	printf("File %s: %s\n", g_pFileSystem->GetFilePath(file), buffer);
 	g_pFileSystem->Close(file);
 
 	printf("Command Line: %s\n", g_pCommandLine->Get());

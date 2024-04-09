@@ -43,7 +43,7 @@ bool CGameClient::Setup()
 
 	g_pEntityList->AddEntity(new CBasePlayer);
 	auto test_entity = new CDarkMage;
-	test_entity->SetPos(100, 100);
+	test_entity->SetPos(20, 20);
 	g_pEntityList->AddEntity(test_entity);
 	
 	for (int i = 0; i < g_pEntityList->GetEntityCount(); i++)
@@ -54,6 +54,7 @@ bool CGameClient::Setup()
 
 	m_pViewport = new CGameViewport;
 	m_pViewport->Setup(g_pGraphics->GetRenderer());
+	m_pViewport->GetCamera()->SetScale(4);
 
 	return true;
 }
