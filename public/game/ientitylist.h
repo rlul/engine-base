@@ -12,7 +12,7 @@ public:
 
 	virtual bool Setup() = 0;
 
-	virtual void Release() = 0;
+	virtual void Clear() = 0;
 
 	virtual int AddEntity(IBaseEntity* entity) = 0;
 	virtual void RemoveEntity(IBaseEntity* entity) = 0;

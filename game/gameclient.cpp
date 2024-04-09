@@ -42,12 +42,10 @@ bool CGameClient::Setup()
 	g_pEntityList->Setup();
 
 	g_pEntityList->AddEntity(new CBasePlayer);
-	g_pTextureSystem->PrintReport();
 	auto test_entity = new CDarkMage;
 	test_entity->SetPos(100, 100);
 	g_pEntityList->AddEntity(test_entity);
-	g_pEntityList->AddEntity(new CBasePlayer);
-	g_pTextureSystem->PrintReport();
+	
 	for (int i = 0; i < g_pEntityList->GetEntityCount(); i++)
 	{
 		auto entity = g_pEntityList->GetEntity(i);
@@ -62,7 +60,7 @@ bool CGameClient::Setup()
 
 void CGameClient::Shutdown()
 {
-	g_pEntityList->Release();
+	g_pEntityList->Clear();
 }
 
 void CGameClient::Update(float dt)

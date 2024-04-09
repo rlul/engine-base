@@ -12,7 +12,7 @@ public:
 	virtual void Shutdown() override;
 	virtual const char* GetSystemName() const override { return ENTITY_LIST_VERSION; }
 
-	virtual void Release() override;
+	virtual void Clear() override;
 
 	virtual int AddEntity(IBaseEntity* entity) override;
 	virtual void RemoveEntity(IBaseEntity* entity) override;

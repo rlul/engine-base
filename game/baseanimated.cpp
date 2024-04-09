@@ -51,10 +51,13 @@ void CBaseAnimated::SetCurrentAnimation(const char* name)
 	if (!name || name[0] == '\0' || strcmp(name, m_CurrentAnimation.name) == 0)
 		return;
 
+	if (strlen(name) > 64)
+		return;
+
 	if (m_pSprite->IsAnimationValid(name))
 	{
 		m_CurrentAnimation.id = m_pSprite->GetAnimationId(name);
-		strcpy_s(m_CurrentAnimation.name, 64, name);
+		strcpy(m_CurrentAnimation.name, name);
 	}
 }
 

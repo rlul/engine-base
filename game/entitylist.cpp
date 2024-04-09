@@ -13,10 +13,10 @@ bool CEntityList::Setup()
 
 void CEntityList::Shutdown()
 {
-	Release();
+	Clear();
 }
 
-void CEntityList::Release()
+void CEntityList::Clear()
 {
 	for (auto entity : m_pBaseEntities)
 	{

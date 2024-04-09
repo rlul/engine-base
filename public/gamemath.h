@@ -1,5 +1,5 @@
 #pragma once
-#include <corecrt_math.h>
+#include <cmath>
 
 struct Vector2D_t
 {
@@ -20,7 +20,7 @@ struct Vector2D_t
 
 	Vector2D_t Normalize() const
 	{
-		float length = sqrtf(x * x + y * y);
+		float length = sqrt(x * x + y * y);
 		return {x / length, y / length};
 	}
 

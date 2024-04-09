@@ -10,6 +10,7 @@ endif()
 
 if(WIN32)
     set(OS "win")
+    add_compile_options(/wd4244)
 elseif(UNIX AND NOT APPLE)
     set(OS "linux")
 else()
@@ -64,7 +65,6 @@ set(BIN_DIR ${CMAKE_SOURCE_DIR}/../game/bin/${OS}${BITS}${DEBUG_SUFFIX})
 set(PUBLIC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/public)
 
 add_compile_definitions(GAME_NAME="${GAME_NAME}" abstract_class=class)
-add_compile_options(/wd4244)
 
 add_subdirectory(launcher)
 add_subdirectory(engine)
