@@ -1,9 +1,8 @@
 #include "tilemap.h"
+#include "tilelayer.h"
 #include "subsystems.h"
 #include "render/itexturesystem.h"
 #include <tmxlite/Map.hpp>
-
-#include "tilelayer.h"
 
 CTileMap::CTileMap(std::string_view name)
 	: m_Name(name)
@@ -14,28 +13,15 @@ bool CTileMap::Load(const tmx::Map& map)
 {
 	printf("Loading map: %s\n", m_Name.c_str());
 
-	if (map.getOrientation() != tmx::Orientation::Orthogonal)
+	if (map.isInfinite())
 	{
-		printf("Unsupported orientation for map: %s\n", m_Name.c_str());
+		printf("Infinite maps are not supported: %s\n", m_Name.c_str());
 		return false;
 	}
 
-	switch (map.getRenderOrder())
+	if (map.getOrientation() != tmx::Orientation::Orthogonal)
 	{
-	case tmx::RenderOrder::RightDown:
-		m_RenderOrder = RenderOrder_t::RightDown;
-		break;
-	case tmx::RenderOrder::RightUp:
-		m_RenderOrder = RenderOrder_t::RightUp;
-		break;
-	case tmx::RenderOrder::LeftDown:
-		m_RenderOrder = RenderOrder_t::LeftDown;
-		break;
-	case tmx::RenderOrder::LeftUp:
-		m_RenderOrder = RenderOrder_t::LeftUp;
-		break;
-	case tmx::RenderOrder::None:
-		printf("Render order not set for map: %s\n", m_Name.c_str());
+		printf("Unsupported orientation for map: %s\n", m_Name.c_str());
 		return false;
 	}
 

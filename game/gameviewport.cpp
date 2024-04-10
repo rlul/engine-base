@@ -1,10 +1,8 @@
 #include "gameviewport.h"
 #include "game/icamera.h"
-#include "render/renderview.h"
 #include "subsystems.h"
 #include "staticcamera.h"
 #include "followcamera.h"
-#include "boundboxcamera.h"
 #include "render/igraphics.h"
 
 CGameViewport::CGameViewport()

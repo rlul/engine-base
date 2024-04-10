@@ -1,10 +1,19 @@
 #pragma once
 #include "ilayer.h"
+#include "render/itileset.h"
 #include <string>
 #include <vector>
 #include <memory>
 
 class ITileSet;
+
+enum class RenderOrder_t
+{
+	RightDown,
+	RightUp,
+	LeftDown,
+	LeftUp
+};
 
 class CTileLayer : public ILayer
 {
@@ -23,7 +32,11 @@ public:
 	virtual std::string GetName() const override;
 
 private:
+	Tile_t TraverseTileMap(int index, int& x, int& y) const;
+
+private:
 	std::string m_Name;
 	TileSetList_t& m_pTileSets;
 	TileMap_t m_iTileMap;
+	RenderOrder_t m_RenderOrder;
 };

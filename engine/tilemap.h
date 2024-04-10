@@ -8,15 +8,6 @@ class ILayer;
 class CTileMap : public ITileMap
 {
 public:
-	enum class RenderOrder_t
-	{
-		RightDown,
-		RightUp,
-		LeftDown,
-		LeftUp
-	};
-
-public:
 	CTileMap(std::string_view name);
 	virtual ~CTileMap() override = default;
 
@@ -30,7 +21,6 @@ private:
 
 private:
 	std::string m_Name;
-	RenderOrder_t m_RenderOrder;
 	std::vector<std::shared_ptr<ITileSet>> m_pTileSets;
 	std::vector<ILayer*> m_pLayers;
 };

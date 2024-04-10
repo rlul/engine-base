@@ -1,13 +1,10 @@
 #include "tilelayer.h"
 #include "subsystems.h"
-#include "render/itileset.h"
+#include "render/igraphics.h"
 #include "render/itexturesystem.h"
 #include <tmxlite/Layer.hpp>
 #include <tmxlite/TileLayer.hpp>
-#include <SDL2/SDL.h>
 #include <cstdio>
-
-#include "render/igraphics.h"
 
 CTileLayer::CTileLayer(std::string_view name, TileSetList_t& tile_sets)
 	: m_Name(name), m_pTileSets(tile_sets)
@@ -41,35 +38,41 @@ void CTileLayer::Update(float dt)
 {
 }
 
+// TODO: next_tile_mins.x = current_tile_maxs.x
 void CTileLayer::Render() const
 {
-	for (int row = 0; row < m_iTileMap.size(); ++row)
+	int tile_count = m_iTileMap.size() * m_iTileMap[0].size();
+
+	for (const auto& tileset : m_pTileSets)
 	{
-		for (int cols = 0; cols < m_iTileMap[row].size(); ++cols)
+		const int tile_width = tileset->GetTileWidth(),
+			tile_height = tileset->GetTileHeight();
+		const Vector2D_t world_origin_mins = { 0,0 },
+			world_origin_maxs = { tile_width, tile_height };
+		Vector2D_t screen_origin_mins, screen_origin_maxs;
+
+		g_pGraphics->WorldToScreen(world_origin_mins, screen_origin_mins);
+		g_pGraphics->WorldToScreen(world_origin_maxs, screen_origin_maxs);
+
+		const Vector2D_t screen_tile_size = screen_origin_maxs - screen_origin_mins;
+
+		for (int i = 0; i < tile_count; ++i)
 		{
-			auto tile = m_iTileMap[row][m_iTileMap[row].size() - 1 - cols];
+			int x, y;
+
+			auto tile = TraverseTileMap(i, x, y);
 			if (tile == 0)
-			{
 				continue;
-			}
-			for (const auto& tile_set : m_pTileSets)
-			{
-				if (tile_set->Contains(tile))
-				{
-					int width = tile_set->GetTileWidth(), height = tile_set->GetTileHeight();
-					Vector2D_t world_mins, world_maxs;
-					Vector2D_t screen_mins, screen_maxs;
 
-					world_mins = { row * width, cols * height };
-					world_maxs = { (row + 1) * width, (cols + 1) * height };
+			Vector2D_t screen_tile_mins = screen_origin_mins + Vector2D_t(
+				x * screen_tile_size.x,
+				y * screen_tile_size.y
+			);
 
-					g_pGraphics->WorldToScreen(world_mins, screen_mins);
-					g_pGraphics->WorldToScreen(world_maxs, screen_maxs);
+			Vector2D_t screen_tile_maxs = screen_tile_mins + screen_tile_size;
+			g_pTextureSystem->DrawTile(tileset, tile, screen_tile_mins.x, screen_tile_mins.y,
+				screen_tile_maxs.x, screen_tile_maxs.y);
 
-					g_pTextureSystem->DrawTile(tile_set, tile, screen_mins.x, screen_mins.y, screen_maxs.x, screen_maxs.y);
-					break;
-				}
-			}
 		}
 	}
 }
@@ -90,4 +93,11 @@ void CTileLayer::Print() const
 std::string CTileLayer::GetName() const
 {
 	return m_Name;
+}
+
+Tile_t CTileLayer::TraverseTileMap(int index, int& x, int& y) const
+{
+	x = index % m_iTileMap.size();
+	y = index / m_iTileMap.size();
+	return m_iTileMap[x][m_iTileMap.size() - y - 1];
 }

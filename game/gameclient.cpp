@@ -1,35 +1,14 @@
-#include "game/igameclient.h"
+#include "gameclient.h"
 #include "game/ientitylist.h"
 #include "game/icamera.h"
 #include "game/iviewport.h"
 #include "render/igraphics.h"
-#include "render/itexturesystem.h"
 #include "subsystem.h"
 #include "baseentity.h"
 #include "baseplayer.h"
 #include "ent_darkmage.h"
 #include "gameviewport.h"
 #include "engine/iengine.h"
-
-class CGameClient : public IGameClient
-{
-public:
-	CGameClient() = default;
-	virtual ~CGameClient() override = default;
-
-	virtual bool Setup() override;
-	virtual void Shutdown() override;
-	virtual const char* GetSystemName() const override { return GAME_CLIENT_VERSION; }
-
-	virtual void Update(float dt) override;
-	virtual void Render() override;
-
-	virtual IBaseEntity* GetLocalPlayer() override;
-	virtual ICamera* GetActiveCamera() override { return m_pViewport->GetCamera(); }
-
-private:
-	IViewport* m_pViewport;
-};
 
 CGameClient g_GameClient;
 CREATE_SINGLE_SYSTEM( CGameClient, IGameClient, GAME_CLIENT_VERSION, g_GameClient )
@@ -90,7 +69,17 @@ void CGameClient::Render()
 	m_pViewport->Render();
 }
 
+IBaseEntity* CGameClient::CreateEntity(const char* entity_name)
+{
+	return nullptr;
+}
+
 IBaseEntity* CGameClient::GetLocalPlayer()
 {
 	return CBasePlayer::GetLocalPlayer();
+}
+
+ICamera* CGameClient::GetActiveCamera()
+{
+	return m_pViewport->GetCamera();
 }
