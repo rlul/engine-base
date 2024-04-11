@@ -4,7 +4,9 @@ set(GAME_SOURCES
     baseentity.cpp
     basetile.cpp
     baseanimated.cpp
+    baseitem.cpp
     baseplayer.cpp
+    darkmage.cpp
     entitylist.cpp
     gameclient.cpp
     gameviewport.cpp
@@ -13,9 +15,8 @@ set(GAME_SOURCES
     boundboxcamera.cpp
     eventlistener.cpp
     eventsystem.cpp
-    ent_darkmage.cpp
     ${PUBLIC_DIR}/subsystem.cpp
-	${PUBLIC_DIR}/subsystems.cpp
+    ${PUBLIC_DIR}/subsystems.cpp
     ${PUBLIC_DIR}/common.cpp
 )
 

@@ -39,8 +39,6 @@ int CEngine::Main()
 {
 	int result = 0;	// stop
 
-	LoadScene("testmap");
-
 	if (!MainLoop())
 	{
 		result = 1;	// restart
@@ -66,11 +64,14 @@ float CEngine::GetFrameTime() const
 
 bool CEngine::IsInGame() const
 {
-	return true;
+	return m_pScene;
 }
 
 bool CEngine::LoadScene(const char* name)
 {
+	if (m_pScene)
+		UnloadScene();
+
 	std::ostringstream map_path;
 	map_path << "scenes/" << name << ".tmx";
 
@@ -107,7 +108,7 @@ void CEngine::UnloadScene()
 	m_pScene = nullptr;
 }
 
-ITileMap* CEngine::GetScene() const
+ITileMap* CEngine::GetCurrentScene() const
 {
 	return m_pScene;
 }

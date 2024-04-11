@@ -20,7 +20,7 @@ public:
 	virtual bool IsInGame() const override;
 	virtual bool LoadScene(const char* name) override;
 	virtual void UnloadScene() override;
-	virtual ITileMap* GetScene() const override;
+	virtual ITileMap* GetCurrentScene() const override;
 
 private:
 	virtual bool MainLoop();

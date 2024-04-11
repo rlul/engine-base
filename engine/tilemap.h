@@ -15,6 +15,8 @@ public:
 	virtual void Update(float dt) override;
 	virtual void Render() const override;
 
+	virtual std::string GetName() const override;
+
 private:
 	virtual bool LoadTileSets(const tmx::Map& map);
 	virtual bool LoadLayers(const tmx::Map& map);
@@ -22,5 +24,5 @@ private:
 private:
 	std::string m_Name;
 	std::vector<std::shared_ptr<ITileSet>> m_pTileSets;
-	std::vector<ILayer*> m_pLayers;
+	std::vector<std::shared_ptr<ILayer>> m_pLayers;
 };

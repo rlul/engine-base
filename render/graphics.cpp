@@ -1,5 +1,7 @@
 #include "render/igraphics.h"
 #include "render/itexturesystem.h"
+#include "engine/iengine.h"
+#include "engine/itilemap.h"
 #include "game/igameclient.h"
 #include "game/icamera.h"
 #include "subsystem.h"
@@ -10,9 +12,6 @@
 #include <SDL_image.h>
 #include <cstdio>
 #include <algorithm>
-
-#include "engine/iengine.h"
-#include "engine/itilemap.h"
 #ifdef _WIN32
 #include <Windows.h>
 #endif
@@ -123,9 +122,7 @@ bool CGraphics::Frame()
 {
 	BeginScene();
 
-	g_pEngine->GetScene()->Render();
 	g_pGameClient->Render();
-
 	g_pDebugOverlay->Frame();
 
 	EndScene();

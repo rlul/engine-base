@@ -12,6 +12,9 @@ struct Vector2D_t
 	Vector2D_t(int x, int y)
 		: x(x), y(y)
 	{}
+	Vector2D_t(unsigned x, unsigned y)
+		: x(x), y(y)
+	{}
 
 	bool IsNull() const
 	{

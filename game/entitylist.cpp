@@ -49,12 +49,23 @@ void CEntityList::RemoveEntity(int index)
 	m_pBaseEntities.erase(it);
 }
 
-IBaseEntity* CEntityList::GetEntity(int index)
+IBaseEntity* CEntityList::GetEntity(int index) const
 {
 	return *std::next(m_pBaseEntities.begin(), index);
 }
 
-int CEntityList::GetEntityCount()
+int CEntityList::GetEntityCount() const
 {
 	return m_pBaseEntities.size();
+}
+
+int CEntityList::GetLayerEntityCount(int layer) const
+{
+	int count = 0;
+
+	for (auto entity : m_pBaseEntities)
+		if (entity->GetLayer() == layer)
+			++count;
+
+	return count;
 }

@@ -27,7 +27,6 @@ bool CGameViewport::Setup(SDL_Renderer* renderer)
 	auto camera = new CFollowCamera;
 	camera->Setup();
 	camera->SetPos(0, 0);
-	//camera->SetBoundBoxSize({ 1280 * 0.5f, 720 * 0.5f });
 	camera->SetSize(screen_w, screen_h);
 	camera->SetScale(1.f);
 

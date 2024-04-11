@@ -1,7 +1,8 @@
 #include "baseplayer.h"
-#include "game/ievent.h"
 #include "render/itexturesystem.h"
 #include <cstdio>
+
+REGISTER_ENTITY( "ent_baseplayer", CBasePlayer )
 
 CBasePlayer* g_pLocalPlayer = nullptr;
 

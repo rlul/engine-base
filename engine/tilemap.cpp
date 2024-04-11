@@ -1,5 +1,6 @@
 #include "tilemap.h"
 #include "tilelayer.h"
+#include "objectlayer.h"
 #include "subsystems.h"
 #include "render/itexturesystem.h"
 #include <tmxlite/Map.hpp>
@@ -54,6 +55,11 @@ void CTileMap::Render() const
 	}
 }
 
+std::string CTileMap::GetName() const
+{
+	return m_Name;
+}
+
 bool CTileMap::LoadTileSets(const tmx::Map& map)
 {
 	auto tilesets = map.getTilesets();
@@ -75,18 +81,43 @@ bool CTileMap::LoadTileSets(const tmx::Map& map)
 bool CTileMap::LoadLayers(const tmx::Map& map)
 {
 	const auto& layers = map.getLayers();
+	const auto& tile_count = map.getTileCount();
+	const auto& tile_size = map.getTileSize();
+	int layer_iterator = 0;
 	for (const auto& layer_handle : layers)
 	{
-		if (layer_handle->getType() == tmx::Layer::Type::Tile)
+		switch (layer_handle->getType())
 		{
-			CTileLayer* layer = new CTileLayer(layer_handle->getName(), m_pTileSets);
-			if (!layer->Load(*layer_handle))
+		case tmx::Layer::Type::Tile:
 			{
-				printf("Failed to load layer: %s\n", layer_handle->getName().c_str());
-				return false;
+				auto layer = std::make_shared<CTileLayer>(layer_iterator++, layer_handle->getName(), m_pTileSets);
+				if (!layer->Load(*layer_handle))
+				{
+					printf("Failed to load layer: %s\n", layer_handle->getName().c_str());
+					return false;
+				}
+				printf("Loaded layer: %s\n", layer->GetName().c_str());
+				m_pLayers.push_back(layer);
+
 			}
-			printf("Loaded layer: %s\n", layer->GetName().c_str());
-			m_pLayers.push_back(layer);
+			break;
+		case tmx::Layer::Type::Object:
+			{
+				Vector2D_t size = { tile_count.x * tile_size.x, tile_count.y * tile_size.y };
+				auto layer = std::make_shared<CObjectLayer>(layer_iterator++, layer_handle->getName(), size);
+				if (!layer->Load(*layer_handle))
+				{
+					printf("Failed to load object layer: %s\n", layer_handle->getName().c_str());
+					return false;
+				}
+				printf("Object layer: %s\n", layer_handle->getName().c_str());
+				m_pLayers.push_back(layer);
+			}
+			break;
+		case tmx::Layer::Type::Image:
+			break;
+		case tmx::Layer::Type::Group:
+			break;
 		}
 	}
 

@@ -1,6 +1,8 @@
-#include "ent_darkmage.h"
+#include "darkmage.h"
 #include "subsystems.h"
 #include "render/itexturesystem.h"
+
+REGISTER_ENTITY( "ent_darkmage", CDarkMage )
 
 CDarkMage::CDarkMage()
 	: CBaseAnimated()

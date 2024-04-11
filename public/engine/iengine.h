@@ -21,5 +21,5 @@ public:
 	virtual bool IsInGame() const = 0;
 	virtual bool LoadScene(const char* name) = 0;
 	virtual void UnloadScene() = 0;
-	virtual ITileMap* GetScene() const = 0;
+	virtual ITileMap* GetCurrentScene() const = 0;
 };

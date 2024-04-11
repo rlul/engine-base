@@ -17,8 +17,9 @@ public:
 	virtual int AddEntity(IBaseEntity* entity) override;
 	virtual void RemoveEntity(IBaseEntity* entity) override;
 	virtual void RemoveEntity(int index) override;
-	virtual IBaseEntity* GetEntity(int index) override;
-	virtual int GetEntityCount() override;
+	virtual IBaseEntity* GetEntity(int index) const override;
+	virtual int GetEntityCount() const override;
+	virtual int GetLayerEntityCount(int layer_ordinal) const override;
 
 private:
 	std::list<IBaseEntity*> m_pBaseEntities;

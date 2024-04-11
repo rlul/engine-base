@@ -17,6 +17,7 @@ public:
 	virtual int AddEntity(IBaseEntity* entity) = 0;
 	virtual void RemoveEntity(IBaseEntity* entity) = 0;
 	virtual void RemoveEntity(int index) = 0;
-	virtual IBaseEntity* GetEntity(int index) = 0;
-	virtual int GetEntityCount() = 0;
+	virtual IBaseEntity* GetEntity(int index) const = 0;
+	virtual int GetEntityCount() const = 0;
+	virtual int GetLayerEntityCount(int layer) const = 0;
 };

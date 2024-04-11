@@ -16,6 +16,9 @@ public:
 	virtual void Update(float dt) override;
 	virtual void Render() override;
 
+	virtual bool LoadLevel(const char* map_name) override;
+	virtual void UnloadLevel() override;
+
 	virtual IBaseEntity* CreateEntity(const char* entity_name) override;
 	virtual IBaseEntity* GetLocalPlayer() override;
 	virtual ICamera* GetActiveCamera() override;

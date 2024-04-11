@@ -3,6 +3,7 @@
 #include "engine/iengine.h"
 #include "engine/iinputsystem.h"
 #include "core/ifilesystem.h"
+#include "game/igameclient.h"
 #include "game/ientitylist.h"
 #include "game/ibaseentity.h"
 #include "game/icamera.h"
@@ -13,8 +14,9 @@
 #include <backends/imgui_impl_sdlrenderer2.h>
 #include <backends/imgui_impl_sdl2.h>
 #include <cstdio>
+#include <format>
 
-#include "game/igameclient.h"
+#include "engine/itilemap.h"
 
 SDL_Texture* texture = nullptr;
 
@@ -83,23 +85,30 @@ bool CDebugOverlay::Frame()
 	if (!m_bShouldDraw)
 		return false;
 
-	DrawWorldOrigin();
-	DrawCameraPos();
-	DrawEntityPos();
-	DrawEntityBounds();
+	if (g_pEngine->IsInGame())
+	{
+		DrawWorldOrigin();
+		DrawCameraPos();
+		DrawEntityPos();
+		DrawEntityBounds();
+	}
 
 	ImGui_ImplSDLRenderer2_NewFrame();
 	ImGui_ImplSDL2_NewFrame();
 	ImGui::NewFrame();
 
-	char buf[32];
-	sprintf(buf, "FPS: %f", CalculateFPS());
-	ImGui::Text(buf);
+	ImGui::Text(std::format("FPS: {:.2f}", CalculateFPS()).c_str());
+
+	auto current_scene = g_pEngine->GetCurrentScene();
+	ImGui::Text(std::format("Current scene: {}", current_scene ? current_scene->GetName().c_str() : "<NONE>").c_str());
+
+	if (ImGui::Button("Load Level"))
+		g_pGameClient->LoadLevel("testmap");
+	
+	if (ImGui::Button("Unload Level"))
+		g_pGameClient->UnloadLevel();
+
 	ImGui::Image(texture, ImVec2(256, 256));
-	if (ImGui::Button("coconut"))
-	{
-		printf("bob\n");
-	}
 
 	ImGui::Render();
 	ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData());

@@ -6,8 +6,8 @@
 #include <tmxlite/TileLayer.hpp>
 #include <cstdio>
 
-CTileLayer::CTileLayer(std::string_view name, TileSetList_t& tile_sets)
-	: m_Name(name), m_pTileSets(tile_sets)
+CTileLayer::CTileLayer(int ordinal, std::string_view name, TileSetList_t& tile_sets)
+	: m_iOrdinal(ordinal), m_Name(name), m_pTileSets(tile_sets)
 {
 }
 

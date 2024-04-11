@@ -18,5 +18,8 @@ void CFollowCamera::Update(float dt)
 	CStaticCamera::Update(dt);
 
 	IBaseEntity* player = g_pGameClient->GetLocalPlayer();
+	if (!player)
+		return;
+
 	SetPos(player->GetPos());
 }

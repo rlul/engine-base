@@ -2,7 +2,7 @@
 #include "render/isprite.h"
 
 CBaseEntity::CBaseEntity()
-	: m_ViewDirection(ViewDirection_t::Down), m_pSprite(nullptr), m_flSpawnTime(0)
+	: m_iLayerOrdinal(0), m_ViewDirection(ViewDirection_t::Down), m_pSprite(nullptr), m_flSpawnTime(0)
 {
 }
 
@@ -63,6 +63,11 @@ Vector2D_t CBaseEntity::GetSize() const
     return m_BoundsMaxs - m_BoundsMins;
 }
 
+int CBaseEntity::GetLayer() const
+{
+	return m_iLayerOrdinal;
+}
+
 void CBaseEntity::SetPos(float x, float y)
 {
 	m_Position = { x, y };
@@ -94,6 +99,11 @@ void CBaseEntity::SetScale(float scale_x, float scale_y)
 	m_Scale = { scale_x, scale_y };
 }
 
+void CBaseEntity::SetLayer(int id)
+{
+	m_iLayerOrdinal = id;
+}
+
 bool CBaseEntity::ShouldRender() const
 {
 	return true;
@@ -112,4 +122,23 @@ void CBaseEntity::GetRenderBounds(Vector2D_t& mins, Vector2D_t& maxs) const
 IRenderable* CBaseEntity::GetRenderable()
 {
 	return this;
+}
+
+CEntityRegistry* g_pEntityRegistry = nullptr;
+
+CEntityRegistry::CEntityRegistry(const char* name, CreateEntityFn fn)
+	: m_pszName(name), m_fnFactory(fn), m_pNext(g_pEntityRegistry)
+{
+	g_pEntityRegistry = this;
+}
+
+CreateEntityFn CEntityRegistry::GetEntityFactory(const char* name)
+{
+	for (auto reg = g_pEntityRegistry; reg; reg = reg->m_pNext)
+	{
+		if (strcmp(reg->m_pszName, name) == 0)
+			return reg->m_fnFactory;
+	}
+
+	return nullptr;
 }
