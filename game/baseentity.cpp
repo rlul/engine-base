@@ -1,5 +1,6 @@
 #include "baseentity.h"
 #include "render/isprite.h"
+#include <cstring>
 
 CBaseEntity::CBaseEntity()
 	: m_iLayerOrdinal(0), m_ViewDirection(ViewDirection_t::Down), m_pSprite(nullptr), m_flSpawnTime(0)
@@ -130,6 +131,14 @@ CEntityRegistry::CEntityRegistry(const char* name, CreateEntityFn fn)
 	: m_pszName(name), m_fnFactory(fn), m_pNext(g_pEntityRegistry)
 {
 	g_pEntityRegistry = this;
+	for (auto reg = g_pEntityRegistry; reg; reg = reg->m_pNext)
+	{
+		if (strcmp(reg->m_pszName, name) == 0 && reg != this)
+		{
+			printf("Entity %s already registered\n", name);
+			break;
+		}
+	}
 }
 
 CreateEntityFn CEntityRegistry::GetEntityFactory(const char* name)

@@ -32,15 +32,12 @@ public:
 	virtual void GetSize(float& w, float& h) const override { w = m_pRenderView->m_Size.x; h = m_pRenderView->m_Size.y; }
 	virtual Vector2D_t GetSize() const override { return m_pRenderView->m_Size; }
 	virtual float GetScale() const override { return m_pRenderView->m_flScale; }
-	virtual float GetRotation() const override { return m_pRenderView->m_flRotation; }
 
 	virtual void SetPos(float x, float y) override { m_pRenderView->m_Pos.x = x; m_pRenderView->m_Pos.y = y; UpdateViewMatrix(); }
 	virtual void SetPos(const Vector2D_t& pos) override { SetPos(pos.x, pos.y); }
 	virtual void SetSize(float w, float h) override { m_pRenderView->m_Size.x = w; m_pRenderView->m_Size.y = h; }
 	virtual void GetSize(const Vector2D_t& size) override { m_pRenderView->m_Size = size; }
 	virtual void SetScale(float zoom) override { m_pRenderView->m_flScale = zoom; UpdateViewMatrix(); }
-	// TODO: fix rotation point
-	virtual void SetRotation(float rotation) override { m_pRenderView->m_flRotation = rotation; UpdateViewMatrix(); }
 
 protected:
 	virtual void UpdateViewMatrix();

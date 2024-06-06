@@ -30,6 +30,11 @@ bool CTextureSystem::Setup(SDL_Renderer* renderer)
 		return false;
 
 	m_pRenderer = renderer;
+
+	m_pMissingSurface = SDL_CreateRGBSurface(0, 32, 32, 32, 0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000);
+	Uint32 pink = SDL_MapRGB(m_pMissingSurface->format, 255, 105, 180); // Pink color
+	SDL_FillRect(m_pMissingSurface, nullptr, pink);
+
 	return true;
 }
 
@@ -67,13 +72,19 @@ void CTextureSystem::DrawSprite(const std::shared_ptr<ISprite>& sprite, int anim
 
 	if (!sprite) return;
 
-	sprite->GetSpriteSize(columns, rows);
-	sprite->GetFrameSize(frame_width, frame_height);
-	frame = sprite->GetFrame(frame_index, animation_index);
+	if (sprite->GetTexture()->IsValid())
+	{
+		sprite->GetSpriteSize(columns, rows);
+		sprite->GetFrameSize(frame_width, frame_height);
+		frame = sprite->GetFrame(frame_index, animation_index);
+		if (frame < 0) return;
+		src_rect = { (frame % columns) * frame_width, (frame / columns) * frame_height, frame_width, frame_height };
+	}
+	else
+	{
+		src_rect = { 0, 0, 32, 32 };
+	}
 
-	if (frame < 0) return;
-
-	src_rect = { (frame % columns) * frame_width, (frame / columns) * frame_height, frame_width, frame_height };
 	dest_rect = { x1, y1, x2 - x1, y2 - y1 };
 
 	SDL_RenderCopyExF(m_pRenderer, *sprite->GetTexture(), &src_rect, &dest_rect, rotation, NULL, SDL_FLIP_NONE);
@@ -97,8 +108,15 @@ std::shared_ptr<ISprite> CTextureSystem::LoadSprite(const char* name)
 	auto file_size = g_pFileSystem->Size(file) + 1;
 	auto file_data = new char[file_size] { 0, };
 	g_pFileSystem->Read(file, file_data, file_size);
-
-	auto sprite_data = ParseSpriteData(file_data);
+	SpriteData_t sprite_data;
+	if (file_size != 1)
+	{
+		sprite_data = ParseSpriteData(file_data);
+	}
+	else
+	{
+		printf("Failed to load sprite %s\n", name);
+	}
 	delete[] file_data;
 	g_pFileSystem->Close(file);
 
@@ -182,20 +200,30 @@ std::shared_ptr<ITexture> CTextureSystem::LoadTexture(const char* name)
 		texture_path << "textures/" << name << ".png";
 		file_handle = g_pFileSystem->Open(texture_path.str().c_str(), IFileSystem::OPEN_READ);
 	}
-	auto file_size = g_pFileSystem->Size(file_handle);
-	auto file_data = new char[file_size] { 0, };
-	g_pFileSystem->Read(file_handle, file_data, file_size);
 
-	auto rw = SDL_RWFromMem(file_data, file_size);
-	auto surface = IMG_Load_RW(rw, 1);
+	SDL_Surface* surface = nullptr;
 
-	delete[] file_data;
-	g_pFileSystem->Close(file_handle);
+	if (file_handle)
+	{
+		auto file_size = g_pFileSystem->Size(file_handle);
+		auto file_data = new char[file_size];
+		g_pFileSystem->Read(file_handle, file_data, file_size);
+
+		auto rw = SDL_RWFromConstMem(file_data, file_size);
+		SDL_RWseek(rw, 0, RW_SEEK_SET);
+		surface = IMG_LoadPNG_RW(rw);
+		SDL_RWclose(rw);
+
+
+		delete[] file_data;
+		g_pFileSystem->Close(file_handle);
+	}
 
 	if (!surface)
 	{
 		printf("Failed to load surface %s\n", name);
-		return nullptr;
+		surface = m_pMissingSurface;
+		//return nullptr;
 	}
 
 	auto texure_handle = SDL_CreateTextureFromSurface(m_pRenderer, surface);
@@ -209,6 +237,11 @@ std::shared_ptr<ITexture> CTextureSystem::LoadTexture(const char* name)
 	if (!texture)
 	{
 		return nullptr;
+	}
+
+	if (surface == m_pMissingSurface)
+	{
+		texture->m_bIsValid = false;
 	}
 
 	m_pLoadedTextures.emplace_back(texture, 1);
@@ -225,6 +258,8 @@ void CTextureSystem::UnloadTexture(const char* texture_id)
 
 void CTextureSystem::UnloadTexture(const std::shared_ptr<ITexture>& texture)
 {
+	if (!texture) 
+		return;
 	UnloadTexture(texture->GetName().c_str());
 }
 

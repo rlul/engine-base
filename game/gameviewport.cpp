@@ -22,12 +22,13 @@ bool CGameViewport::Setup(SDL_Renderer* renderer)
 	m_pRenderer = renderer;
 
 	g_pGraphics->GetScreenSize(screen_w, screen_h);
-	m_Rect = { 0,0, screen_w/1, screen_h/1 };
+	//m_Rect = { 200,200, screen_w/2, screen_h/2 };
+	m_Rect = { 0,0, screen_w, screen_h };
 
 	auto camera = new CFollowCamera;
 	camera->Setup();
 	camera->SetPos(0, 0);
-	camera->SetSize(screen_w, screen_h);
+	camera->SetSize(m_Rect.w, m_Rect.h);
 	camera->SetScale(1.f);
 
 	m_pCamera = camera;

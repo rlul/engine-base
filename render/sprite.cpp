@@ -50,8 +50,16 @@ void CSprite::GetSpriteSize(int& columns, int& rows) const
 
 void CSprite::GetFrameSize(int& width, int& height) const
 {
-	width = m_iFrameWidth;
-	height = m_iFrameHeight;
+	if (m_pTexture->IsValid())
+	{
+		width = m_iFrameWidth;
+		height = m_iFrameHeight;
+	}
+	else
+	{
+		width = 16;
+		height = 16;
+	}
 }
 
 int CSprite::GetFrameCount(int animation_id) const

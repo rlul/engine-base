@@ -48,5 +48,4 @@ private:
 	int m_iMouseDY = 0;
 	std::unordered_map<KeyCode_t, KeyState_t> m_iKeyStates;
 	std::unordered_map<std::string, KeyCode_t> m_iKeyBinds;
-
 };

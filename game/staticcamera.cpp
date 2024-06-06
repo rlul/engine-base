@@ -9,8 +9,6 @@
 #include <vector>
 #include <algorithm>
 
-#include "engine/iengine.h"
-
 CStaticCamera::CStaticCamera()
 	: m_pRenderView(nullptr)
 {

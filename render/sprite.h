@@ -14,6 +14,7 @@ struct SpriteData_t
 	std::string texture_id;
 	int columns, rows;
 	std::vector<AnimationData_t> animations;
+	bool is_valid;
 };
 
 class CSprite : public ISprite

@@ -1,36 +1,7 @@
-#include "core/icommandline.h"
+#include "commandline.h"
 #include "subsystem.h"
-#include <string>
 #include <sstream>
-#include <vector>
-#include <map>
 #include <iomanip>
-
-
-class CCommandLine : public ICommandLine
-{
-public:
-	CCommandLine() = default;
-	~CCommandLine() override = default;
-
-	void Shutdown() override;
-	const char* GetSystemName() const override { return COMMANDLINE_SYSTEM_VERSION; };
-
-	void Create(const char* cmdline) override;
-	void Create(int argc, char** argv) override;
-	const char* Get() const override;
-
-	bool HasParam(const char* param) const override;
-	const char* GetParam(const char* param) const override;
-
-private:
-	static void Tokenize(const char* cmdline, std::vector<std::string>& tokens);
-	virtual void ParseTokens(const std::vector<std::string>& tokens);
-
-private:
-	std::string m_CommandLine;
-	std::map<std::string, std::string> m_Params;
-};
 
 CCommandLine g_CommandLine;
 CREATE_SINGLE_SYSTEM( CCommandLine, ICommandLine, COMMANDLINE_SYSTEM_VERSION, g_CommandLine );

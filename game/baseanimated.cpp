@@ -43,7 +43,7 @@ void CBaseAnimated::Render()
 	UpdateAnimations();
 
 	g_pTextureSystem->DrawSprite(m_pSprite, m_CurrentAnimation.id, m_flCycle, 
-		screen_mins.x, screen_maxs.y, screen_maxs.x, screen_mins.y, g_pGameClient->GetActiveCamera()->GetRotation());
+		screen_mins.x, screen_maxs.y, screen_maxs.x, screen_mins.y, 0);
 }
 
 void CBaseAnimated::SetCurrentAnimation(const char* name)

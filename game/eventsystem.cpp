@@ -1,28 +1,10 @@
-#include "game/ievent.h"
-#include "game/ieventsystem.h"
-#include "game/ieventlistener.h"
+#include "eventsystem.h"
 #include "subsystems.h"
 #include "subsystem.h"
-#include <string>
-#include <vector>
-#include <unordered_map>
 #include <ranges>
 
-class CEvent : public IEvent
-{
-public:
-	CEvent(const char* name);
-	~CEvent() override = default;
-
-	const char* GetName() const override;
-
-	int GetValue(const char* name) const override;
-	void SetValue(const char* name, int value) override;
-
-private:
-	const char* m_pszName;
-	std::unordered_map<std::string, int> m_mapValues;
-};
+CEventSystem g_EventSystem;
+CREATE_SINGLE_SYSTEM(CEventSystem, IEventSystem, EVENT_SYSTEM_VERSION, g_EventSystem);
 
 CEvent::CEvent(const char* name)
 	: m_pszName(name)
@@ -44,32 +26,6 @@ void CEvent::SetValue(const char* name, int value)
 {
 	m_mapValues[name] = value;
 }
-
-
-class CEventSystem : public IEventSystem
-{
-public:
-	CEventSystem() = default;
-	~CEventSystem() override = default;
-
-	void Shutdown() override;
-	const char* GetSystemName() const override { return EVENT_SYSTEM_VERSION; }
-
-	void AddListener(IEventListener* listener, const char* event_name) override;
-	void RemoveListener(IEventListener* listener, const char* event_name) override;
-	void RemoveListener(IEventListener* listener) override;
-
-	IEvent* CreateGameEvent(const char* event_name) override;
-	void FireGameEvent(IEvent* event) override;
-
-
-private:
-	std::unordered_map<std::string, std::vector<IEventListener*>> m_mapEventListeners;
-
-};
-
-CEventSystem g_EventSystem;
-CREATE_SINGLE_SYSTEM( CEventSystem, IEventSystem, EVENT_SYSTEM_VERSION, g_EventSystem );
 
 void CEventSystem::Shutdown()
 {

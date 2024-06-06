@@ -3,8 +3,9 @@
 #include "core/icommandline.h"
 #include "core/ifilesystem.h"
 #include <string>
-#include <filesystem>
 #include <cstring>
+#include <filesystem>
+#include <thread>
 #ifdef _WIN32
 #include <Windows.h>
 #else
@@ -84,6 +85,7 @@ bool COM_GetGameDir(char* game_dir)
 	if (!g_pCommandLine)
 	{
 		printf("COM_GetGameDir failed: " FILE_SYSTEM_VERSION " has not yet been connected!\n");
+		std::this_thread::sleep_for(std::chrono::seconds(3));
 		return false;
 	}
 	if (g_pCommandLine->HasParam("game"))
@@ -92,6 +94,7 @@ bool COM_GetGameDir(char* game_dir)
 		if (!is_directory(game_path))
 		{
 			printf("COM_GetGameDir failed: Selected game directory does not exist.\n");
+			std::this_thread::sleep_for(std::chrono::seconds(3));
 			return false;
 		}
 		if (!game_path.is_absolute())
@@ -104,6 +107,7 @@ bool COM_GetGameDir(char* game_dir)
 	else
 	{
 		printf("COM_GetGameDir failed: Please set your -game parameter.\n");
+		std::this_thread::sleep_for(std::chrono::seconds(3));
 		return false;
 	}
 	return false;

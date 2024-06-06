@@ -9,6 +9,7 @@
 #include "baseentity.h"
 #include "baseplayer.h"
 #include "gameviewport.h"
+#include "game/ievent.h"
 
 CGameClient g_GameClient;
 CREATE_SINGLE_SYSTEM( CGameClient, IGameClient, GAME_CLIENT_VERSION, g_GameClient )
@@ -51,7 +52,7 @@ void CGameClient::Render()
 		return;
 	}
 
-	g_pEngine->GetCurrentScene()->Render();
+	//g_pEngine->GetCurrentScene()->Render();
 
 	m_pViewport->Render();
 }
@@ -79,6 +80,12 @@ bool CGameClient::LoadLevel(const char* map_name)
 	m_pViewport = new CGameViewport;
 	m_pViewport->Setup(g_pGraphics->GetRenderer());
 	m_pViewport->GetCamera()->SetScale(4);
+
+	auto event = g_pEventSystem->CreateGameEvent("level_start");
+	if (!event)
+	{
+		g_pEventSystem->FireGameEvent(event);
+	}
 
 	return true;
 }

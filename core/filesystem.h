@@ -7,29 +7,21 @@
 class CFileHandle
 {
 public:
-	CFileHandle(std::fstream* p_file_stream, const char* path)
-		: m_pFileStream(p_file_stream), m_pPath(path)
-	{
-		
-	}
-	~CFileHandle()
-	{
-		delete[] m_pPath;
-		Close();
-	}
+	CFileHandle(std::fstream& p_file_stream, const char* path);
+	~CFileHandle();
 
 	void Close();
 	const char* GetFilePath() const;
-	unsigned int Read(void* buffer, unsigned int size) const;
-	unsigned int Write(const void* buffer, unsigned int size) const;
-	void Flush() const;
-	void Seek(unsigned int size) const;
-	unsigned int Tell() const;
-	unsigned int Size() const;
+	unsigned int Read(void* buffer, unsigned int size);
+	unsigned int Write(const void* buffer, unsigned int size);
+	void Flush();
+	void Seek(unsigned int size);
+	unsigned int Tell();
+	unsigned int Size();
 	bool EndOfFile() const;
 
 private:
-	std::fstream* m_pFileStream;
+	std::fstream m_FileStream;
 	const char* m_pPath;
 };
 

@@ -65,4 +65,3 @@ std::string CObjectLayer::GetName() const
 {
 	return m_Name;
 }
-

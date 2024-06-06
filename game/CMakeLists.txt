@@ -12,7 +12,6 @@ set(GAME_SOURCES
     gameviewport.cpp
     staticcamera.cpp
     followcamera.cpp
-    boundboxcamera.cpp
     eventlistener.cpp
     eventsystem.cpp
     ${PUBLIC_DIR}/subsystem.cpp

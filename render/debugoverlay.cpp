@@ -2,6 +2,7 @@
 #include "render/igraphics.h"
 #include "engine/iengine.h"
 #include "engine/iinputsystem.h"
+#include "engine/itilemap.h"
 #include "core/ifilesystem.h"
 #include "game/igameclient.h"
 #include "game/ientitylist.h"
@@ -14,9 +15,6 @@
 #include <backends/imgui_impl_sdlrenderer2.h>
 #include <backends/imgui_impl_sdl2.h>
 #include <cstdio>
-#include <format>
-
-#include "engine/itilemap.h"
 
 SDL_Texture* texture = nullptr;
 
@@ -97,10 +95,14 @@ bool CDebugOverlay::Frame()
 	ImGui_ImplSDL2_NewFrame();
 	ImGui::NewFrame();
 
-	ImGui::Text(std::format("FPS: {:.2f}", CalculateFPS()).c_str());
+	char text_buffer[256];
+
+	sprintf(text_buffer, "FPS: %f\n", CalculateFPS());
+	ImGui::Text(text_buffer);
 
 	auto current_scene = g_pEngine->GetCurrentScene();
-	ImGui::Text(std::format("Current scene: {}", current_scene ? current_scene->GetName().c_str() : "<NONE>").c_str());
+	sprintf(text_buffer, "Current scene: %s", current_scene ? current_scene->GetName().c_str() : "<NONE>");
+	ImGui::Text(text_buffer);
 
 	if (ImGui::Button("Load Level"))
 		g_pGameClient->LoadLevel("testmap");

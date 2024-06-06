@@ -30,12 +30,10 @@ public:
 	virtual void GetSize(float& w, float& h) const = 0;
 	virtual Vector2D_t GetSize() const = 0;
 	virtual float GetScale() const = 0;
-	virtual float GetRotation() const = 0;
 
 	virtual void SetPos(float x, float y) = 0;
 	virtual void SetPos(const Vector2D_t& pos) = 0;
 	virtual void SetSize(float w, float h) = 0;
 	virtual void GetSize(const Vector2D_t& size) = 0;
 	virtual void SetScale(float zoom) = 0;
-	virtual void SetRotation(float rotation) = 0;
 };

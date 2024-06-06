@@ -6,12 +6,19 @@
 CTileSet::CTileSet(const tmx::Tileset& tileset)
 	: m_Name(tileset.getName()),
 	  m_iFirst(tileset.getFirstGID()),
-	  m_iLast(tileset.getFirstGID() + tileset.getTileCount()),
-	  m_nColumns(tileset.getColumnCount()), m_nRows((m_iLast - m_iFirst) / m_nColumns),
-	  m_iTileWidth(tileset.getTileSize().x), m_iTileHeight(tileset.getTileSize().y)
+	  m_iLast(tileset.getFirstGID() + tileset.getTileCount())
 {
 	auto texture = g_pTextureSystem->LoadTexture(tileset.getImagePath().c_str());
 	m_pTexture = texture;
+
+	m_nColumns = tileset.getColumnCount();
+	if (m_nColumns == 0)
+		return;
+
+	m_nRows = (m_iLast - m_iFirst) / m_nColumns;
+	m_iTileWidth = tileset.getTileSize().x;
+	m_iTileHeight = tileset.getTileSize().y;
+
 }
 
 CTileSet::~CTileSet()

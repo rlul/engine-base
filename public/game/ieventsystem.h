@@ -18,5 +18,3 @@ public:
 	virtual IEvent* CreateGameEvent(const char* event_name) = 0;
 	virtual void FireGameEvent(IEvent* event) = 0;
 };
-
-

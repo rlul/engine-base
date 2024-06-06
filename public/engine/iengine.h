@@ -5,6 +5,12 @@
 
 class ITileMap;
 
+enum class EngineMainResult_t
+{
+	STOP,
+	RESTART
+};
+
 abstract_class IEngine : public IAppSystem
 {
 public:
@@ -12,7 +18,7 @@ public:
 
 	virtual bool Setup() = 0;
 
-	virtual int Main() = 0;
+	virtual EngineMainResult_t Main() = 0;
 	virtual bool GetQuitting() const = 0;
 	virtual void SetQuitting(bool quit) = 0;
 

@@ -6,13 +6,23 @@
 CFileSystem g_FileSystem;
 CREATE_SINGLE_SYSTEM( CFileSystem, IFileSystem, FILE_SYSTEM_VERSION, g_FileSystem );
 
+CFileHandle::CFileHandle(std::fstream& file_stream, const char* path)
+	: m_FileStream(std::move(file_stream)), m_pPath(path)
+{
+	printf("Opened %s\n", m_pPath);
+}
+
+CFileHandle::~CFileHandle()
+{
+	delete[] m_pPath;
+}
+
 void CFileHandle::Close()
 {
-	if (m_pFileStream && m_pFileStream->is_open()) 
+	if (m_FileStream && m_FileStream.is_open()) 
 	{
-		m_pFileStream->close();
-		delete m_pFileStream;
-		m_pFileStream = nullptr;
+		printf("Closing %s\n", m_pPath);
+		m_FileStream.close();
 	}
 }
 
@@ -21,45 +31,45 @@ const char* CFileHandle::GetFilePath() const
 	return m_pPath;
 }
 
-unsigned int CFileHandle::Read(void* buffer, unsigned int size) const
+unsigned int CFileHandle::Read(void* buffer, unsigned int size)
 {
-	m_pFileStream->read(static_cast<char*>(buffer), size);
-	return m_pFileStream->gcount();
+	m_FileStream.read(static_cast<char*>(buffer), size);
+	return m_FileStream.gcount();
 }
 
-unsigned int CFileHandle::Write(const void* buffer, unsigned int size) const
+unsigned int CFileHandle::Write(const void* buffer, unsigned int size)
 {
-	m_pFileStream->write(static_cast<const char*>(buffer), size);
+	m_FileStream.write(static_cast<const char*>(buffer), size);
 	return size;
 }
 
-void CFileHandle::Flush() const
+void CFileHandle::Flush()
 {
-	m_pFileStream->flush();
+	m_FileStream.flush();
 }
 
-void CFileHandle::Seek(unsigned int size) const
+void CFileHandle::Seek(unsigned int size)
 {
-	m_pFileStream->seekg(size);
+	m_FileStream.seekg(size);
 }
 
-unsigned int CFileHandle::Tell() const
+unsigned int CFileHandle::Tell()
 {
-	return m_pFileStream->tellg();
+	return m_FileStream.tellg();
 }
 
-unsigned int CFileHandle::Size() const
+unsigned int CFileHandle::Size()
 {
-	std::streampos current_pos = m_pFileStream->tellg();
-	m_pFileStream->seekg(0, std::ios::end);
-	unsigned int size = m_pFileStream->tellg();
-	m_pFileStream->seekg(current_pos);
+	std::streampos current_pos = m_FileStream.tellg();
+	m_FileStream.seekg(0, std::ios::end);
+	unsigned int size = m_FileStream.tellg();
+	m_FileStream.seekg(current_pos);
 	return size;
 }
 
 bool CFileHandle::EndOfFile() const
 {
-	return m_pFileStream->eof();
+	return m_FileStream.eof();
 }
 
 bool CFileSystem::Setup(const char* absolute_game_path)
@@ -156,10 +166,9 @@ FileHandle_t CFileSystem::OpenFullPath(const char* file_path, OpenFileOptions_t 
 		return nullptr;
 	}
 
-	std::fstream* file_stream = new std::fstream(file_path, openMode);
-	if (!file_stream->good())
+	std::fstream file_stream(file_path, openMode);
+	if (!file_stream.good())
 	{
-		delete file_stream;
 		return nullptr;
 	}
 

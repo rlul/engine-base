@@ -38,4 +38,5 @@ private:
 	SDL_Renderer* m_pRenderer;
 	std::vector<std::pair<std::shared_ptr<ISprite>, unsigned>> m_pLoadedSprites;
 	std::vector<std::pair<std::shared_ptr<ITexture>, unsigned>> m_pLoadedTextures;
+	SDL_Surface* m_pMissingSurface;
 };

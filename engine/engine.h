@@ -11,7 +11,7 @@ public:
 	virtual void Shutdown() override;
 	virtual const char* GetSystemName() const override { return ENGINE_SYSTEM_VERSION; }
 
-	virtual int Main() override;
+	virtual EngineMainResult_t Main() override;
 	virtual bool GetQuitting() const override;
 	virtual void SetQuitting(bool quit) override;
 

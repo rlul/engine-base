@@ -35,13 +35,13 @@ void CEngine::Shutdown()
 	SDL_Quit();
 }
 
-int CEngine::Main()
+EngineMainResult_t CEngine::Main()
 {
-	int result = 0;	// stop
+	auto result = EngineMainResult_t::STOP;
 
 	if (!MainLoop())
 	{
-		result = 1;	// restart
+		result = EngineMainResult_t::RESTART;
 	}
 
 	return result;
@@ -76,6 +76,10 @@ bool CEngine::LoadScene(const char* name)
 	map_path << "scenes/" << name << ".tmx";
 
 	auto file_handle = g_pFileSystem->Open(map_path.str().c_str(), IFileSystem::OPEN_READ);
+
+	if (!file_handle)
+		return false;
+
 	auto file_path = g_pFileSystem->GetFilePath(file_handle);
 	auto file_size = g_pFileSystem->Size(file_handle) + 1;
 	auto file_data = new char[file_size] { 0, };
