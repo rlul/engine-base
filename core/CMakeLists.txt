@@ -2,6 +2,7 @@ project(core)
 
 set(CORE_SOURCES 
     commandline.cpp
+    filesystem.cpp
     ${PUBLIC_DIR}/subsystems.cpp
 	${PUBLIC_DIR}/subsystem.cpp
     ${PUBLIC_DIR}/common.cpp

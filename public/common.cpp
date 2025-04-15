@@ -1,6 +1,11 @@
 #include "common.h"
-
+#include "subsystems.h"
+#include "core/icommandline.h"
+#include "core/ifilesystem.h"
 #include <string>
+#include <cstring>
+#include <filesystem>
+#include <thread>
 #ifdef _WIN32
 #include <Windows.h>
 #else
@@ -71,4 +76,39 @@ symbol_t COM_LoadSymbol(void* module, const char* name)
 #else
 	return dlsym(module, name);
 #endif
+}
+
+bool COM_GetGameDir(char* game_dir)
+{
+	if (!game_dir)
+		return false;
+	if (!g_pCommandLine)
+	{
+		printf("COM_GetGameDir failed: " FILE_SYSTEM_VERSION " has not yet been connected!\n");
+		std::this_thread::sleep_for(std::chrono::seconds(3));
+		return false;
+	}
+	if (g_pCommandLine->HasParam("game"))
+	{
+		std::filesystem::path game_path = g_pCommandLine->GetParam("game");
+		if (!is_directory(game_path))
+		{
+			printf("COM_GetGameDir failed: Selected game directory does not exist.\n");
+			std::this_thread::sleep_for(std::chrono::seconds(3));
+			return false;
+		}
+		if (!game_path.is_absolute())
+		{
+			game_path = absolute(game_path);
+		}
+		strcpy(game_dir, game_path.string().c_str());
+		return true;
+	}
+	else
+	{
+		printf("COM_GetGameDir failed: Please set your -game parameter.\n");
+		std::this_thread::sleep_for(std::chrono::seconds(3));
+		return false;
+	}
+	return false;
 }

@@ -13,6 +13,7 @@ public:
 
 	virtual void AddListener(IEventListener* listener, const char* event_name) = 0;
 	virtual void RemoveListener(IEventListener* listener, const char* event_name) = 0;
+	virtual void RemoveListener(IEventListener* listener) = 0;
 
 	virtual IEvent* CreateGameEvent(const char* event_name) = 0;
 	virtual void FireGameEvent(IEvent* event) = 0;

@@ -13,4 +13,4 @@ else()
     add_executable(launcher ${LAUNCHER_SOURCES})
 endif()
 
-target_link_libraries(launcher engine)
+target_link_libraries(launcher engine core render game)

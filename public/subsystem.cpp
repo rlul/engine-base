@@ -37,32 +37,31 @@ GetSystemFn GetGameFactory()
 {
 	return [](const char* name) -> IAppSystem*
 		{
+			GetSystemFn factory = nullptr;
+			IAppSystem* system = nullptr;
+
 			if (!name)
 				return nullptr;
 
-			auto engine_factory = GetModuleFactory("engine");
-			if (engine_factory)
-			{
-				auto system = engine_factory(name);
-				if (system)
+			factory = GetModuleFactory("engine");
+			if (factory)
+				if (system = factory(name))
 					return system;
-			}
 
-			auto render_factory = GetModuleFactory("render");
-			if (render_factory)
-			{
-				auto system = render_factory(name);
-				if (system)
+			factory = GetModuleFactory("render");
+			if (factory)
+				if (system = factory(name))
 					return system;
-			}
 
-			auto core_factory = GetModuleFactory("core");
-			if (core_factory)
-			{
-				auto system = core_factory(name);
-				if (system)
+			factory = GetModuleFactory("core");
+			if (factory)
+				if (system = factory(name))
 					return system;
-			}
+
+			factory = GetModuleFactory("game");
+			if (factory)
+				if (system = factory(name))
+					return system;
 
 			return nullptr;
 		};

@@ -13,3 +13,4 @@ double COM_GetTime();
 
 module_t COM_LoadModule(const char* module_name);
 symbol_t COM_LoadSymbol(void* module, const char* name);
+bool COM_GetGameDir(char* game_dir);

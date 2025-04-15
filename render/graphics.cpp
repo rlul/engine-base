@@ -1,21 +1,42 @@
 #include "render/igraphics.h"
+#include "render/itexturesystem.h"
+#include "engine/iengine.h"
+#include "engine/itilemap.h"
+#include "game/igameclient.h"
+#include "game/icamera.h"
 #include "subsystem.h"
 #include "subsystems.h"
-#include <SDL3/SDL.h>
-#include <glad/glad.h>
+#include "gamemath.h"
+#include "debugoverlay.h"
+#include <SDL2/SDL.h>
+#include <SDL_image.h>
 #include <cstdio>
+#include <algorithm>
+#ifdef _WIN32
+#include <Windows.h>
+#endif
 
 class CGraphics : public IGraphics
 {
 public:
 	CGraphics() = default;
-	~CGraphics() override = default;
+	virtual ~CGraphics() override = default;
 
-	bool Setup() override;
-	void Shutdown() override;
-	const char* GetSystemName() const override { return GRAPHICS_SYSTEM_VERSION; }
+	virtual bool Setup() override;
+	virtual void Shutdown() override;
+	virtual const char* GetSystemName() const override { return GRAPHICS_SYSTEM_VERSION; }
 
-	bool Frame() override;
+	virtual bool Frame() override;
+	virtual void ProcessEvent(void* sdl_event) override;
+
+	virtual void ScreenToWorld(float x, float y, float& out_x, float& out_y) const override;
+	virtual inline void ScreenToWorld(const Vector2D_t& screen, Vector2D_t& world) const override;
+	virtual bool WorldToScreen(float x, float y, float& out_x, float& out_y) const override;
+	virtual inline bool WorldToScreen(const Vector2D_t& world, Vector2D_t& screen) const override;
+
+	virtual SDL_Window* GetWindow() const { return m_pWindow; }
+	virtual SDL_Renderer* GetRenderer() const { return m_pRenderer; }
+	virtual void GetScreenSize(int& w, int& h) const { w = m_iScreenWidth; h = m_iScreenHeight; }
 
 private:
 	virtual void BeginScene();
@@ -23,15 +44,29 @@ private:
 
 private:
 	SDL_Window* m_pWindow;
-	SDL_GLContext m_pOpenGLContext;
+	SDL_Renderer* m_pRenderer;
+	int m_iScreenWidth, m_iScreenHeight;
+	Matrix4x4_t m_ViewMatrix, m_WorldToScreenMatrix;
 };
 
 CGraphics g_Graphics;
-CREATE_SINGLE_SYSTEM( CGraphics, IGraphics, GRAPHICS_SYSTEM_VERSION, g_Graphics );
+CREATE_SINGLE_SYSTEM(CGraphics, IGraphics, GRAPHICS_SYSTEM_VERSION, g_Graphics);
 
 bool CGraphics::Setup()
 {
-	int window_width = 1280, window_height = 720;
+	m_iScreenWidth = 1280; m_iScreenHeight = 720;
+
+	if (m_pWindow || m_pRenderer)
+	{
+		return false;
+	}
+
+#ifdef _WIN32
+	SetProcessDPIAware();
+#endif
+
+	auto factory = GetGameFactory();
+	ConnectSystems(&factory, 1);
 
 	if (SDL_Init(SDL_INIT_VIDEO))
 	{
@@ -39,41 +74,47 @@ bool CGraphics::Setup()
 		return false;
 	}
 
-	m_pWindow = SDL_CreateWindow("demo", window_width, window_height, SDL_WINDOW_OPENGL);
+	if (!IMG_Init(IMG_INIT_PNG))
+	{
+		printf("IMG_Init failed! (%s)\n", SDL_GetError());
+		return false;
+	}
+
+	m_pWindow = SDL_CreateWindow("demo", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 
+		m_iScreenWidth, m_iScreenHeight, NULL);
 	if (m_pWindow == NULL)
 	{
 		printf("SDL_CreateWindow failed! (%s)\n", SDL_GetError());
 		return false;
 	}
 
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
-
-	m_pOpenGLContext = SDL_GL_CreateContext(m_pWindow);
-	if (m_pOpenGLContext == NULL)
+	m_pRenderer = SDL_CreateRenderer(m_pWindow, NULL, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+	if (m_pRenderer == NULL)
 	{
-		printf("SDL_GL_CreateContext failed! (%s)\n", SDL_GetError());
+		printf("SDL_CreateRenderer failed! (%s)\n", SDL_GetError());
 		return false;
 	}
 
-	if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress))
+	if (!g_pTextureSystem->Setup(m_pRenderer))
 	{
-		printf("Failed while trying to load OpenGL context!\n");
+		printf("Failed while setting up sprite system!\n");
 		return false;
 	}
 
-	printf("Initialized OpenGL %s\n", glGetString(GL_VERSION));
-	printf("Video Adapter: %s\n", glGetString(GL_RENDERER));
+	if (!g_pDebugOverlay->Setup(m_pWindow, m_pRenderer))
+	{
+		printf("Failed while setting up debug overlay!\n");
+		return false;
+	}
 
 	return true;
 }
 
 void CGraphics::Shutdown()
 {
-	SDL_GL_DeleteContext(m_pOpenGLContext);
+	g_pDebugOverlay->Shutdown();
+	g_pTextureSystem->Shutdown();
+	SDL_DestroyRenderer(m_pRenderer);
 	SDL_DestroyWindow(m_pWindow);
 }
 
@@ -81,18 +122,45 @@ bool CGraphics::Frame()
 {
 	BeginScene();
 
+	g_pGameClient->Render();
+	g_pDebugOverlay->Frame();
+
 	EndScene();
 
 	return true;
 }
 
+void CGraphics::ProcessEvent(void* sdl_event)
+{
+	g_pDebugOverlay->ProcessEvent(sdl_event);
+}
+
+void CGraphics::ScreenToWorld(float x, float y, float& out_x, float& out_y) const
+{
+}
+
+void CGraphics::ScreenToWorld(const Vector2D_t& screen, Vector2D_t& world) const
+{
+	ScreenToWorld(screen.x, screen.y, world.x, world.y);
+}
+
+bool CGraphics::WorldToScreen(float x, float y, float& out_x, float& out_y) const
+{
+	return g_pGameClient->GetActiveCamera()->WorldToScreen(x, y, out_x, out_y);
+}
+
+bool CGraphics::WorldToScreen(const Vector2D_t& world, Vector2D_t& screen) const
+{
+	return WorldToScreen(world.x, world.y, screen.x, screen.y);
+}
+
 void CGraphics::BeginScene()
 {
-	glClearColor(.1f, .1f, .2f, 1.f);
-	glClear(GL_COLOR_BUFFER_BIT);
+	SDL_SetRenderDrawColor(m_pRenderer, 25, 25, 50, 255);
+	SDL_RenderClear(m_pRenderer);
 }
 
 void CGraphics::EndScene()
 {
-	SDL_GL_SwapWindow(m_pWindow);
+	SDL_RenderPresent(m_pRenderer);
 }

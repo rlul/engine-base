@@ -1,3 +1,21 @@
+[submodule "thirdparty/imgui"]
+	path = thirdparty/imgui
+	url = https://github.com/ocornut/imgui.git
+[submodule "thirdparty/SDL_image"]
+	path = thirdparty/SDL_image
+	url = https://github.com/libsdl-org/SDL_image.git
+	branch = SDL2
 [submodule "thirdparty/SDL"]
 	path = thirdparty/SDL
 	url = https://github.com/libsdl-org/SDL.git
+	branch = SDL2
+[submodule "thirdparty/json"]
+	path = thirdparty/json
+	url = https://github.com/nlohmann/json.git
+[submodule "thirdparty/tmxlite"]
+	path = thirdparty/tmxlite
+	url = https://github.com/fallahn/tmxlite.git
+[submodule "thirdparty/SDL_ttf"]
+	path = thirdparty/SDL_ttf
+	url = https://github.com/libsdl-org/SDL_ttf.git
+	branch = SDL2

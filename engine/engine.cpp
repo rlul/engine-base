@@ -1,39 +1,19 @@
-#include "engine/iengine.h"
+#include "engine.h"
+#include "engine/iinputsystem.h"
 #include "render/igraphics.h"
+#include "core/icommandline.h"
+#include "core/ifilesystem.h"
+#include "game/igameclient.h"
 #include "subsystem.h"
 #include "common.h"
-#include <SDL3/SDL.h>
+#include <SDL2/SDL.h>
+#include <tmxlite/Map.hpp>
 #include <thread>
 #include <chrono>
 #include <cmath>
+#include <filesystem>
 
-#include "testeventlistener.h"
-
-class CEngine : public IEngine
-{
-public:
-	CEngine() = default;
-	~CEngine() override = default;
-
-	bool Setup() override;
-	void Shutdown() override;
-	const char* GetSystemName() const override { return ENGINE_SYSTEM_VERSION; }
-
-	int Main() override;
-	bool GetQuitting() const override;
-	void SetQuitting(bool quit) override;
-
-private:
-	virtual bool MainLoop();
-	virtual void PollEvent();
-	virtual void Frame();
-	virtual bool FilterTime(float deltatime);
-
-private:
-	bool m_bQuitting;
-	float m_flPreviousTime, m_flCurrentTime;
-	float m_flFrameTime, m_flMinFrameTime;
-};
+#include "tilemap.h"
 
 CEngine g_Engine;
 CREATE_SINGLE_SYSTEM( CEngine, IEngine, ENGINE_SYSTEM_VERSION, g_Engine );
@@ -47,8 +27,6 @@ bool CEngine::Setup()
 
 	m_flPreviousTime = COM_GetTime();
 
-	g_pEventSystem->AddListener(new CTestEventListener, "mousedown");
-
 	return true;
 }
 
@@ -57,13 +35,13 @@ void CEngine::Shutdown()
 	SDL_Quit();
 }
 
-int CEngine::Main()
+EngineMainResult_t CEngine::Main()
 {
-	int result = 0;	// stop
+	auto result = EngineMainResult_t::STOP;
 
 	if (!MainLoop())
 	{
-		result = 1;	// restart
+		result = EngineMainResult_t::RESTART;
 	}
 
 	return result;
@@ -77,6 +55,66 @@ bool CEngine::GetQuitting() const
 void CEngine::SetQuitting(bool quit)
 {
 	m_bQuitting = quit;
+}
+
+float CEngine::GetFrameTime() const
+{
+	return m_flFrameTime;
+}
+
+bool CEngine::IsInGame() const
+{
+	return m_pScene;
+}
+
+bool CEngine::LoadScene(const char* name)
+{
+	if (m_pScene)
+		UnloadScene();
+
+	std::ostringstream map_path;
+	map_path << "scenes/" << name << ".tmx";
+
+	auto file_handle = g_pFileSystem->Open(map_path.str().c_str(), IFileSystem::OPEN_READ);
+
+	if (!file_handle)
+		return false;
+
+	auto file_path = g_pFileSystem->GetFilePath(file_handle);
+	auto file_size = g_pFileSystem->Size(file_handle) + 1;
+	auto file_data = new char[file_size] { 0, };
+	g_pFileSystem->Read(file_handle, file_data, file_size);
+	g_pFileSystem->Close(file_handle);
+
+	std::filesystem::path working_directory = file_path;
+	working_directory.remove_filename();
+
+	tmx::Map map;
+	map.loadFromString(file_data, working_directory.string());
+	delete[] file_data;
+
+	auto scene = new CTileMap(name);
+
+	if (!scene->Load(map))
+	{
+		delete scene;
+		return false;
+	}
+
+	m_pScene = scene;
+
+	return true;
+}
+
+void CEngine::UnloadScene()
+{
+	delete m_pScene;
+	m_pScene = nullptr;
+}
+
+ITileMap* CEngine::GetCurrentScene() const
+{
+	return m_pScene;
 }
 
 bool CEngine::MainLoop()
@@ -99,23 +137,27 @@ void CEngine::PollEvent()
 	SDL_Event event;
 	while (SDL_PollEvent(&event))
 	{
+		g_pGraphics->ProcessEvent(&event);
 		switch (event.type)
 		{
-		case SDL_EVENT_QUIT:
+		case SDL_QUIT:
 		{
 			SetQuitting(true);
 			break;
 		}
-		case SDL_EVENT_MOUSE_BUTTON_DOWN:
+		case SDL_MOUSEBUTTONDOWN:
 		{
-			float mouse_x, mouse_y;
-			IEvent* mouse_event = g_pEventSystem->CreateGameEvent("mousedown");
-
-			SDL_GetMouseState(&mouse_x, &mouse_y);
-			mouse_event->SetValue("mouse_x", mouse_x);
-			mouse_event->SetValue("mouse_y", mouse_y);
-			g_pEventSystem->FireGameEvent(mouse_event);
-
+			
+			break;
+		}
+		case SDL_KEYDOWN:
+		{
+			g_pInputSystem->SetKeyState(event.key.keysym.sym, true);
+			break;
+		}
+		case SDL_KEYUP:
+		{
+			g_pInputSystem->SetKeyState(event.key.keysym.sym, false);
 			break;
 		}
 		default:
@@ -140,20 +182,8 @@ void CEngine::Frame()
 		return;
 	}
 
-	{
-		char buf[32];
-		static float frames_per_second = 0.f, total_time = 0.f;
-
-		++frames_per_second;
-		total_time += m_flFrameTime;
-
-		sprintf(buf, "FPS: %f", frames_per_second / total_time);
-		SDL_SetWindowTitle(SDL_GL_GetCurrentWindow(), buf);
-
-		if (total_time > 1.f)
-			frames_per_second = total_time = 0.f;
-	}
-
+	g_pInputSystem->Update();
+	g_pGameClient->Update(m_flFrameTime);
 	g_pGraphics->Frame();
 
 	m_flFrameTime = 0.f;
@@ -161,7 +191,13 @@ void CEngine::Frame()
 
 bool CEngine::FilterTime(float deltatime)
 {
-	float max_fps = 60.f;
+	static float max_fps = [&]() -> float {
+			if (!g_pCommandLine->HasParam("fps"))
+				return 60.f;
+			const float fps = g_pCommandLine->GetParamInt("fps");
+			return (fps >= 10.f && fps <= 300.f) ? fps : 60.f;
+		}();
+
 	m_flMinFrameTime = 1.f / max_fps;
 
 	if (deltatime < m_flMinFrameTime)
